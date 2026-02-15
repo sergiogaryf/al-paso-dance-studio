@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper: check if user is authenticated
+    function isAuth() {
+      return request.auth != null;
+    }
+    // Helper: check if user is admin
+    function isAdmin() {
+      return isAuth() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    // Helper: check if user is the document owner
+    function isOwner(uid) {
+      return isAuth() && request.auth.uid == uid;
+    }
+
+    // Users: admin can read/write all, users can read their own
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Clases: anyone auth can read, admin can write
+    match /clases/{claseId} {
+      allow read: if isAuth();
+      allow write: if isAdmin();
+    }
+
+    // Eventos: public read (for landing page), admin write
+    match /eventos/{eventoId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Banners: public read (for landing page), admin write
+    match /banners/{bannerId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Asistencia: admin can read/write, alumnos can read their own
+    match /asistencia/{asistenciaId} {
+      allow read: if isAdmin() || (isAuth() && resource.data.alumnoId == request.auth.uid);
+      allow write: if isAdmin();
+    }
+  }
+}

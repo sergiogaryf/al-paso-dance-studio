@@ -1,0 +1,327 @@
+/* ============================================
+   ESTACION SALSERA - Login Styles
+   Glassmorphism + Train theme
+   ============================================ */
+
+/* ---- FONDO ---- */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(212, 160, 23, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(232, 197, 71, 0.04) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 80%, rgba(212, 160, 23, 0.03) 0%, transparent 50%),
+    #0a0a0a;
+  z-index: 0;
+}
+
+/* ---- CONTENEDOR ---- */
+.login-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  padding: 1.5rem;
+}
+
+/* ---- CARD ---- */
+.login-card {
+  background: rgba(18, 18, 18, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(212, 160, 23, 0.15);
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(212, 160, 23, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  animation: cardAppear 0.6s ease-out;
+}
+
+.login-card:hover {
+  border-color: rgba(212, 160, 23, 0.25);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(212, 160, 23, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ---- LOGO ---- */
+.login-logo {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  animation: logoFadeIn 0.8s ease-out;
+}
+
+.login-logo img {
+  width: 140px;
+  height: auto;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 4px 20px rgba(212, 160, 23, 0.15));
+  transition: transform 0.3s ease;
+}
+
+.login-logo img:hover {
+  transform: scale(1.05);
+}
+
+@keyframes logoFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- TITULOS ---- */
+.login-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--dorado);
+  text-align: center;
+  margin-bottom: 0.3rem;
+  letter-spacing: -0.5px;
+}
+
+.login-subtitle {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  color: var(--blanco-suave);
+  text-align: center;
+  margin-bottom: 2rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 300;
+}
+
+/* ---- FORMULARIO ---- */
+.login-card .form-group {
+  margin-bottom: 1.4rem;
+}
+
+.login-card .form-group label {
+  display: block;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: var(--blanco-suave);
+  margin-bottom: 0.6rem;
+  font-weight: 500;
+}
+
+.login-card .form-input {
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  background: rgba(26, 26, 26, 0.95);
+  border: 1px solid var(--gris-borde);
+  border-radius: 12px;
+  color: var(--blanco);
+  font-size: 0.95rem;
+  font-family: 'DM Sans', sans-serif;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  outline: none;
+}
+
+.login-card .form-input:focus {
+  border-color: var(--dorado);
+  box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.12), 0 0 20px rgba(212, 160, 23, 0.05);
+  background: rgba(30, 30, 30, 0.95);
+}
+
+.login-card .form-input::placeholder {
+  color: #555;
+  font-weight: 300;
+}
+
+/* ---- BOTON LOGIN ---- */
+.login-btn {
+  width: 100%;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.login-btn:hover::before {
+  left: 100%;
+}
+
+.login-btn .btn-text,
+.login-btn .btn-loader {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.login-btn.loading .btn-text {
+  display: none;
+}
+
+.login-btn.loading .btn-loader {
+  display: inline-flex !important;
+}
+
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Spinner pequeno para boton */
+.spinner-small {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(10, 10, 10, 0.3);
+  border-top-color: var(--negro);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* ---- MENSAJE DE ERROR ---- */
+.error-message {
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  color: #e74c3c;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: center;
+  animation: errorShake 0.4s ease;
+}
+
+@keyframes errorShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+/* ---- LINK VOLVER ---- */
+.back-link {
+  display: block;
+  text-align: center;
+  margin-top: 1.8rem;
+  color: var(--blanco-suave);
+  font-size: 0.85rem;
+  font-weight: 400;
+  transition: color 0.3s ease;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: var(--dorado);
+}
+
+.back-arrow {
+  display: inline-block;
+  transition: transform 0.3s ease;
+  margin-right: 0.2rem;
+}
+
+.back-link:hover .back-arrow {
+  transform: translateX(-4px);
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 1rem;
+  }
+
+  .login-card {
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+  }
+
+  .login-logo img {
+    width: 110px;
+  }
+
+  .login-title {
+    font-size: 1.2rem;
+  }
+
+  .login-subtitle {
+    font-size: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .login-btn {
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .login-card {
+    padding: 1.5rem 1.2rem;
+  }
+
+  .login-title {
+    font-size: 1.1rem;
+  }
+}
+
+/* ---- ACCESIBILIDAD ---- */
+@media (prefers-reduced-motion: reduce) {
+  .login-card,
+  .login-logo,
+  .error-message {
+    animation: none;
+  }
+
+  .login-btn::before {
+    display: none;
+  }
+}

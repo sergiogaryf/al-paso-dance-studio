@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Iniciar Sesion - Estacion Salsera</title>
+  <meta name="description" content="Acceso para alumnos de Estacion Salsera - El Tren del Sabor">
+
+  <!-- Theme & Mobile -->
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Estacion Salsera">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/login.css">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="login-page">
+
+  <!-- Fondo decorativo -->
+  <div class="login-bg"></div>
+
+  <!-- Contenedor principal -->
+  <main class="login-container">
+    <div class="login-card glass-card">
+
+      <!-- Logo -->
+      <div class="login-logo">
+        <img src="img/Logo.png" alt="Estacion Salsera - El Tren del Sabor">
+      </div>
+
+      <!-- Titulo -->
+      <h1 class="login-title">Acceso Alumnos</h1>
+      <p class="login-subtitle">El Tren del Sabor</p>
+
+      <!-- Formulario -->
+      <form id="loginForm" autocomplete="on">
+        <div class="form-group">
+          <label for="email">Correo electronico</label>
+          <input
+            type="email"
+            id="email"
+            class="form-input"
+            placeholder="tu@correo.com"
+            autocomplete="email"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contrasena</label>
+          <input
+            type="password"
+            id="password"
+            class="form-input"
+            placeholder="Tu contrasena"
+            autocomplete="current-password"
+            required
+          >
+        </div>
+
+        <!-- Mensaje de error -->
+        <div id="errorMessage" class="error-message hidden"></div>
+
+        <!-- Boton de login -->
+        <button type="submit" id="loginBtn" class="btn-primary login-btn">
+          <span class="btn-text">Iniciar Sesion</span>
+          <span class="btn-loader hidden">
+            <span class="spinner-small"></span>
+            Verificando...
+          </span>
+        </button>
+      </form>
+
+      <!-- Link volver -->
+      <a href="index.html" class="back-link">
+        <span class="back-arrow">&larr;</span> Volver a Estacion Salsera
+      </a>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Mi App - Estacion Salsera</title>
+  <meta name="description" content="Panel del alumno - Estacion Salsera, El Tren del Sabor">
+
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Estacion Salsera">
+
+  <!-- Manifest & Icons -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="img/icons/icon-192x192.png">
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/app.css">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="app-page">
+
+  <!-- Loading Overlay -->
+  <div id="appLoading" class="loading-overlay">
+    <div class="spinner"></div>
+    <p class="text-muted" style="font-size: 0.85rem;">Cargando tu informacion...</p>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- MAIN CONTENT -->
+  <!-- ============================================ -->
+  <main id="appContent" class="app-content hidden">
+
+    <!-- ====== TAB: INICIO ====== -->
+    <section id="tab-inicio" class="tab-section active">
+      <!-- Header -->
+      <div class="app-header">
+        <div class="app-header-brand">
+          <img src="img/Logo.png" alt="Estacion Salsera" class="app-logo">
+          <span class="app-brand-text">Estacion Salsera</span>
+        </div>
+      </div>
+
+      <!-- Greeting -->
+      <h1 class="greeting">Hola, <span id="userName">...</span>!</h1>
+
+      <!-- Clases restantes -->
+      <div class="glass-card card-clases">
+        <div class="card-label">Te quedan</div>
+        <div class="card-big-number"><span id="clasesRestantes">0</span> clases</div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="clasesProgress" style="width: 0%"></div>
+        </div>
+        <div class="progress-bar-info">
+          <span id="clasesAsistidasInfo">0</span> asistidas de <span id="clasesContratadasInfo">0</span>
+        </div>
+      </div>
+
+      <!-- Proxima clase -->
+      <div class="glass-card card-proxima">
+        <div class="card-label">Proxima clase</div>
+        <div id="proximaClaseContent">
+          <p class="text-muted" style="font-size: 0.9rem;">Calculando...</p>
+        </div>
+      </div>
+
+      <!-- Tu sede -->
+      <div class="glass-card card-sede">
+        <div class="card-label">Tu sede</div>
+        <div class="card-sede-name" id="userSede">-</div>
+      </div>
+    </section>
+
+    <!-- ====== TAB: HORARIO ====== -->
+    <section id="tab-horario" class="tab-section">
+      <h2 class="section-title">Mi Horario</h2>
+      <div id="horarioList" class="horario-list">
+        <div class="empty-state">
+          <span class="empty-icon">&#128336;</span>
+          <p>Cargando horario...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== TAB: COMPANEROS ====== -->
+    <section id="tab-companeros" class="tab-section">
+      <h2 class="section-title">Companeros</h2>
+      <div id="companerosList" class="companeros-list">
+        <div class="empty-state">
+          <span class="empty-icon">&#128101;</span>
+          <p>Cargando companeros...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== TAB: EVENTOS ====== -->
+    <section id="tab-eventos" class="tab-section">
+      <h2 class="section-title">Proximos Eventos</h2>
+      <div id="eventosList" class="eventos-list">
+        <div class="empty-state">
+          <span class="empty-icon">&#9733;</span>
+          <p>Cargando eventos...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== TAB: PERFIL ====== -->
+    <section id="tab-perfil" class="tab-section">
+      <div class="perfil-header">
+        <div class="avatar avatar-xl" id="perfilAvatar">--</div>
+        <h2 class="perfil-name" id="perfilName">-</h2>
+        <span class="badge badge-gold" id="perfilRole">alumno</span>
+      </div>
+
+      <div class="perfil-info-grid">
+        <div class="glass-card perfil-info-card">
+          <div class="perfil-info-label">Email</div>
+          <div class="perfil-info-value" id="perfilEmail">-</div>
+        </div>
+        <div class="glass-card perfil-info-card">
+          <div class="perfil-info-label">Telefono</div>
+          <div class="perfil-info-value" id="perfilTelefono">-</div>
+        </div>
+        <div class="glass-card perfil-info-card">
+          <div class="perfil-info-label">Sede</div>
+          <div class="perfil-info-value" id="perfilSede">-</div>
+        </div>
+        <div class="glass-card perfil-info-card">
+          <div class="perfil-info-label">Nivel</div>
+          <div class="perfil-info-value" id="perfilNivel">-</div>
+        </div>
+      </div>
+
+      <div class="perfil-stats">
+        <div class="glass-card stat-card">
+          <div class="stat-number" id="statContratadas">0</div>
+          <div class="stat-label">Contratadas</div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-number" id="statAsistidas">0</div>
+          <div class="stat-label">Asistidas</div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-number" id="statPorcentaje">0%</div>
+          <div class="stat-label">Asistencia</div>
+        </div>
+      </div>
+
+      <button id="logoutBtn" class="btn-secondary logout-btn">Cerrar Sesion</button>
+    </section>
+
+  </main>
+
+  <!-- ============================================ -->
+  <!-- BOTTOM TAB BAR -->
+  <!-- ============================================ -->
+  <nav id="tabBar" class="tab-bar hidden">
+    <button class="tab-item active" data-tab="tab-inicio">
+      <span class="tab-icon">&#8962;</span>
+      <span class="tab-label">Inicio</span>
+    </button>
+    <button class="tab-item" data-tab="tab-horario">
+      <span class="tab-icon">&#128336;</span>
+      <span class="tab-label">Horario</span>
+    </button>
+    <button class="tab-item" data-tab="tab-companeros">
+      <span class="tab-icon">&#128101;</span>
+      <span class="tab-label">Companeros</span>
+    </button>
+    <button class="tab-item" data-tab="tab-eventos">
+      <span class="tab-icon">&#9733;</span>
+      <span class="tab-label">Eventos</span>
+    </button>
+    <button class="tab-item" data-tab="tab-perfil">
+      <span class="tab-icon">&#9787;</span>
+      <span class="tab-label">Perfil</span>
+    </button>
+  </nav>
+
+  <!-- Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firestore-service.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

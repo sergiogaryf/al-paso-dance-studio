@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#0a0a0a"/>
+  <g transform="translate(32,28)" fill="none" stroke="#d4a017" stroke-width="2" stroke-linecap="round">
+    <!-- Train body -->
+    <rect x="-14" y="-8" width="28" height="18" rx="3" fill="#d4a017" stroke="none"/>
+    <!-- Windows -->
+    <rect x="-10" y="-5" width="6" height="5" rx="1" fill="#0a0a0a"/>
+    <rect x="4" y="-5" width="6" height="5" rx="1" fill="#0a0a0a"/>
+    <!-- Roof -->
+    <path d="M-12-8 Q0-16 12-8" stroke="#d4a017" stroke-width="2.5" fill="none"/>
+    <!-- Wheels -->
+    <circle cx="-8" cy="13" r="3.5" fill="#d4a017" stroke="none"/>
+    <circle cx="8" cy="13" r="3.5" fill="#d4a017" stroke="none"/>
+    <!-- Rail -->
+    <line x1="-20" y1="17" x2="20" y2="17" stroke="#d4a017" stroke-width="1.5"/>
+  </g>
+  <!-- ES text -->
+  <text x="32" y="52" text-anchor="middle" font-family="serif" font-weight="bold" font-size="10" fill="#d4a017">ES</text>
+</svg>

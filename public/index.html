@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estacion Salsera - Academia de Danza | Salsa, Bachata y Casino</title>
+  <meta name="description" content="Academia de danza en Calera y Quillota. Clases de salsa, bachata y casino en niveles basico e intermedio. Inscribete ahora.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Estacion Salsera - El Tren del Sabor">
+  <meta property="og:description" content="Academia de danza en Calera y Quillota. Clases de salsa, bachata y casino. Inscribete ahora.">
+  <meta property="og:image" content="img/og-image.svg">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Estacion Salsera - El Tren del Sabor">
+  <meta name="twitter:description" content="Academia de danza en Calera y Quillota. Salsa, bachata y casino.">
+  <meta name="twitter:image" content="img/og-image.svg">
+
+  <!-- Theme color & PWA -->
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="img/icons/icon-192x192.png">
+
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#">
+      <img src="img/Logo.png" alt="Estacion Salsera" class="nav-logo-img">
+    </a>
+    <button class="menu-toggle" aria-label="Menu">&#9776;</button>
+    <ul class="nav-links">
+      <li><a href="#inicio">Inicio</a></li>
+      <li><a href="#cursos">Cursos</a></li>
+      <li><a href="#sedes">Sedes</a></li>
+      <li><a href="#nosotros">Nosotros</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+      <li><a href="login.html" class="nav-acceso">Acceso Alumnos</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO CON VIDEO DE FONDO -->
+  <section class="hero" id="inicio">
+    <video class="hero-video" autoplay muted loop playsinline poster="img/Fondo.png">
+      <source src="img/Fondo.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+
+    <img src="img/Logo.png" alt="Estacion Salsera - El Tren del Sabor" class="hero-logo">
+    <span class="hero-tag">Inscripciones abiertas 2026</span>
+    <h1>Estacion <span>Salsera</span></h1>
+    <p class="tagline">El Tren del Sabor</p>
+
+    <div class="hero-info">
+      <div class="hero-info-item">
+        <p class="label">Inscripciones</p>
+        <p class="value">Desde el 17 de febrero</p>
+      </div>
+      <div class="hero-info-item">
+        <p class="label">Inicio de clases</p>
+        <p class="value">Lunes 2 de marzo</p>
+      </div>
+      <div class="hero-info-item">
+        <p class="label">Cupos</p>
+        <p class="value">Limitados</p>
+      </div>
+    </div>
+
+    <a href="https://wa.me/56935368400?text=Hola!%20Quiero%20informaci%C3%B3n%20sobre%20las%20clases%20en%20Estaci%C3%B3n%20Salsera" class="btn-cta" target="_blank" rel="noopener">
+      Subete al Tren del Sabor
+    </a>
+  </section>
+
+  <!-- BANNERS PUBLICITARIOS -->
+  <section class="section banners-section" id="banners-landing">
+    <div class="banners-carousel" id="bannersCarousel">
+      <!-- Se cargan dinámicamente desde Firestore -->
+    </div>
+  </section>
+
+  <!-- CURSOS (terminales de tren) -->
+  <div class="section-bg">
+    <!-- Fondo pentagrama + vias + notas -->
+    <div class="bg-music">
+      <div class="staff-line"></div>
+      <div class="staff-line"></div>
+      <div class="staff-line"></div>
+      <div class="staff-line"></div>
+      <div class="staff-line"></div>
+      <span class="note">&#9835;</span>
+      <span class="note">&#9834;</span>
+      <span class="note">&#9833;</span>
+      <span class="note">&#9835;</span>
+      <span class="note">&#9834;</span>
+      <span class="note">&#9833;</span>
+      <span class="note">&#9835;</span>
+      <span class="note">&#9834;</span>
+      <div class="track"></div>
+      <div class="track"></div>
+      <div class="track-ties"></div>
+    </div>
+
+    <section class="section" id="cursos">
+      <div class="section-header fade-in">
+        <h2>Cursos</h2>
+        <p>Elige tu estacion y sube al tren</p>
+      </div>
+      <div class="cursos-grid">
+        <!-- SALSA -->
+        <div class="curso-flip fade-in">
+          <div class="curso-flip-inner">
+            <div class="curso-front">
+              <p class="numero">01</p>
+              <p class="estacion-label">Estacion</p>
+              <h3>Salsa</h3>
+              <p class="desc">Aprende los pasos fundamentales de la salsa. Ritmo, conexion y sabor en cada clase.</p>
+              <div class="niveles">
+                <span class="nivel">Basico</span>
+                <span class="nivel">Intermedio</span>
+              </div>
+            </div>
+            <div class="curso-back">
+              <video muted loop playsinline>
+                <source src="img/Fondo.mp4" type="video/mp4">
+              </video>
+              <div class="curso-back-overlay">
+                <p class="estacion-label">Estacion</p>
+                <h3>Salsa</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- BACHATA -->
+        <div class="curso-flip fade-in">
+          <div class="curso-flip-inner">
+            <div class="curso-front">
+              <p class="numero">02</p>
+              <p class="estacion-label">Estacion</p>
+              <h3>Bachata</h3>
+              <p class="desc">Descubre la sensualidad y el sentimiento de la bachata. Tecnica, musicalidad y estilo.</p>
+              <div class="niveles">
+                <span class="nivel">Basico</span>
+                <span class="nivel">Intermedio</span>
+              </div>
+            </div>
+            <div class="curso-back">
+              <video muted loop playsinline>
+                <source src="img/Fondo.mp4" type="video/mp4">
+              </video>
+              <div class="curso-back-overlay">
+                <p class="estacion-label">Estacion</p>
+                <h3>Bachata</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- CASINO -->
+        <div class="curso-flip fade-in">
+          <div class="curso-flip-inner">
+            <div class="curso-front">
+              <p class="numero">03</p>
+              <p class="estacion-label">Estacion</p>
+              <h3>Casino</h3>
+              <p class="desc">El casino cubano en toda su esencia. Rueda de casino, figuras y la alegria de bailar en grupo.</p>
+              <div class="niveles">
+                <span class="nivel">Basico</span>
+                <span class="nivel">Intermedio</span>
+              </div>
+            </div>
+            <div class="curso-back">
+              <video muted loop playsinline>
+                <source src="img/Fondo.mp4" type="video/mp4">
+              </video>
+              <div class="curso-back-overlay">
+                <p class="estacion-label">Estacion</p>
+                <h3>Casino</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- SEDES -->
+  <section class="section" id="sedes">
+    <div class="section-header fade-in">
+      <h2>Sedes</h2>
+      <p>Dos estaciones donde el sabor se vive a full</p>
+    </div>
+    <div class="sedes-grid">
+
+      <!-- QUILLOTA -->
+      <div class="boleto fade-in">
+        <div class="boleto-izq">
+          <p class="boleto-ruta">Estacion Salsera</p>
+          <h3 class="boleto-destino">Quillota</h3>
+          <p class="boleto-sub">Salsa, bachata y casino</p>
+        </div>
+        <div class="boleto-perforado"></div>
+        <div class="boleto-der">
+          <div class="boleto-horarios">
+            <p class="boleto-dia">Martes</p>
+            <div class="boleto-clase"><span class="boleto-hora">19:30</span> Salsa Cubana</div>
+            <div class="boleto-clase"><span class="boleto-hora">20:30</span> Rueda de Casino</div>
+            <p class="boleto-dia">Miercoles</p>
+            <div class="boleto-clase"><span class="boleto-hora">20:00</span> Bachata Inicial</div>
+            <div class="boleto-clase"><span class="boleto-hora">21:00</span> Salsa Inicial</div>
+            <p class="boleto-dia">Jueves</p>
+            <div class="boleto-clase"><span class="boleto-hora">19:30</span> Bachata Basico</div>
+            <div class="boleto-clase"><span class="boleto-hora">20:30</span> Salsa Basico</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CALERA -->
+      <div class="boleto fade-in">
+        <div class="boleto-izq">
+          <p class="boleto-ruta">Estacion Salsera</p>
+          <h3 class="boleto-destino">Calera</h3>
+          <p class="boleto-sub">Salsa y bachata</p>
+        </div>
+        <div class="boleto-perforado"></div>
+        <div class="boleto-der">
+          <div class="boleto-horarios">
+            <p class="boleto-dia">Viernes</p>
+            <div class="boleto-clase"><span class="boleto-hora">19:00</span> Bachata</div>
+            <div class="boleto-clase"><span class="boleto-hora">20:00</span> Salsa</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROXIMOS EVENTOS -->
+  <section class="section" id="eventos-landing">
+    <div class="section-header fade-in">
+      <h2>Proximos Eventos</h2>
+      <p>No te pierdas nuestras actividades especiales</p>
+    </div>
+    <div class="eventos-grid-landing" id="eventosLandingGrid">
+      <!-- Se cargan dinámicamente desde Firestore -->
+    </div>
+  </section>
+
+  <!-- DIRECTOR -->
+  <div class="section-bg">
+    <section class="director" id="nosotros">
+      <div class="director-content fade-in">
+        <div class="director-photos">
+          <div class="director-photo">
+            <img src="img/Francisco1.jpg" alt="Francisco Rojas en escenario">
+          </div>
+          <div class="director-photo">
+            <img src="img/Francisco2.jpg" alt="Francisco Rojas bailando">
+          </div>
+        </div>
+        <div class="director-info">
+          <div class="director-line"></div>
+          <h2>Francisco Rojas</h2>
+          <p class="role">Director & Instructor</p>
+          <p>Con pasion por la danza y anos de experiencia, Francisco lidera Estacion Salsera con el objetivo de llevar el ritmo latino a cada rincon de Calera y Quillota. Sube al Tren del Sabor y deja que la musica te mueva.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- CTA FINAL -->
+  <section class="cta" id="contacto">
+    <h2 class="fade-in">Sube al Tren del Sabor</h2>
+    <p class="fade-in">Reserva tu cupo. Escribenos y comienza a bailar.</p>
+    <a href="https://wa.me/56935368400?text=Hola!%20Quiero%20inscribirme%20en%20Estaci%C3%B3n%20Salsera.%20Necesito%20m%C3%A1s%20informaci%C3%B3n." class="btn-cta fade-in" target="_blank" rel="noopener">
+      Subete al Tren del Sabor
+    </a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2026 <span>Estacion Salsera</span> &middot; Academia de Danza &middot; Calera & Quillota</p>
+  </footer>
+
+  <!-- WHATSAPP FLOTANTE -->
+  <a href="https://wa.me/56935368400?text=Hola!%20Quiero%20informaci%C3%B3n%20sobre%20las%20clases." class="wa-float" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+
+  <!-- Firebase SDK (para banners y eventos dinámicos) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

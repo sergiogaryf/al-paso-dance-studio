@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Panel Admin - Estacion Salsera</title>
+  <meta name="description" content="Panel de administracion de Estacion Salsera - El Tren del Sabor">
+
+  <!-- Theme & Mobile -->
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Estacion Salsera Admin">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/admin.css">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="admin-page">
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <p class="text-muted">Verificando acceso...</p>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Mobile Hamburger -->
+  <button class="sidebar-toggle" id="sidebarToggle" aria-label="Abrir menu">
+    &#9776;
+  </button>
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <img src="img/Logo.png" alt="Estacion Salsera" class="sidebar-logo">
+      <h2 class="sidebar-title">Panel Admin</h2>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul>
+        <li>
+          <a href="#" class="nav-item active" data-section="dashboard">
+            <span class="nav-icon">&#x1F4CA;</span>
+            <span class="nav-text">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item" data-section="alumnos">
+            <span class="nav-icon">&#9823;</span>
+            <span class="nav-text">Alumnos</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item" data-section="clases">
+            <span class="nav-icon">&#128218;</span>
+            <span class="nav-text">Clases</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item" data-section="eventos">
+            <span class="nav-icon">&#127881;</span>
+            <span class="nav-text">Eventos</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item" data-section="banners">
+            <span class="nav-icon">&#127912;</span>
+            <span class="nav-text">Banners</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-logout" id="btnLogout">
+        <span>&#x279C;</span> Cerrar Sesion
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main" id="adminMain">
+
+    <!-- Top Bar -->
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <h1 class="top-bar-greeting" id="greetingText">Hola, Francisco</h1>
+        <p class="top-bar-date" id="currentDate"></p>
+      </div>
+      <div class="top-bar-right">
+        <div class="avatar">FA</div>
+      </div>
+    </header>
+
+    <!-- ======================== DASHBOARD ======================== -->
+    <section class="admin-section active" id="section-dashboard">
+      <div class="section-header">
+        <h2 class="section-title">Dashboard</h2>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card glass-card">
+          <div class="stat-icon">&#9823;</div>
+          <div class="stat-info">
+            <span class="stat-value" id="statTotalAlumnos">0</span>
+            <span class="stat-label">Total Alumnos</span>
+          </div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">&#128218;</div>
+          <div class="stat-info">
+            <span class="stat-value" id="statClasesActivas">0</span>
+            <span class="stat-label">Clases Activas</span>
+          </div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">&#127881;</div>
+          <div class="stat-info">
+            <span class="stat-value" id="statEventosProximos">0</span>
+            <span class="stat-label">Eventos Proximos</span>
+          </div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">&#x2714;</div>
+          <div class="stat-info">
+            <span class="stat-value" id="statAlumnosActivos">0</span>
+            <span class="stat-label">Alumnos Activos</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clases de Hoy -->
+      <div class="dashboard-row">
+        <div class="dashboard-col">
+          <div class="glass-card">
+            <h3 class="card-title">Clases de Hoy</h3>
+            <div id="clasesHoyContainer">
+              <p class="text-muted">Cargando clases...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alumnos Recientes -->
+        <div class="dashboard-col">
+          <div class="glass-card">
+            <h3 class="card-title">Alumnos Recientes</h3>
+            <div id="alumnosRecientesContainer">
+              <p class="text-muted">Cargando alumnos...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== ALUMNOS ======================== -->
+    <section class="admin-section" id="section-alumnos">
+      <div class="section-header">
+        <h2 class="section-title">Alumnos</h2>
+        <button class="btn-primary btn-sm" id="btnNuevoAlumno">+ Nuevo Alumno</button>
+      </div>
+
+      <!-- Filters -->
+      <div class="filter-bar">
+        <input type="text" class="form-input filter-input" id="filterAlumnoNombre" placeholder="Buscar por nombre...">
+        <select class="form-input filter-select" id="filterAlumnoSede">
+          <option value="">Todas las sedes</option>
+          <option value="Calera">Calera</option>
+          <option value="Quillota">Quillota</option>
+        </select>
+      </div>
+
+      <!-- Table -->
+      <div class="table-container">
+        <table class="data-table" id="tablaAlumnos">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Sede</th>
+              <th>Nivel</th>
+              <th>Clases</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyAlumnos">
+            <tr>
+              <td colspan="7" class="text-center text-muted">Cargando alumnos...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ======================== CLASES ======================== -->
+    <section class="admin-section" id="section-clases">
+      <div class="section-header">
+        <h2 class="section-title">Clases</h2>
+        <button class="btn-primary btn-sm" id="btnNuevaClase">+ Nueva Clase</button>
+      </div>
+
+      <div class="cards-grid" id="clasesGrid">
+        <p class="text-muted">Cargando clases...</p>
+      </div>
+    </section>
+
+    <!-- ======================== EVENTOS ======================== -->
+    <section class="admin-section" id="section-eventos">
+      <div class="section-header">
+        <h2 class="section-title">Eventos</h2>
+        <button class="btn-primary btn-sm" id="btnNuevoEvento">+ Nuevo Evento</button>
+      </div>
+
+      <div class="cards-grid" id="eventosGrid">
+        <p class="text-muted">Cargando eventos...</p>
+      </div>
+    </section>
+
+    <!-- ======================== BANNERS ======================== -->
+    <section class="admin-section" id="section-banners">
+      <div class="section-header">
+        <h2 class="section-title">Banners</h2>
+        <button class="btn-primary btn-sm" id="btnNuevoBanner">+ Nuevo Banner</button>
+      </div>
+
+      <div class="cards-grid" id="bannersGrid">
+        <p class="text-muted">Cargando banners...</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================== MODALS ======================== -->
+
+  <!-- Modal Alumno -->
+  <div class="modal-overlay" id="modalAlumno">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalAlumnoTitle">Nuevo Alumno</h3>
+        <button class="modal-close" data-close="modalAlumno">&times;</button>
+      </div>
+      <form id="formAlumno">
+        <input type="hidden" id="alumnoId">
+        <div class="form-group">
+          <label for="alumnoNombre">Nombre completo</label>
+          <input type="text" id="alumnoNombre" class="form-input" placeholder="Nombre del alumno" required>
+        </div>
+        <div class="form-group">
+          <label for="alumnoEmail">Correo electronico</label>
+          <input type="email" id="alumnoEmail" class="form-input" placeholder="correo@ejemplo.com" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="alumnoSede">Sede</label>
+            <select id="alumnoSede" class="form-input" required>
+              <option value="">Seleccionar</option>
+              <option value="Calera">Calera</option>
+              <option value="Quillota">Quillota</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="alumnoNivel">Nivel</label>
+            <select id="alumnoNivel" class="form-input" required>
+              <option value="">Seleccionar</option>
+              <option value="Basico">Basico</option>
+              <option value="Intermedio">Intermedio</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="alumnoTelefono">Telefono</label>
+            <input type="tel" id="alumnoTelefono" class="form-input" placeholder="+56 9 1234 5678">
+          </div>
+          <div class="form-group">
+            <label for="alumnoClasesContratadas">Clases contratadas</label>
+            <input type="number" id="alumnoClasesContratadas" class="form-input" min="0" value="0">
+          </div>
+        </div>
+        <div class="form-group form-toggle">
+          <label>Activo</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="alumnoActivo" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary btn-sm" data-close="modalAlumno">Cancelar</button>
+          <button type="submit" class="btn-primary btn-sm">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Clase -->
+  <div class="modal-overlay" id="modalClase">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalClaseTitle">Nueva Clase</h3>
+        <button class="modal-close" data-close="modalClase">&times;</button>
+      </div>
+      <form id="formClase">
+        <input type="hidden" id="claseId">
+        <div class="form-group">
+          <label for="claseNombre">Nombre de la clase</label>
+          <input type="text" id="claseNombre" class="form-input" placeholder="Ej: Salsa Basica Lunes" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="claseDisciplina">Disciplina</label>
+            <select id="claseDisciplina" class="form-input" required>
+              <option value="">Seleccionar</option>
+              <option value="Salsa">Salsa</option>
+              <option value="Bachata">Bachata</option>
+              <option value="Casino">Casino</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="claseNivel">Nivel</label>
+            <select id="claseNivel" class="form-input" required>
+              <option value="">Seleccionar</option>
+              <option value="Basico">Basico</option>
+              <option value="Intermedio">Intermedio</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="claseSede">Sede</label>
+            <select id="claseSede" class="form-input" required>
+              <option value="">Seleccionar</option>
+              <option value="Calera">Calera</option>
+              <option value="Quillota">Quillota</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="claseDia">Dia</label>
+            <select id="claseDia" class="form-input" required>
+              <option value="">Seleccionar</option>
+              <option value="Lunes">Lunes</option>
+              <option value="Martes">Martes</option>
+              <option value="Miercoles">Miercoles</option>
+              <option value="Jueves">Jueves</option>
+              <option value="Viernes">Viernes</option>
+              <option value="Sabado">Sabado</option>
+              <option value="Domingo">Domingo</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="claseHora">Hora</label>
+            <input type="time" id="claseHora" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label for="claseDuracion">Duracion (min)</label>
+            <input type="number" id="claseDuracion" class="form-input" min="15" value="60">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="claseInstructor">Instructor</label>
+            <input type="text" id="claseInstructor" class="form-input" placeholder="Nombre del instructor">
+          </div>
+          <div class="form-group">
+            <label for="claseCupoMaximo">Cupo maximo</label>
+            <input type="number" id="claseCupoMaximo" class="form-input" min="1" value="20">
+          </div>
+        </div>
+        <div class="form-group form-toggle">
+          <label>Activa</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="claseActivo" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary btn-sm" data-close="modalClase">Cancelar</button>
+          <button type="submit" class="btn-primary btn-sm">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Evento -->
+  <div class="modal-overlay" id="modalEvento">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalEventoTitle">Nuevo Evento</h3>
+        <button class="modal-close" data-close="modalEvento">&times;</button>
+      </div>
+      <form id="formEvento">
+        <input type="hidden" id="eventoId">
+        <div class="form-group">
+          <label for="eventoTitulo">Titulo</label>
+          <input type="text" id="eventoTitulo" class="form-input" placeholder="Titulo del evento" required>
+        </div>
+        <div class="form-group">
+          <label for="eventoDescripcion">Descripcion</label>
+          <textarea id="eventoDescripcion" class="form-input" placeholder="Descripcion del evento" rows="3"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="eventoFecha">Fecha</label>
+            <input type="date" id="eventoFecha" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label for="eventoLugar">Lugar</label>
+            <input type="text" id="eventoLugar" class="form-input" placeholder="Lugar del evento">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="eventoImagenURL">URL de imagen</label>
+          <input type="url" id="eventoImagenURL" class="form-input" placeholder="https://ejemplo.com/imagen.jpg">
+        </div>
+        <div class="form-group form-toggle">
+          <label>Activo</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="eventoActivo" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary btn-sm" data-close="modalEvento">Cancelar</button>
+          <button type="submit" class="btn-primary btn-sm">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Banner -->
+  <div class="modal-overlay" id="modalBanner">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalBannerTitle">Nuevo Banner</h3>
+        <button class="modal-close" data-close="modalBanner">&times;</button>
+      </div>
+      <form id="formBanner">
+        <input type="hidden" id="bannerId">
+        <div class="form-group">
+          <label for="bannerTitulo">Titulo</label>
+          <input type="text" id="bannerTitulo" class="form-input" placeholder="Titulo del banner" required>
+        </div>
+        <div class="form-group">
+          <label for="bannerImagenURL">URL de imagen</label>
+          <input type="url" id="bannerImagenURL" class="form-input" placeholder="https://ejemplo.com/banner.jpg" required>
+        </div>
+        <div class="form-group">
+          <label for="bannerEnlace">Enlace</label>
+          <input type="url" id="bannerEnlace" class="form-input" placeholder="https://ejemplo.com/destino">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="bannerOrden">Orden</label>
+            <input type="number" id="bannerOrden" class="form-input" min="0" value="0">
+          </div>
+          <div class="form-group form-toggle">
+            <label>Activo</label>
+            <label class="toggle-switch">
+              <input type="checkbox" id="bannerActivo" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="bannerFechaInicio">Fecha inicio</label>
+            <input type="date" id="bannerFechaInicio" class="form-input">
+          </div>
+          <div class="form-group">
+            <label for="bannerFechaFin">Fecha fin</label>
+            <input type="date" id="bannerFechaFin" class="form-input">
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary btn-sm" data-close="modalBanner">Cancelar</button>
+          <button type="submit" class="btn-primary btn-sm">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirm Delete Modal -->
+  <div class="modal-overlay" id="modalConfirm">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>Confirmar Eliminacion</h3>
+        <button class="modal-close" data-close="modalConfirm">&times;</button>
+      </div>
+      <p class="text-muted mb-2" id="confirmMessage">Esta seguro de que desea eliminar este registro?</p>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary btn-sm" data-close="modalConfirm">Cancelar</button>
+        <button type="button" class="btn-danger btn-sm" id="btnConfirmDelete">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firestore-service.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
