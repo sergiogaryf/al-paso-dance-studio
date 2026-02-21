@@ -1,0 +1,248 @@
+/* ============================================
+   ESTACION SALSERA - Calendario Styles
+   ============================================ */
+
+.cal-page {
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: 3rem;
+}
+
+.cal-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(212, 160, 23, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(232, 197, 71, 0.04) 0%, transparent 40%),
+    #0a0a0a;
+  z-index: 0;
+}
+
+/* ---- NAV ---- */
+.cal-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--gris-borde);
+}
+
+.cal-nav-logo {
+  width: 40px;
+  height: auto;
+  mix-blend-mode: screen;
+}
+
+/* ---- MAIN ---- */
+.cal-main {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* ---- HEADER ---- */
+.cal-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.cal-header h1 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--blanco);
+  margin-bottom: 0.5rem;
+}
+
+/* ---- LEYENDA ---- */
+.cal-leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
+.cal-leyenda-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--blanco-suave);
+}
+
+.cal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+/* Colores por curso */
+.cal-dot-bachata-int { background: #d4a017; }
+.cal-dot-casino-bas  { background: #3498db; }
+.cal-dot-casino-int  { background: #e74c3c; }
+.cal-dot-mambo       { background: #9b59b6; }
+.cal-dot-bachata-bas { background: #2ecc71; }
+
+/* ---- CALENDARIO GRID ---- */
+.cal-container {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+}
+
+.cal-dias-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.cal-dias-header span {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--blanco-suave);
+  padding: 0.5rem 0;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.cal-dia {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  position: relative;
+  min-height: 48px;
+  transition: background 0.2s;
+}
+
+.cal-dia.vacio {
+  visibility: hidden;
+}
+
+.cal-dia.hoy {
+  border: 1px solid var(--dorado);
+  background: rgba(212, 160, 23, 0.06);
+}
+
+.cal-dia-num {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--blanco-suave);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.cal-dia.tiene-clase .cal-dia-num {
+  color: var(--blanco);
+  font-weight: 700;
+}
+
+.cal-dia.tiene-clase:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.cal-dia-puntos {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.cal-dia-punto {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+/* ---- TABLA ---- */
+.cal-tabla {
+  margin-bottom: 1.5rem;
+  padding: 1.2rem;
+}
+
+.cal-section-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--dorado);
+  margin-bottom: 1rem;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.cal-tabla td:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+/* ---- DESCARGA ---- */
+.cal-descarga {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.cal-btn-ics {
+  font-size: 1rem;
+  padding: 1rem 2.5rem;
+}
+
+.cal-descarga-hint {
+  font-size: 0.8rem;
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 480px) {
+  .cal-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .cal-main {
+    padding: 1.5rem 1rem;
+  }
+
+  .cal-dia {
+    min-height: 40px;
+  }
+
+  .cal-dia-num {
+    font-size: 0.75rem;
+  }
+
+  .cal-nav {
+    padding: 0.8rem 1rem;
+  }
+
+  .cal-leyenda-item {
+    font-size: 0.7rem;
+  }
+}

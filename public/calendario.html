@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendario Marzo 2026 - Estacion Salsera</title>
+  <meta name="description" content="Calendario de clases de baile Marzo 2026 - Estacion Salsera Dance Studio">
+
+  <!-- Theme -->
+  <meta name="theme-color" content="#0a0a0a">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/calendario.css">
+</head>
+<body class="cal-page">
+
+  <!-- Fondo -->
+  <div class="cal-bg"></div>
+
+  <!-- Nav -->
+  <nav class="cal-nav">
+    <a href="index.html">
+      <img src="img/Logo.png" alt="Estacion Salsera" class="cal-nav-logo">
+    </a>
+    <a href="index.html" class="btn-secondary btn-sm">&#8592; Volver</a>
+  </nav>
+
+  <main class="cal-main">
+
+    <!-- Header -->
+    <div class="cal-header">
+      <h1>Calendario <span class="text-gold">Marzo 2026</span></h1>
+      <p class="text-muted">Fechas de clases para todos los cursos</p>
+    </div>
+
+    <!-- Leyenda -->
+    <div class="cal-leyenda">
+      <div class="cal-leyenda-item">
+        <span class="cal-dot cal-dot-bachata-int"></span>
+        <span>Bachata Intermedio</span>
+        <span class="text-muted">Lun</span>
+      </div>
+      <div class="cal-leyenda-item">
+        <span class="cal-dot cal-dot-casino-bas"></span>
+        <span>Casino Basico</span>
+        <span class="text-muted">Mar</span>
+      </div>
+      <div class="cal-leyenda-item">
+        <span class="cal-dot cal-dot-casino-int"></span>
+        <span>Casino Intermedio</span>
+        <span class="text-muted">Mie</span>
+      </div>
+      <div class="cal-leyenda-item">
+        <span class="cal-dot cal-dot-mambo"></span>
+        <span>Mambo Open</span>
+        <span class="text-muted">Jue</span>
+      </div>
+      <div class="cal-leyenda-item">
+        <span class="cal-dot cal-dot-bachata-bas"></span>
+        <span>Bachata Basico</span>
+        <span class="text-muted">Vie</span>
+      </div>
+    </div>
+
+    <!-- Calendario Grid -->
+    <div class="cal-container glass-card">
+      <div class="cal-dias-header">
+        <span>Dom</span><span>Lun</span><span>Mar</span>
+        <span>Mie</span><span>Jue</span><span>Vie</span><span>Sab</span>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+
+    <!-- Tabla de fechas -->
+    <div class="cal-tabla glass-card">
+      <h3 class="cal-section-title">Detalle de fechas</h3>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Curso</th>
+              <th>Clase 1</th>
+              <th>Clase 2</th>
+              <th>Clase 3</th>
+              <th>Clase 4</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="cal-dot cal-dot-bachata-int"></span> Bachata Intermedio</td>
+              <td>Lun 2</td><td>Lun 9</td><td>Lun 16</td><td>Lun 23</td>
+            </tr>
+            <tr>
+              <td><span class="cal-dot cal-dot-casino-bas"></span> Casino Basico</td>
+              <td>Mar 3</td><td>Mar 10</td><td>Mar 17</td><td>Mar 24</td>
+            </tr>
+            <tr>
+              <td><span class="cal-dot cal-dot-casino-int"></span> Casino Intermedio</td>
+              <td>Mie 4</td><td>Mie 11</td><td>Mie 18</td><td>Mie 25</td>
+            </tr>
+            <tr>
+              <td><span class="cal-dot cal-dot-mambo"></span> Mambo Open</td>
+              <td>Jue 5</td><td>Jue 12</td><td>Jue 19</td><td>Jue 26</td>
+            </tr>
+            <tr>
+              <td><span class="cal-dot cal-dot-bachata-bas"></span> Bachata Basico</td>
+              <td>Vie 6</td><td>Vie 13</td><td>Vie 20</td><td>Vie 27</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Descarga ICS -->
+    <div class="cal-descarga">
+      <a href="marzo_clases_2026.ics" download class="btn-primary cal-btn-ics">
+        &#128197; Descargar calendario (.ics)
+      </a>
+      <p class="text-muted cal-descarga-hint">
+        Compatible con Google Calendar, Apple Calendar y Outlook
+      </p>
+    </div>
+
+  </main>
+
+  <script src="js/calendario.js"></script>
+</body>
+</html>

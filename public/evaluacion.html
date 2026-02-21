@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Evaluacion - Estacion Salsera</title>
+  <meta name="description" content="Sistema de evaluacion de clases - Estacion Salsera Dance Studio">
+
+  <!-- Theme & Mobile -->
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/evaluacion.css">
+</head>
+<body class="eval-page">
+
+  <!-- Fondo decorativo -->
+  <div class="eval-bg"></div>
+
+  <!-- Toast container -->
+  <div id="evalToastContainer" class="toast-container"></div>
+
+  <!-- ====== VISTA: SELECTOR DE ROL ====== -->
+  <div id="vistaSelector" class="eval-vista active">
+    <div class="eval-container">
+      <div class="eval-card glass-card">
+        <div class="eval-logo">
+          <img src="img/Logo.png" alt="Estacion Salsera">
+        </div>
+        <h1 class="eval-title">Evaluacion</h1>
+        <p class="eval-subtitle">El Tren del Sabor</p>
+
+        <div class="eval-roles">
+          <button class="eval-role-card" id="btnRolAlumno">
+            <span class="eval-role-icon">&#127891;</span>
+            <span class="eval-role-text">Soy Alumno</span>
+          </button>
+          <button class="eval-role-card" id="btnRolProfesor">
+            <span class="eval-role-icon">&#128218;</span>
+            <span class="eval-role-text">Soy Profesor</span>
+          </button>
+        </div>
+
+        <a href="index.html" class="back-link">
+          <span class="back-arrow">&larr;</span> Volver a Estacion Salsera
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== VISTA: LOGIN ALUMNO ====== -->
+  <div id="vistaLoginAlumno" class="eval-vista">
+    <div class="eval-container">
+      <div class="eval-card glass-card">
+        <h2 class="eval-section-title">Identificate</h2>
+        <p class="eval-section-sub">Ingresa tus datos para evaluar tu clase</p>
+
+        <form id="formLoginAlumno">
+          <div class="form-group">
+            <label for="evalNombreAlumno">Nombre completo</label>
+            <input type="text" id="evalNombreAlumno" class="form-input" placeholder="Tu nombre" required>
+          </div>
+
+          <div class="form-group">
+            <label for="evalCursoAlumno">Tu curso</label>
+            <select id="evalCursoAlumno" class="form-input" required>
+              <option value="">Selecciona tu curso</option>
+              <option value="Bachata Basico">Bachata Basico - Viernes</option>
+              <option value="Casino Basico">Casino Basico - Martes</option>
+              <option value="Bachata Intermedio">Bachata Intermedio - Lunes</option>
+              <option value="Casino Intermedio">Casino Intermedio - Miercoles</option>
+              <option value="Mambo Open">Mambo Open - Jueves</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="evalPinAlumno">PIN de 4 digitos</label>
+            <input type="password" id="evalPinAlumno" class="form-input eval-pin-input" placeholder="&#8226;&#8226;&#8226;&#8226;" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" required>
+          </div>
+
+          <div id="errorAlumnoLogin" class="error-message hidden"></div>
+
+          <button type="submit" class="btn-primary eval-btn-full">Continuar</button>
+        </form>
+
+        <button class="back-link-btn" id="btnVolver1">
+          <span class="back-arrow">&larr;</span> Volver
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== VISTA: FORMULARIO EVALUACION ALUMNO ====== -->
+  <div id="vistaFormAlumno" class="eval-vista">
+    <div class="eval-container eval-container-wide">
+      <div class="eval-card glass-card">
+        <div class="eval-form-header">
+          <div>
+            <span class="eval-alumno-nombre" id="evalAlumnoNombreMostrar"></span>
+            <span class="badge badge-gold" id="evalAlumnoCursoMostrar"></span>
+          </div>
+        </div>
+
+        <h2 class="eval-section-title">Evaluacion del dia</h2>
+
+        <form id="formEvaluacion">
+          <!-- Seleccionar clase -->
+          <div class="form-group">
+            <label>Numero de clase</label>
+            <div class="eval-clase-btns">
+              <button type="button" class="eval-clase-btn" data-clase="1">1</button>
+              <button type="button" class="eval-clase-btn" data-clase="2">2</button>
+              <button type="button" class="eval-clase-btn" data-clase="3">3</button>
+              <button type="button" class="eval-clase-btn" data-clase="4">4</button>
+            </div>
+          </div>
+
+          <!-- Sliders -->
+          <div class="eval-slider-group">
+            <div class="eval-slider-label">
+              <span>Disfrute</span>
+              <span class="eval-slider-val" id="evalDisfruteVal">5</span>
+            </div>
+            <input type="range" id="evalDisfrute" min="1" max="10" value="5">
+          </div>
+
+          <div class="eval-slider-group">
+            <div class="eval-slider-label">
+              <span>Comprension</span>
+              <span class="eval-slider-val" id="evalComprensionVal">5</span>
+            </div>
+            <input type="range" id="evalComprension" min="1" max="10" value="5">
+          </div>
+
+          <div class="eval-slider-group">
+            <div class="eval-slider-label">
+              <span>Comodidad en pareja</span>
+              <span class="eval-slider-val" id="evalComodidadVal">5</span>
+            </div>
+            <input type="range" id="evalComodidad" min="1" max="10" value="5">
+          </div>
+
+          <div class="eval-slider-group">
+            <div class="eval-slider-label">
+              <span>Confianza</span>
+              <span class="eval-slider-val" id="evalConfianzaVal">5</span>
+            </div>
+            <input type="range" id="evalConfianza" min="1" max="10" value="5">
+          </div>
+
+          <!-- Pregunta binaria -->
+          <div class="form-group">
+            <label>Bailaste con alguien nuevo?</label>
+            <div class="eval-binaria">
+              <button type="button" class="eval-binaria-btn" id="evalBaileSi">Si</button>
+              <button type="button" class="eval-binaria-btn" id="evalBaileNo">No</button>
+            </div>
+          </div>
+
+          <!-- Comentario -->
+          <div class="form-group">
+            <label for="evalComentario">Comentario (opcional)</label>
+            <textarea id="evalComentario" class="form-input eval-textarea" placeholder="Como te sentiste hoy?" rows="3"></textarea>
+          </div>
+
+          <div id="errorEvaluacion" class="error-message hidden"></div>
+
+          <button type="submit" id="btnSubmitEval" class="btn-primary eval-btn-full">
+            <span class="btn-text">Enviar mi evaluacion</span>
+            <span class="btn-loader hidden">
+              <span class="spinner-small"></span>
+              Enviando...
+            </span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== VISTA: EXITO ALUMNO ====== -->
+  <div id="vistaExitoAlumno" class="eval-vista">
+    <div class="eval-container">
+      <div class="eval-card glass-card" style="text-align:center">
+        <div class="eval-exito-icon">
+          <span style="font-size:2rem">&#10003;</span>
+        </div>
+        <h2 class="eval-section-title">Evaluacion enviada</h2>
+        <p class="eval-section-sub">Gracias por tu feedback. Nos ayuda a mejorar cada clase.</p>
+        <p class="text-muted" style="margin-top:0.5rem">Vuelve manana para tu proxima evaluacion</p>
+        <button class="btn-primary eval-btn-full" id="btnVolverInicio" style="margin-top:2rem">Volver al inicio</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== VISTA: LOGIN PROFESOR ====== -->
+  <div id="vistaLoginProfesor" class="eval-vista">
+    <div class="eval-container">
+      <div class="eval-card glass-card">
+        <h2 class="eval-section-title">Acceso Profesor</h2>
+        <p class="eval-section-sub">Ingresa tu PIN para ver el dashboard</p>
+
+        <form id="formLoginProfesor">
+          <div class="form-group">
+            <label for="evalPinProfesor">PIN</label>
+            <input type="password" id="evalPinProfesor" class="form-input eval-pin-input" placeholder="&#8226;&#8226;&#8226;&#8226;" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" required>
+          </div>
+
+          <div id="errorProfesor" class="error-message hidden"></div>
+
+          <button type="submit" class="btn-primary eval-btn-full">Acceder</button>
+        </form>
+
+        <button class="back-link-btn" id="btnVolver2">
+          <span class="back-arrow">&larr;</span> Volver
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== VISTA: DASHBOARD PROFESOR ====== -->
+  <div id="vistaDashboard" class="eval-vista">
+    <div class="eval-container eval-container-wide">
+
+      <!-- Header -->
+      <div class="eval-dash-header">
+        <div>
+          <h1 class="eval-title" style="font-size:1.3rem">Dashboard Profesor</h1>
+          <p class="text-muted">Estacion Salsera - Evaluaciones</p>
+        </div>
+        <button id="btnCerrarSesionProf" class="btn-secondary btn-sm">Cerrar sesion</button>
+      </div>
+
+      <!-- Tabs -->
+      <div class="eval-tabs">
+        <button class="eval-tab active" data-etab="etab-dashboard">Dashboard</button>
+        <button class="eval-tab" data-etab="etab-observacion">Observacion</button>
+        <button class="eval-tab" data-etab="etab-historial">Historial</button>
+      </div>
+
+      <!-- TAB: DASHBOARD -->
+      <div id="etab-dashboard" class="eval-tab-section active">
+        <!-- Filtro -->
+        <div class="form-group">
+          <select id="evalFiltroCurso" class="form-input">
+            <option value="">Todos los cursos</option>
+            <option value="Bachata Basico">Bachata Basico</option>
+            <option value="Casino Basico">Casino Basico</option>
+            <option value="Bachata Intermedio">Bachata Intermedio</option>
+            <option value="Casino Intermedio">Casino Intermedio</option>
+            <option value="Mambo Open">Mambo Open</option>
+          </select>
+        </div>
+
+        <!-- Stats -->
+        <div class="eval-stats-row">
+          <div class="eval-stat-card glass-card">
+            <span class="eval-stat-value" id="evalStatTotal">0</span>
+            <span class="eval-stat-label">Evaluaciones</span>
+          </div>
+          <div class="eval-stat-card glass-card">
+            <span class="eval-stat-value" id="evalStatAlumnos">0</span>
+            <span class="eval-stat-label">Alumnos</span>
+          </div>
+          <div class="eval-stat-card glass-card">
+            <span class="eval-stat-value" id="evalStatBaileNuevo">0%</span>
+            <span class="eval-stat-label">Bailo con alguien nuevo</span>
+          </div>
+        </div>
+
+        <!-- Promedios -->
+        <div class="eval-promedios glass-card">
+          <h3 class="eval-card-title">Promedios generales</h3>
+
+          <div class="eval-barra-grupo">
+            <div class="eval-barra-label">
+              <span>Disfrute</span>
+              <span class="text-gold" id="evalPromDisfrute">0</span>
+            </div>
+            <div class="eval-barra-track"><div class="eval-barra-fill" id="evalBarraDisfrute"></div></div>
+          </div>
+
+          <div class="eval-barra-grupo">
+            <div class="eval-barra-label">
+              <span>Comprension</span>
+              <span class="text-gold" id="evalPromComprension">0</span>
+            </div>
+            <div class="eval-barra-track"><div class="eval-barra-fill" id="evalBarraComprension"></div></div>
+          </div>
+
+          <div class="eval-barra-grupo">
+            <div class="eval-barra-label">
+              <span>Comodidad en pareja</span>
+              <span class="text-gold" id="evalPromComodidadPareja">0</span>
+            </div>
+            <div class="eval-barra-track"><div class="eval-barra-fill" id="evalBarraComodidadPareja"></div></div>
+          </div>
+
+          <div class="eval-barra-grupo">
+            <div class="eval-barra-label">
+              <span>Confianza</span>
+              <span class="text-gold" id="evalPromConfianza">0</span>
+            </div>
+            <div class="eval-barra-track"><div class="eval-barra-fill" id="evalBarraConfianza"></div></div>
+          </div>
+        </div>
+
+        <!-- Grafica -->
+        <div class="glass-card" style="padding:1.2rem">
+          <h3 class="eval-card-title">Evolucion por clase</h3>
+          <div class="eval-grafica" id="evalGrafica"></div>
+        </div>
+
+        <!-- Comentarios -->
+        <div style="margin-top:1.2rem">
+          <h3 class="eval-card-title">Ultimos comentarios</h3>
+          <div id="evalComentarios">
+            <p class="text-muted">Cargando...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: OBSERVACION -->
+      <div id="etab-observacion" class="eval-tab-section">
+        <div class="glass-card" style="padding:1.5rem">
+          <h3 class="eval-card-title" style="margin-bottom:1.2rem">Nueva observacion</h3>
+          <form id="formObservacion">
+            <div class="eval-form-row">
+              <div class="form-group">
+                <label for="obsCurso">Curso</label>
+                <select id="obsCurso" class="form-input" required>
+                  <option value="">Seleccionar</option>
+                  <option value="Bachata Basico">Bachata Basico</option>
+                  <option value="Casino Basico">Casino Basico</option>
+                  <option value="Bachata Intermedio">Bachata Intermedio</option>
+                  <option value="Casino Intermedio">Casino Intermedio</option>
+                  <option value="Mambo Open">Mambo Open</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="obsClase">Clase</label>
+                <select id="obsClase" class="form-input" required>
+                  <option value="1">Clase 1</option>
+                  <option value="2">Clase 2</option>
+                  <option value="3">Clase 3</option>
+                  <option value="4">Clase 4</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="obsFecha">Fecha</label>
+              <input type="date" id="obsFecha" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+              <label for="obsObjetivo">Objetivo del dia</label>
+              <textarea id="obsObjetivo" class="form-input eval-textarea" rows="2" placeholder="Que se busco lograr hoy"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="obsPasos">Pasos trabajados</label>
+              <textarea id="obsPasos" class="form-input eval-textarea" rows="2" placeholder="Pasos y figuras practicadas"></textarea>
+            </div>
+
+            <!-- Estrellas -->
+            <div class="eval-estrellas-container">
+              <div class="eval-estrellas-item">
+                <label>Participacion</label>
+                <div class="eval-estrellas-grupo" id="obsEstrellasParticipacion" data-campo="participacion" data-valor="0">
+                  <span class="eval-estrella" data-val="1">&#9733;</span>
+                  <span class="eval-estrella" data-val="2">&#9733;</span>
+                  <span class="eval-estrella" data-val="3">&#9733;</span>
+                  <span class="eval-estrella" data-val="4">&#9733;</span>
+                  <span class="eval-estrella" data-val="5">&#9733;</span>
+                </div>
+              </div>
+              <div class="eval-estrellas-item">
+                <label>Comprension</label>
+                <div class="eval-estrellas-grupo" id="obsEstrellasComprension" data-campo="comprension" data-valor="0">
+                  <span class="eval-estrella" data-val="1">&#9733;</span>
+                  <span class="eval-estrella" data-val="2">&#9733;</span>
+                  <span class="eval-estrella" data-val="3">&#9733;</span>
+                  <span class="eval-estrella" data-val="4">&#9733;</span>
+                  <span class="eval-estrella" data-val="5">&#9733;</span>
+                </div>
+              </div>
+              <div class="eval-estrellas-item">
+                <label>Conexion en pareja</label>
+                <div class="eval-estrellas-grupo" id="obsEstrellasConexion" data-campo="conexion" data-valor="0">
+                  <span class="eval-estrella" data-val="1">&#9733;</span>
+                  <span class="eval-estrella" data-val="2">&#9733;</span>
+                  <span class="eval-estrella" data-val="3">&#9733;</span>
+                  <span class="eval-estrella" data-val="4">&#9733;</span>
+                  <span class="eval-estrella" data-val="5">&#9733;</span>
+                </div>
+              </div>
+              <div class="eval-estrellas-item">
+                <label>Energia</label>
+                <div class="eval-estrellas-grupo" id="obsEstrellasEnergia" data-campo="energia" data-valor="0">
+                  <span class="eval-estrella" data-val="1">&#9733;</span>
+                  <span class="eval-estrella" data-val="2">&#9733;</span>
+                  <span class="eval-estrella" data-val="3">&#9733;</span>
+                  <span class="eval-estrella" data-val="4">&#9733;</span>
+                  <span class="eval-estrella" data-val="5">&#9733;</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="obsLogros">Logros del dia</label>
+              <textarea id="obsLogros" class="form-input eval-textarea" rows="2" placeholder="Que se logro"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="obsDificultades">Dificultades detectadas</label>
+              <textarea id="obsDificultades" class="form-input eval-textarea" rows="2" placeholder="Que costo mas"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="obsAjustes">Ajustes para proxima clase</label>
+              <textarea id="obsAjustes" class="form-input eval-textarea" rows="2" placeholder="Que cambiar o reforzar"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="obsNotas">Notas adicionales</label>
+              <textarea id="obsNotas" class="form-input eval-textarea" rows="2" placeholder="Observaciones generales"></textarea>
+            </div>
+
+            <button type="submit" id="btnSubmitObs" class="btn-primary eval-btn-full">
+              <span class="btn-text">Guardar observacion</span>
+              <span class="btn-loader hidden">
+                <span class="spinner-small"></span>
+                Guardando...
+              </span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB: HISTORIAL -->
+      <div id="etab-historial" class="eval-tab-section">
+        <!-- Resumen por curso -->
+        <div class="glass-card" style="padding:1.2rem;margin-bottom:1.2rem">
+          <h3 class="eval-card-title">Resumen por curso</h3>
+          <div class="table-responsive">
+            <table class="data-table" id="tablaResumenCursos">
+              <thead>
+                <tr>
+                  <th>Curso</th>
+                  <th>Evaluaciones</th>
+                  <th>Disfrute prom.</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyResumen"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Ultimas evaluaciones -->
+        <div class="glass-card" style="padding:1.2rem;margin-bottom:1.2rem">
+          <h3 class="eval-card-title">Ultimas 10 evaluaciones</h3>
+          <div id="listaUltimasEval">
+            <p class="text-muted">Cargando...</p>
+          </div>
+        </div>
+
+        <!-- Exportar CSV -->
+        <button class="btn-primary eval-btn-full" id="btnExportarCSV">
+          &#128196; Exportar CSV
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/evaluacion.js"></script>
+</body>
+</html>

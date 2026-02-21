@@ -3,17 +3,24 @@
    Cache-first para assets, network-first para API
    ============================================ */
 
-const CACHE_NAME = 'estacion-salsera-v1';
+const CACHE_NAME = 'estacion-salsera-v2';
 const OFFLINE_URL = '/offline.html';
 
 const ASSETS_TO_CACHE = [
   '/',
   '/app.html',
   '/login.html',
+  '/evaluacion.html',
+  '/calendario.html',
   '/offline.html',
   '/css/shared.css',
   '/css/app.css',
   '/css/login.css',
+  '/css/evaluacion.css',
+  '/css/calendario.css',
+  '/js/evaluacion.js',
+  '/js/calendario.js',
+  '/marzo_clases_2026.ics',
   '/img/Logo.png',
   '/img/favicon.svg',
   '/manifest.json',
@@ -47,8 +54,9 @@ self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // No cachear requests de Firebase/Firestore
-  if (url.hostname.includes('firebaseio.com') ||
+  // No cachear requests de API ni Firebase/Firestore
+  if (url.pathname.startsWith('/api/') ||
+      url.hostname.includes('firebaseio.com') ||
       url.hostname.includes('googleapis.com') ||
       url.hostname.includes('gstatic.com') ||
       url.hostname.includes('firestore.googleapis.com')) {

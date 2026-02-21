@@ -1043,3 +1043,167 @@ footer span { color: var(--dorado-oscuro); }
   .banner-img { height: 150px; }
   .eventos-grid-landing { grid-template-columns: 1fr; }
 }
+
+/* ---- CURSOS DETALLE (reemplaza flip cards) ---- */
+.cursos-grid-detalle {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.curso-card {
+  background: rgba(20, 20, 20, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--gris-borde);
+  border-radius: 20px;
+  padding: 2rem;
+  transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.curso-card:hover {
+  border-color: rgba(212, 160, 23, 0.3);
+  box-shadow: 0 8px 30px rgba(212, 160, 23, 0.08);
+  transform: translateY(-4px);
+}
+
+.curso-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.curso-card-numero {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: rgba(212, 160, 23, 0.2);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.curso-card-dia {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--blanco-suave);
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.curso-card-titulo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--blanco);
+  margin-bottom: 0.4rem;
+}
+
+.curso-card-nivel {
+  display: inline-block;
+  padding: 0.2rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.65rem;
+  font-family: 'Unbounded', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.nivel-basico {
+  background: rgba(46, 204, 113, 0.12);
+  color: #2ecc71;
+  border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.nivel-intermedio {
+  background: rgba(212, 160, 23, 0.12);
+  color: var(--dorado);
+  border: 1px solid rgba(212, 160, 23, 0.3);
+}
+
+.nivel-open {
+  background: rgba(52, 152, 219, 0.12);
+  color: #3498db;
+  border: 1px solid rgba(52, 152, 219, 0.3);
+}
+
+.curso-card-desc {
+  color: var(--blanco-suave);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  flex: 1;
+}
+
+.curso-card-glosario {
+  background: rgba(42, 42, 42, 0.4);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.glosario-titulo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--dorado);
+  margin-bottom: 0.7rem;
+}
+
+.glosario-lista {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.glosario-lista li {
+  font-size: 0.78rem;
+  color: var(--blanco-suave);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  padding: 0.2rem 0.7rem;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.glosario-lista li:hover {
+  border-color: rgba(212, 160, 23, 0.3);
+  color: var(--blanco);
+}
+
+.curso-card-footer {
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.btn-cta-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--dorado), var(--dorado-oscuro));
+  color: var(--negro);
+  padding: 0.7rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.btn-cta-sm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(212, 160, 23, 0.35);
+}
+
+@media (max-width: 768px) {
+  .cursos-grid-detalle {
+    grid-template-columns: 1fr;
+  }
+}

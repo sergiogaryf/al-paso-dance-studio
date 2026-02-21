@@ -8,6 +8,8 @@ const tables = {
   clases: base('Clases'),
   eventos: base('Eventos'),
   banners: base('Banners'),
+  evaluaciones: base('Evaluaciones'),
+  observaciones: base('ObservacionesProfesor'),
 };
 
 function recordToObj(record) {
