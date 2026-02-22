@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Estacion Salsera - Academia de Danza | Salsa, Bachata y Casino</title>
+  <title>Al Paso Dance Studio - Academia de Danza | Salsa, Bachata y Casino</title>
   <meta name="description" content="Academia de danza en Calera y Quillota. Clases de salsa, bachata y casino en niveles basico e intermedio. Inscribete ahora.">
 
   <!-- Favicon -->
@@ -11,13 +11,13 @@
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Estacion Salsera - El Tren del Sabor">
+  <meta property="og:title" content="Al Paso Dance Studio - Donde el ritmo comienza">
   <meta property="og:description" content="Academia de danza en Calera y Quillota. Clases de salsa, bachata y casino. Inscribete ahora.">
   <meta property="og:image" content="img/og-image.svg">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Estacion Salsera - El Tren del Sabor">
+  <meta name="twitter:title" content="Al Paso Dance Studio - Donde el ritmo comienza">
   <meta name="twitter:description" content="Academia de danza en Calera y Quillota. Salsa, bachata y casino.">
   <meta name="twitter:image" content="img/og-image.svg">
 
@@ -46,7 +46,7 @@
   <!-- NAV -->
   <nav>
     <a href="#">
-      <img src="img/Logo.png" alt="Estacion Salsera" class="nav-logo-img">
+      <img src="img/Logo.png" alt="Al Paso Dance Studio" class="nav-logo-img">
     </a>
     <button class="menu-toggle" aria-label="Menu">&#9776;</button>
     <ul class="nav-links">
@@ -56,22 +56,21 @@
       <li><a href="#nosotros">Nosotros</a></li>
       <li><a href="#contacto">Contacto</a></li>
       <li><a href="calendario.html">Calendario</a></li>
-      <li><a href="evaluacion.html">Evaluacion</a></li>
-      <li><a href="login.html" class="nav-acceso">Acceso Alumnos</a></li>
+      <li><a href="login.html" class="nav-acceso">Iniciar sesion</a></li>
     </ul>
   </nav>
 
   <!-- HERO CON VIDEO DE FONDO -->
-  <section class="hero" id="inicio">
+  <section class="hero invitado-hidden" id="inicio">
     <video class="hero-video" autoplay muted loop playsinline poster="img/Fondo.png">
       <source src="img/Fondo.mp4" type="video/mp4">
     </video>
     <div class="hero-overlay"></div>
 
-    <img src="img/Logo.png" alt="Estacion Salsera - El Tren del Sabor" class="hero-logo">
+    <img src="img/Logo.png" alt="Al Paso Dance Studio - Donde el ritmo comienza" class="hero-logo">
     <span class="hero-tag">Inscripciones abiertas 2026</span>
     <h1>Estacion <span>Salsera</span></h1>
-    <p class="tagline">El Tren del Sabor</p>
+    <p class="tagline">Donde el ritmo comienza</p>
 
     <div class="hero-info">
       <div class="hero-info-item">
@@ -94,9 +93,9 @@
   </section>
 
   <!-- BANNERS PUBLICITARIOS -->
-  <section class="section banners-section" id="banners-landing">
+  <section class="section banners-section invitado-hidden" id="banners-landing">
     <div class="banners-carousel" id="bannersCarousel">
-      <!-- Se cargan dinámicamente desde Firestore -->
+      <!-- Se cargan dinamicamente desde Firestore -->
     </div>
   </section>
 
@@ -140,17 +139,10 @@
             </div>
           </div>
           <p class="curso-card-desc">Aprende los 7 pasos fundamentales de la bachata y baila con confianza en cualquier fiesta.</p>
-          <div class="curso-card-glosario">
-            <p class="glosario-titulo">Pasos del nivel</p>
-            <ul class="glosario-lista">
-              <li>Basico lateral</li>
-              <li>Marcaje en el lugar</li>
-              <li>Cuadrado</li>
-              <li>Giro basico dama</li>
-              <li>Giro basico lider</li>
-              <li>Comprension del tiempo</li>
-              <li>Trabajo en pareja</li>
-            </ul>
+          <div class="curso-card-video">
+            <video muted loop playsinline poster="img/Fondo.png">
+              <source src="img/Fondo.mp4" type="video/mp4">
+            </video>
           </div>
           <div class="curso-card-footer">
             <a href="https://wa.me/56935368400?text=Quiero+inscribirme+en+Bachata+Basico" class="btn-cta-sm" target="_blank" rel="noopener">Inscribirme</a>
@@ -168,17 +160,10 @@
             </div>
           </div>
           <p class="curso-card-desc">Domina la clave son y los 7 pasos base del casino cubano para brillar en cualquier pista.</p>
-          <div class="curso-card-glosario">
-            <p class="glosario-titulo">Pasos del nivel</p>
-            <ul class="glosario-lista">
-              <li>Basico lateral frontal</li>
-              <li>Marcaje en el lugar</li>
-              <li>Comprension del tiempo</li>
-              <li>Giro individual lider</li>
-              <li>Giro individual dama</li>
-              <li>Giro contra giro</li>
-              <li>Trabajo en pareja</li>
-            </ul>
+          <div class="curso-card-video">
+            <video muted loop playsinline poster="img/Fondo.png">
+              <source src="img/Fondo.mp4" type="video/mp4">
+            </video>
           </div>
           <div class="curso-card-footer">
             <a href="https://wa.me/56935368400?text=Quiero+inscribirme+en+Casino+Basico" class="btn-cta-sm" target="_blank" rel="noopener">Inscribirme</a>
@@ -196,20 +181,10 @@
             </div>
           </div>
           <p class="curso-card-desc">Fusiona bachata tradicional, sensual y zouk brasileno con 20+ elementos de glosario.</p>
-          <div class="curso-card-glosario">
-            <p class="glosario-titulo">Pasos del nivel</p>
-            <ul class="glosario-lista">
-              <li>Basicos avanzados</li>
-              <li>Cuadrados</li>
-              <li>Giros en pareja</li>
-              <li>Rompe segunda</li>
-              <li>Cuartas</li>
-              <li>Diagonales</li>
-              <li>Conduccion</li>
-              <li>Acentos musicales</li>
-              <li>Bachata sensual</li>
-              <li>Fusion Zouk</li>
-            </ul>
+          <div class="curso-card-video">
+            <video muted loop playsinline poster="img/Fondo.png">
+              <source src="img/Fondo.mp4" type="video/mp4">
+            </video>
           </div>
           <div class="curso-card-footer">
             <a href="https://wa.me/56935368400?text=Quiero+inscribirme+en+Bachata+Intermedio" class="btn-cta-sm" target="_blank" rel="noopener">Inscribirme</a>
@@ -227,20 +202,10 @@
             </div>
           </div>
           <p class="curso-card-desc">Las figuras clasicas del casino cubano: El 70, Kentucky, Sombrero y mas. Combinalas en el baile social.</p>
-          <div class="curso-card-glosario">
-            <p class="glosario-titulo">Pasos del nivel</p>
-            <ul class="glosario-lista">
-              <li>El 70</li>
-              <li>Sombrero a Bayamo</li>
-              <li>Montana</li>
-              <li>Juan a la Cubana</li>
-              <li>Coca Cola</li>
-              <li>Paseos</li>
-              <li>La Francesa</li>
-              <li>Sombrero por abajo</li>
-              <li>Sombrero doble</li>
-              <li>Kentucky</li>
-            </ul>
+          <div class="curso-card-video">
+            <video muted loop playsinline poster="img/Fondo.png">
+              <source src="img/Fondo.mp4" type="video/mp4">
+            </video>
           </div>
           <div class="curso-card-footer">
             <a href="https://wa.me/56935368400?text=Quiero+inscribirme+en+Casino+Intermedio" class="btn-cta-sm" target="_blank" rel="noopener">Inscribirme</a>
@@ -258,18 +223,10 @@
             </div>
           </div>
           <p class="curso-card-desc">El mambo on2 con el glosario Di Torre. Susie Q, Cross Body, giros y mas para el baile social.</p>
-          <div class="curso-card-glosario">
-            <p class="glosario-titulo">Pasos del nivel</p>
-            <ul class="glosario-lista">
-              <li>Susie Q</li>
-              <li>Caminatas</li>
-              <li>Around the World</li>
-              <li>Espiral</li>
-              <li>Cross Body Lead</li>
-              <li>Dobles y triples giros</li>
-              <li>Tecnicas de giro</li>
-              <li>Postura latina</li>
-            </ul>
+          <div class="curso-card-video">
+            <video muted loop playsinline poster="img/Fondo.png">
+              <source src="img/Fondo.mp4" type="video/mp4">
+            </video>
           </div>
           <div class="curso-card-footer">
             <a href="https://wa.me/56935368400?text=Quiero+inscribirme+en+Mambo+Open" class="btn-cta-sm" target="_blank" rel="noopener">Inscribirme</a>
@@ -279,6 +236,31 @@
       </div>
     </section>
   </div>
+
+  <!-- CALENDARIO INLINE (visible para invitados) -->
+  <section class="section invitado-only" id="calendario-inline" style="display:none">
+    <div class="section-header fade-in">
+      <h2>Calendario Marzo 2026</h2>
+      <p>Fechas de clases del mes</p>
+    </div>
+    <p class="cal-reminder">Recuerda llegar 10 minutos antes a clases.</p>
+    <div class="cal-inline-wrapper">
+      <div class="cal-header-dias">
+        <span>Lun</span><span>Mar</span><span>Mie</span><span>Jue</span><span>Vie</span><span>Sab</span><span>Dom</span>
+      </div>
+      <div class="cal-grid-inline" id="calGridInline"></div>
+    </div>
+    <div class="cal-inline-legend">
+      <span class="cal-legend-item"><span class="cal-dot cal-dot-bachata-bas"></span> Bachata Basico</span>
+      <span class="cal-legend-item"><span class="cal-dot cal-dot-casino-bas"></span> Casino Basico</span>
+      <span class="cal-legend-item"><span class="cal-dot cal-dot-bachata-int"></span> Bachata Intermedio</span>
+      <span class="cal-legend-item"><span class="cal-dot cal-dot-casino-int"></span> Casino Intermedio</span>
+      <span class="cal-legend-item"><span class="cal-dot cal-dot-mambo"></span> Mambo Open</span>
+    </div>
+  </section>
+
+  <!-- HORARIO SEMANAL (visible para invitados) -->
+  <!-- Ya incluido en sedes -->
 
   <!-- SEDES -->
   <section class="section" id="sedes">
@@ -291,7 +273,7 @@
       <!-- QUILLOTA -->
       <div class="boleto fade-in">
         <div class="boleto-izq">
-          <p class="boleto-ruta">Estacion Salsera</p>
+          <p class="boleto-ruta">Al Paso Dance Studio</p>
           <h3 class="boleto-destino">Quillota</h3>
           <p class="boleto-sub">Salsa, bachata y casino</p>
         </div>
@@ -314,7 +296,7 @@
       <!-- CALERA -->
       <div class="boleto fade-in">
         <div class="boleto-izq">
-          <p class="boleto-ruta">Estacion Salsera</p>
+          <p class="boleto-ruta">Al Paso Dance Studio</p>
           <h3 class="boleto-destino">Calera</h3>
           <p class="boleto-sub">Salsa y bachata</p>
         </div>
@@ -332,18 +314,18 @@
   </section>
 
   <!-- PROXIMOS EVENTOS -->
-  <section class="section" id="eventos-landing">
+  <section class="section invitado-hidden" id="eventos-landing">
     <div class="section-header fade-in">
       <h2>Proximos Eventos</h2>
       <p>No te pierdas nuestras actividades especiales</p>
     </div>
     <div class="eventos-grid-landing" id="eventosLandingGrid">
-      <!-- Se cargan dinámicamente desde Firestore -->
+      <!-- Se cargan dinamicamente desde Firestore -->
     </div>
   </section>
 
   <!-- DIRECTOR -->
-  <div class="section-bg">
+  <div class="section-bg invitado-hidden">
     <section class="director" id="nosotros">
       <div class="director-content fade-in">
         <div class="director-photos">
@@ -358,14 +340,14 @@
           <div class="director-line"></div>
           <h2>Francisco Rojas</h2>
           <p class="role">Director & Instructor</p>
-          <p>Con pasion por la danza y anos de experiencia, Francisco lidera Estacion Salsera con el objetivo de llevar el ritmo latino a cada rincon de Calera y Quillota. Sube al Tren del Sabor y deja que la musica te mueva.</p>
+          <p>Con pasion por la danza y anos de experiencia, Francisco lidera Al Paso Dance Studio con el objetivo de llevar el ritmo latino a cada rincon de Calera y Quillota. Sube al Tren del Sabor y deja que la musica te mueva.</p>
         </div>
       </div>
     </section>
   </div>
 
   <!-- CTA FINAL -->
-  <section class="cta" id="contacto">
+  <section class="cta invitado-hidden" id="contacto">
     <h2 class="fade-in">Sube al Tren del Sabor</h2>
     <p class="fade-in">Reserva tu cupo. Escribenos y comienza a bailar.</p>
     <a href="https://wa.me/56935368400?text=Hola!%20Quiero%20inscribirme%20en%20Estaci%C3%B3n%20Salsera.%20Necesito%20m%C3%A1s%20informaci%C3%B3n." class="btn-cta fade-in" target="_blank" rel="noopener">
@@ -375,15 +357,15 @@
 
   <!-- FOOTER -->
   <footer>
-    <p>&copy; 2026 <span>Estacion Salsera</span> &middot; Academia de Danza &middot; Calera & Quillota</p>
+    <p>&copy; 2026 <span>Al Paso Dance Studio</span> &middot; Academia de Danza &middot; Calera & Quillota</p>
   </footer>
 
   <!-- WHATSAPP FLOTANTE -->
-  <a href="https://wa.me/56935368400?text=Hola!%20Quiero%20informaci%C3%B3n%20sobre%20las%20clases." class="wa-float" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+  <a href="https://wa.me/56935368400?text=Hola!%20Quiero%20informaci%C3%B3n%20sobre%20las%20clases." class="wa-float invitado-hidden" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
     <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
   </a>
 
-  <!-- Firebase SDK (para banners y eventos dinámicos) -->
+  <!-- Firebase SDK (para banners y eventos dinamicos) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="js/firebase-config.js"></script>

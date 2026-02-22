@@ -35,12 +35,12 @@
   width: 60px;
   height: auto;
   mix-blend-mode: screen;
-  filter: drop-shadow(0 0 15px rgba(212, 160, 23, 0.2));
+  filter: drop-shadow(0 0 15px rgba(232, 101, 43, 0.2));
   margin-bottom: 0.5rem;
 }
 
 .sidebar-title {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.75rem;
   color: var(--dorado);
   text-transform: uppercase;
@@ -75,12 +75,12 @@
 }
 
 .nav-item:hover {
-  background: rgba(212, 160, 23, 0.05);
+  background: rgba(232, 101, 43, 0.05);
   color: var(--dorado-claro);
 }
 
 .nav-item.active {
-  background: rgba(212, 160, 23, 0.08);
+  background: rgba(232, 101, 43, 0.08);
   color: var(--dorado);
   border-left-color: var(--dorado);
 }
@@ -168,7 +168,7 @@
 }
 
 .top-bar-greeting {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.3rem;
   color: var(--blanco);
   font-weight: 600;
@@ -197,7 +197,7 @@
 }
 
 .section-title {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.3rem;
   color: var(--dorado);
   font-weight: 700;
@@ -225,7 +225,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(212, 160, 23, 0.08);
+  background: rgba(232, 101, 43, 0.08);
   border-radius: 12px;
   flex-shrink: 0;
 }
@@ -236,7 +236,7 @@
 }
 
 .stat-value {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--dorado);
@@ -257,7 +257,7 @@
 }
 
 .card-title {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.85rem;
   color: var(--dorado);
   margin-bottom: 1rem;
@@ -289,11 +289,11 @@
 }
 
 .clase-hoy-badge {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.6rem;
   padding: 0.3rem 0.6rem;
   border-radius: 8px;
-  background: rgba(212, 160, 23, 0.1);
+  background: rgba(232, 101, 43, 0.1);
   color: var(--dorado);
 }
 
@@ -367,7 +367,7 @@
 }
 
 .entity-card:hover {
-  border-color: rgba(212, 160, 23, 0.3);
+  border-color: rgba(232, 101, 43, 0.3);
 }
 
 .entity-card-header {
@@ -378,7 +378,7 @@
 }
 
 .entity-card-title {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.95rem;
   color: var(--dorado);
   font-weight: 600;
@@ -451,7 +451,7 @@
 }
 
 .asistencia-clase h4 {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.8rem;
   color: var(--dorado);
   margin-bottom: 0.5rem;
@@ -468,7 +468,7 @@
 }
 
 .asistencia-item:hover {
-  background: rgba(212, 160, 23, 0.03);
+  background: rgba(232, 101, 43, 0.03);
 }
 
 .asistencia-item label {
@@ -485,6 +485,218 @@
   height: 18px;
   accent-color: var(--dorado);
   cursor: pointer;
+}
+
+/* ---- EVALUACIONES ADMIN ---- */
+.eval-admin-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--gris-borde);
+  margin-bottom: 1.5rem;
+}
+
+.eval-admin-tab {
+  flex: 1;
+  padding: 0.85rem 0.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--blanco-suave);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.eval-admin-tab.active {
+  color: var(--dorado);
+  border-bottom-color: var(--dorado);
+}
+
+.eval-admin-tab-section {
+  display: none;
+}
+
+.eval-admin-tab-section.active {
+  display: block;
+  animation: fadeInAdmin 0.3s ease;
+}
+
+@keyframes fadeInAdmin {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Stats row */
+.eval-admin-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.eval-admin-stat {
+  text-align: center;
+  padding: 1.2rem 0.8rem;
+}
+
+.eval-admin-stat-value {
+  display: block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--dorado);
+  margin-bottom: 0.3rem;
+}
+
+.eval-admin-stat-label {
+  font-size: 0.7rem;
+  color: var(--blanco-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Promedios barras */
+.eval-admin-promedios {
+  padding: 1.2rem;
+}
+
+.eval-admin-barra-grupo {
+  margin-bottom: 1rem;
+}
+
+.eval-admin-barra-grupo:last-child {
+  margin-bottom: 0;
+}
+
+.eval-admin-barra-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--blanco-suave);
+}
+
+.eval-admin-barra-track {
+  height: 8px;
+  background: var(--gris-borde);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.eval-admin-barra-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--dorado-oscuro), var(--dorado));
+  border-radius: 4px;
+  transition: width 0.6s ease;
+  width: 0;
+}
+
+/* Grafica */
+.eval-admin-grafica {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eval-admin-grafica svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Comentarios */
+.eval-admin-comentario {
+  padding: 1rem;
+  margin-bottom: 0.8rem;
+  border-radius: 12px;
+}
+
+.eval-admin-comentario-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+/* Estrellas */
+.eval-admin-estrellas-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.eval-admin-estrellas-item label {
+  display: block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--blanco-suave);
+  margin-bottom: 0.4rem;
+}
+
+.eval-estrellas-grupo {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.eval-estrella {
+  font-size: 1.5rem;
+  color: var(--gris-borde);
+  cursor: pointer;
+  transition: color 0.15s, transform 0.15s;
+  user-select: none;
+}
+
+.eval-estrella.activa {
+  color: var(--dorado);
+}
+
+.eval-estrella:hover {
+  transform: scale(1.2);
+}
+
+/* Historial */
+.eval-admin-ultima {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--gris-borde);
+}
+
+.eval-admin-ultima:last-child {
+  border-bottom: none;
+}
+
+.eval-admin-ultima-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.eval-admin-ultima-nombre {
+  font-size: 0.9rem;
+  color: var(--blanco);
+  font-weight: 500;
+}
+
+.eval-admin-ultima-curso {
+  font-size: 0.75rem;
+  color: var(--blanco-suave);
+}
+
+.eval-admin-ultima-score {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  color: var(--dorado);
+  font-weight: 700;
 }
 
 /* ---- RESPONSIVE ---- */
@@ -550,6 +762,14 @@
 
 @media (max-width: 480px) {
   .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .eval-admin-stats-row {
+    grid-template-columns: 1fr;
+  }
+
+  .eval-admin-estrellas-container {
     grid-template-columns: 1fr;
   }
 }

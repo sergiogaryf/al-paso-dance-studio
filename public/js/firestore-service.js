@@ -1,5 +1,5 @@
 /**
- * FirestoreService - Capa de acceso a datos para Estación Salsera Dance Studio
+ * FirestoreService - Capa de acceso a datos para Al Paso Dance Studio
  * Utiliza la instancia global `db` de firebase-config.js
  */
 

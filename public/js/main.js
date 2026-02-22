@@ -2,6 +2,19 @@
    ESTACION SALSERA - JavaScript principal
    ============================================ */
 
+// ---- MODO INVITADO ----
+(function() {
+  if (new URLSearchParams(window.location.search).get('modo') === 'invitado') {
+    document.body.classList.add('modo-invitado');
+    // Mostrar secciones solo para invitados
+    document.querySelectorAll('.invitado-only').forEach(el => {
+      el.style.display = '';
+    });
+    // Renderizar calendario inline
+    renderCalendarioInline();
+  }
+})();
+
 // Nav scroll effect
 const nav = document.querySelector('nav');
 window.addEventListener('scroll', () => {
@@ -42,20 +55,91 @@ document.querySelectorAll('.fade-in').forEach(el => {
   observer.observe(el);
 });
 
-// Flip cards - play/pause video on hover
-document.querySelectorAll('.curso-flip').forEach(card => {
-  const video = card.querySelector('.curso-back video');
+// ---- HOVER PLAY/PAUSE PARA VIDEOS DE CURSOS ----
+document.querySelectorAll('.curso-card').forEach(card => {
+  const video = card.querySelector('.curso-card-video video');
   if (!video) return;
-
   card.addEventListener('mouseenter', () => {
-    video.currentTime = 0;
-    video.play();
+    video.play().catch(() => {});
   });
-
   card.addEventListener('mouseleave', () => {
     video.pause();
+    video.currentTime = 0;
   });
 });
+
+// ---- CALENDARIO INLINE (para invitados) ----
+function renderCalendarioInline() {
+  var grid = document.getElementById('calGridInline');
+  if (!grid) return;
+
+  var CLASES_MARZO = [
+    { dia: 2,  color: 'bachata-int', titulo: 'Bachata Intermedio' },
+    { dia: 9,  color: 'bachata-int', titulo: 'Bachata Intermedio' },
+    { dia: 16, color: 'bachata-int', titulo: 'Bachata Intermedio' },
+    { dia: 23, color: 'bachata-int', titulo: 'Bachata Intermedio' },
+    { dia: 3,  color: 'casino-bas', titulo: 'Casino Basico' },
+    { dia: 10, color: 'casino-bas', titulo: 'Casino Basico' },
+    { dia: 17, color: 'casino-bas', titulo: 'Casino Basico' },
+    { dia: 24, color: 'casino-bas', titulo: 'Casino Basico' },
+    { dia: 4,  color: 'casino-int', titulo: 'Casino Intermedio' },
+    { dia: 11, color: 'casino-int', titulo: 'Casino Intermedio' },
+    { dia: 18, color: 'casino-int', titulo: 'Casino Intermedio' },
+    { dia: 25, color: 'casino-int', titulo: 'Casino Intermedio' },
+    { dia: 5,  color: 'mambo', titulo: 'Mambo Open' },
+    { dia: 12, color: 'mambo', titulo: 'Mambo Open' },
+    { dia: 19, color: 'mambo', titulo: 'Mambo Open' },
+    { dia: 26, color: 'mambo', titulo: 'Mambo Open' },
+    { dia: 6,  color: 'bachata-bas', titulo: 'Bachata Basico' },
+    { dia: 13, color: 'bachata-bas', titulo: 'Bachata Basico' },
+    { dia: 20, color: 'bachata-bas', titulo: 'Bachata Basico' },
+    { dia: 27, color: 'bachata-bas', titulo: 'Bachata Basico' },
+  ];
+
+  // Marzo 2026: 1 de marzo es domingo (getDay() = 0)
+  // Calendario inicia en lunes: domingo = columna 7
+  // primerDia getDay()=0 (domingo) -> offset = 6 (ultimo de la semana)
+  var primerDiaJS = new Date(2026, 2, 1).getDay(); // 0=domingo
+  // Convertir a lunes=0: (primerDiaJS + 6) % 7
+  var offset = (primerDiaJS + 6) % 7; // 6 para domingo
+  var diasEnMarzo = 31;
+
+  var clasesPorDia = {};
+  CLASES_MARZO.forEach(function(clase) {
+    if (!clasesPorDia[clase.dia]) clasesPorDia[clase.dia] = [];
+    clasesPorDia[clase.dia].push(clase);
+  });
+
+  var hoy = new Date();
+  var esMarzo2026 = hoy.getFullYear() === 2026 && hoy.getMonth() === 2;
+
+  var html = '';
+
+  // Celdas vacias antes del dia 1
+  for (var v = 0; v < offset; v++) {
+    html += '<div class="cal-dia-inline vacio"></div>';
+  }
+
+  for (var dia = 1; dia <= diasEnMarzo; dia++) {
+    var clases = clasesPorDia[dia] || [];
+    var tieneClase = clases.length > 0;
+    var esHoy = esMarzo2026 && hoy.getDate() === dia;
+
+    var puntosHTML = clases.map(function(c) {
+      return '<div class="cal-dia-punto-inline cal-dot-' + c.color + '" title="' + c.titulo + '"></div>';
+    }).join('');
+
+    html += '<div class="cal-dia-inline' +
+      (tieneClase ? ' tiene-clase' : '') +
+      (esHoy ? ' hoy' : '') +
+      '">' +
+      '<span class="cal-dia-num-inline">' + dia + '</span>' +
+      (puntosHTML ? '<div class="cal-dia-puntos-inline">' + puntosHTML + '</div>' : '') +
+      '</div>';
+  }
+
+  grid.innerHTML = html;
+}
 
 // ---- BANNERS DESDE FIRESTORE ----
 async function loadLandingBanners() {

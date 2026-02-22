@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Panel Admin - Estacion Salsera</title>
-  <meta name="description" content="Panel de administracion de Estacion Salsera - El Tren del Sabor">
+  <title>Panel Admin - Al Paso Dance Studio</title>
+  <meta name="description" content="Panel de administracion de Al Paso Dance Studio - Donde el ritmo comienza">
 
   <!-- Theme & Mobile -->
   <meta name="theme-color" content="#0a0a0a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Estacion Salsera Admin">
+  <meta name="apple-mobile-web-app-title" content="Al Paso Dance Studio Admin">
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
@@ -42,7 +42,7 @@
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <img src="img/Logo.png" alt="Estacion Salsera" class="sidebar-logo">
+      <img src="img/Logo.png" alt="Al Paso Dance Studio" class="sidebar-logo">
       <h2 class="sidebar-title">Panel Admin</h2>
     </div>
 
@@ -70,6 +70,12 @@
           <a href="#" class="nav-item" data-section="eventos">
             <span class="nav-icon">&#127881;</span>
             <span class="nav-text">Eventos</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item" data-section="evaluaciones">
+            <span class="nav-icon">&#9998;</span>
+            <span class="nav-text">Evaluaciones</span>
           </a>
         </li>
         <li>
@@ -224,6 +230,229 @@
 
       <div class="cards-grid" id="eventosGrid">
         <p class="text-muted">Cargando eventos...</p>
+      </div>
+    </section>
+
+    <!-- ======================== EVALUACIONES ======================== -->
+    <section class="admin-section" id="section-evaluaciones">
+      <div class="section-header">
+        <h2 class="section-title">Evaluaciones</h2>
+      </div>
+
+      <!-- Sub-tabs -->
+      <div class="eval-admin-tabs">
+        <button class="eval-admin-tab active" data-etab="etab-admin-dashboard">Dashboard</button>
+        <button class="eval-admin-tab" data-etab="etab-admin-observacion">Observacion</button>
+        <button class="eval-admin-tab" data-etab="etab-admin-historial">Historial</button>
+      </div>
+
+      <!-- SUB-TAB: DASHBOARD -->
+      <div id="etab-admin-dashboard" class="eval-admin-tab-section active">
+        <!-- Filtro -->
+        <div class="form-group" style="max-width:300px;margin-bottom:1.2rem">
+          <select id="evalAdminFiltroCurso" class="form-input">
+            <option value="">Todos los cursos</option>
+            <option value="Bachata Basico">Bachata Basico</option>
+            <option value="Casino Basico">Casino Basico</option>
+            <option value="Bachata Intermedio">Bachata Intermedio</option>
+            <option value="Casino Intermedio">Casino Intermedio</option>
+            <option value="Mambo Open">Mambo Open</option>
+          </select>
+        </div>
+
+        <!-- Stats -->
+        <div class="eval-admin-stats-row">
+          <div class="eval-admin-stat glass-card">
+            <span class="eval-admin-stat-value" id="evalAdminStatTotal">0</span>
+            <span class="eval-admin-stat-label">Evaluaciones</span>
+          </div>
+          <div class="eval-admin-stat glass-card">
+            <span class="eval-admin-stat-value" id="evalAdminStatAlumnos">0</span>
+            <span class="eval-admin-stat-label">Alumnos</span>
+          </div>
+          <div class="eval-admin-stat glass-card">
+            <span class="eval-admin-stat-value" id="evalAdminStatBaileNuevo">0%</span>
+            <span class="eval-admin-stat-label">Bailo con alguien nuevo</span>
+          </div>
+        </div>
+
+        <!-- Promedios -->
+        <div class="glass-card eval-admin-promedios">
+          <h3 class="card-title">Promedios generales</h3>
+          <div class="eval-admin-barra-grupo">
+            <div class="eval-admin-barra-label"><span>Disfrute</span><span class="text-gold" id="evalAdminPromDisfrute">0</span></div>
+            <div class="eval-admin-barra-track"><div class="eval-admin-barra-fill" id="evalAdminBarraDisfrute"></div></div>
+          </div>
+          <div class="eval-admin-barra-grupo">
+            <div class="eval-admin-barra-label"><span>Comprension</span><span class="text-gold" id="evalAdminPromComprension">0</span></div>
+            <div class="eval-admin-barra-track"><div class="eval-admin-barra-fill" id="evalAdminBarraComprension"></div></div>
+          </div>
+          <div class="eval-admin-barra-grupo">
+            <div class="eval-admin-barra-label"><span>Comodidad en pareja</span><span class="text-gold" id="evalAdminPromComodidadPareja">0</span></div>
+            <div class="eval-admin-barra-track"><div class="eval-admin-barra-fill" id="evalAdminBarraComodidadPareja"></div></div>
+          </div>
+          <div class="eval-admin-barra-grupo">
+            <div class="eval-admin-barra-label"><span>Confianza</span><span class="text-gold" id="evalAdminPromConfianza">0</span></div>
+            <div class="eval-admin-barra-track"><div class="eval-admin-barra-fill" id="evalAdminBarraConfianza"></div></div>
+          </div>
+        </div>
+
+        <!-- Grafica -->
+        <div class="glass-card" style="padding:1.2rem;margin-top:1.2rem">
+          <h3 class="card-title">Evolucion por clase</h3>
+          <div class="eval-admin-grafica" id="evalAdminGrafica"></div>
+        </div>
+
+        <!-- Comentarios -->
+        <div style="margin-top:1.2rem">
+          <h3 class="card-title">Ultimos comentarios</h3>
+          <div id="evalAdminComentarios">
+            <p class="text-muted">Cargando...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-TAB: OBSERVACION -->
+      <div id="etab-admin-observacion" class="eval-admin-tab-section">
+        <div class="glass-card" style="padding:1.5rem">
+          <h3 class="card-title" style="margin-bottom:1.2rem">Nueva observacion</h3>
+          <form id="formAdminObservacion">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="obsAdminCurso">Curso</label>
+                <select id="obsAdminCurso" class="form-input" required>
+                  <option value="">Seleccionar</option>
+                  <option value="Bachata Basico">Bachata Basico</option>
+                  <option value="Casino Basico">Casino Basico</option>
+                  <option value="Bachata Intermedio">Bachata Intermedio</option>
+                  <option value="Casino Intermedio">Casino Intermedio</option>
+                  <option value="Mambo Open">Mambo Open</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="obsAdminClase">Clase</label>
+                <select id="obsAdminClase" class="form-input" required>
+                  <option value="1">Clase 1</option>
+                  <option value="2">Clase 2</option>
+                  <option value="3">Clase 3</option>
+                  <option value="4">Clase 4</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="obsAdminFecha">Fecha</label>
+              <input type="date" id="obsAdminFecha" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+              <label for="obsAdminObjetivo">Objetivo del dia</label>
+              <textarea id="obsAdminObjetivo" class="form-input" rows="2" placeholder="Que se busco lograr hoy"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="obsAdminPasos">Pasos trabajados</label>
+              <textarea id="obsAdminPasos" class="form-input" rows="2" placeholder="Pasos y figuras practicadas"></textarea>
+            </div>
+
+            <!-- Estrellas -->
+            <div class="eval-admin-estrellas-container">
+              <div class="eval-admin-estrellas-item">
+                <label>Participacion</label>
+                <div class="eval-estrellas-grupo" id="obsAdminEstrellasParticipacion" data-valor="0">
+                  <span class="eval-estrella" data-val="1">&#9733;</span>
+                  <span class="eval-estrella" data-val="2">&#9733;</span>
+                  <span class="eval-estrella" data-val="3">&#9733;</span>
+                  <span class="eval-estrella" data-val="4">&#9733;</span>
+                  <span class="eval-estrella" data-val="5">&#9733;</span>
+                </div>
+              </div>
+              <div class="eval-admin-estrellas-item">
+                <label>Comprension</label>
+                <div class="eval-estrellas-grupo" id="obsAdminEstrellasComprension" data-valor="0">
+                  <span class="eval-estrella" data-val="1">&#9733;</span>
+                  <span class="eval-estrella" data-val="2">&#9733;</span>
+                  <span class="eval-estrella" data-val="3">&#9733;</span>
+                  <span class="eval-estrella" data-val="4">&#9733;</span>
+                  <span class="eval-estrella" data-val="5">&#9733;</span>
+                </div>
+              </div>
+              <div class="eval-admin-estrellas-item">
+                <label>Conexion en pareja</label>
+                <div class="eval-estrellas-grupo" id="obsAdminEstrellasConexion" data-valor="0">
+                  <span class="eval-estrella" data-val="1">&#9733;</span>
+                  <span class="eval-estrella" data-val="2">&#9733;</span>
+                  <span class="eval-estrella" data-val="3">&#9733;</span>
+                  <span class="eval-estrella" data-val="4">&#9733;</span>
+                  <span class="eval-estrella" data-val="5">&#9733;</span>
+                </div>
+              </div>
+              <div class="eval-admin-estrellas-item">
+                <label>Energia</label>
+                <div class="eval-estrellas-grupo" id="obsAdminEstrellasEnergia" data-valor="0">
+                  <span class="eval-estrella" data-val="1">&#9733;</span>
+                  <span class="eval-estrella" data-val="2">&#9733;</span>
+                  <span class="eval-estrella" data-val="3">&#9733;</span>
+                  <span class="eval-estrella" data-val="4">&#9733;</span>
+                  <span class="eval-estrella" data-val="5">&#9733;</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="obsAdminLogros">Logros del dia</label>
+              <textarea id="obsAdminLogros" class="form-input" rows="2" placeholder="Que se logro"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="obsAdminDificultades">Dificultades detectadas</label>
+              <textarea id="obsAdminDificultades" class="form-input" rows="2" placeholder="Que costo mas"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="obsAdminAjustes">Ajustes para proxima clase</label>
+              <textarea id="obsAdminAjustes" class="form-input" rows="2" placeholder="Que cambiar o reforzar"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="obsAdminNotas">Notas adicionales</label>
+              <textarea id="obsAdminNotas" class="form-input" rows="2" placeholder="Observaciones generales"></textarea>
+            </div>
+
+            <button type="submit" id="btnAdminSubmitObs" class="btn-primary btn-sm">Guardar observacion</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- SUB-TAB: HISTORIAL -->
+      <div id="etab-admin-historial" class="eval-admin-tab-section">
+        <!-- Resumen por curso -->
+        <div class="glass-card" style="padding:1.2rem;margin-bottom:1.2rem">
+          <h3 class="card-title">Resumen por curso</h3>
+          <div class="table-container" style="border:none;background:none">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Curso</th>
+                  <th>Evaluaciones</th>
+                  <th>Disfrute prom.</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyAdminResumen"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Ultimas evaluaciones -->
+        <div class="glass-card" style="padding:1.2rem;margin-bottom:1.2rem">
+          <h3 class="card-title">Ultimas 10 evaluaciones</h3>
+          <div id="listaAdminUltimasEval">
+            <p class="text-muted">Cargando...</p>
+          </div>
+        </div>
+
+        <!-- Exportar CSV -->
+        <button class="btn-primary btn-sm" id="btnAdminExportarCSV">Exportar CSV</button>
       </div>
     </section>
 

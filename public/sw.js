@@ -3,28 +3,22 @@
    Cache-first para assets, network-first para API
    ============================================ */
 
-const CACHE_NAME = 'estacion-salsera-v2';
+const CACHE_NAME = 'al-paso-dance-v3';
 const OFFLINE_URL = '/offline.html';
 
 const ASSETS_TO_CACHE = [
   '/',
   '/app.html',
   '/login.html',
-  '/evaluacion.html',
-  '/calendario.html',
   '/offline.html',
   '/css/shared.css',
   '/css/app.css',
   '/css/login.css',
-  '/css/evaluacion.css',
-  '/css/calendario.css',
-  '/js/evaluacion.js',
-  '/js/calendario.js',
   '/marzo_clases_2026.ics',
   '/img/Logo.png',
   '/img/favicon.svg',
   '/manifest.json',
-  'https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap'
+  'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap'
 ];
 
 // Instalación: cachear assets estáticos

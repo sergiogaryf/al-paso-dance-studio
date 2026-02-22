@@ -48,11 +48,11 @@
   width: 36px;
   height: auto;
   mix-blend-mode: screen;
-  filter: drop-shadow(0 0 10px rgba(212, 160, 23, 0.2));
+  filter: drop-shadow(0 0 10px rgba(232, 101, 43, 0.2));
 }
 
 .app-brand-text {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.75rem;
   color: var(--dorado);
   font-weight: 600;
@@ -62,7 +62,7 @@
 
 /* ---- GREETING ---- */
 .greeting {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.5rem;
   color: var(--blanco);
   font-weight: 700;
@@ -79,7 +79,7 @@
 }
 
 .card-label {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -88,7 +88,7 @@
 }
 
 .card-big-number {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 2rem;
   font-weight: 800;
   color: var(--dorado);
@@ -133,7 +133,7 @@
 }
 
 .proxima-dia {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.7rem;
   color: var(--dorado);
   text-transform: uppercase;
@@ -162,7 +162,7 @@
 }
 
 .card-sede-name {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.3rem;
   color: var(--dorado);
   font-weight: 700;
@@ -170,7 +170,7 @@
 
 /* ---- SECTION TITLE ---- */
 .section-title {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.2rem;
   color: var(--dorado);
   font-weight: 700;
@@ -196,23 +196,23 @@
 }
 
 .boleto-mini:hover {
-  border-color: rgba(212, 160, 23, 0.3);
+  border-color: rgba(232, 101, 43, 0.3);
 }
 
 .boleto-mini-izq {
   width: 80px;
   padding: 1rem 0.8rem;
-  background: linear-gradient(135deg, rgba(212, 160, 23, 0.12), rgba(212, 160, 23, 0.04));
+  background: linear-gradient(135deg, rgba(232, 101, 43, 0.12), rgba(232, 101, 43, 0.04));
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-right: 1px dashed rgba(212, 160, 23, 0.2);
+  border-right: 1px dashed rgba(232, 101, 43, 0.2);
   position: relative;
 }
 
 .boleto-mini-dia {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.55rem;
   color: var(--dorado);
   text-transform: uppercase;
@@ -221,7 +221,7 @@
 }
 
 .boleto-mini-hora {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.9rem;
   color: var(--dorado-claro);
   font-weight: 700;
@@ -260,14 +260,14 @@
 }
 
 .companeros-grupo-title {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.7rem;
   color: var(--dorado);
   text-transform: uppercase;
   letter-spacing: 2px;
   margin-bottom: 0.6rem;
   padding-bottom: 0.4rem;
-  border-bottom: 1px solid rgba(212, 160, 23, 0.1);
+  border-bottom: 1px solid rgba(232, 101, 43, 0.1);
 }
 
 .companero-item {
@@ -305,7 +305,7 @@
 }
 
 .evento-card:hover {
-  border-color: rgba(212, 160, 23, 0.3);
+  border-color: rgba(232, 101, 43, 0.3);
 }
 
 .evento-card-img {
@@ -318,7 +318,7 @@
 .evento-card-img-placeholder {
   width: 100%;
   height: 140px;
-  background: linear-gradient(135deg, rgba(212, 160, 23, 0.1), rgba(184, 134, 11, 0.05));
+  background: linear-gradient(135deg, rgba(232, 101, 43, 0.1), rgba(107, 45, 107, 0.05));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -331,7 +331,7 @@
 }
 
 .evento-card-title {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.95rem;
   color: var(--dorado);
   font-weight: 600;
@@ -373,7 +373,7 @@
 }
 
 .perfil-name {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.3rem;
   color: var(--blanco);
   font-weight: 700;
@@ -393,7 +393,7 @@
 }
 
 .perfil-info-label {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.55rem;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -421,7 +421,7 @@
 }
 
 .stat-number {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.4rem;
   font-weight: 700;
   color: var(--dorado);
@@ -482,14 +482,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.15rem;
+  gap: 0.1rem;
   background: none;
   border: none;
   color: var(--blanco-suave);
   cursor: pointer;
-  padding: 0.4rem 0.8rem;
+  padding: 0.3rem 0.4rem;
   transition: color 0.3s;
   -webkit-tap-highlight-color: transparent;
+  min-width: 0;
 }
 
 .tab-item.active {
@@ -503,10 +504,305 @@
 
 .tab-label {
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.6rem;
+  font-size: 0.5rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
+}
+
+/* ---- CALENDARIO APP ---- */
+.cal-reminder-app {
+  text-align: center;
+  color: var(--dorado-claro);
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0.8rem;
+  background: rgba(232, 101, 43, 0.08);
+  border: 1px solid rgba(232, 101, 43, 0.2);
+  border-radius: 10px;
+}
+
+.cal-app-wrapper {
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cal-header-dias-app {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-bottom: 0.4rem;
+}
+
+.cal-header-dias-app span {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--dorado);
+  padding: 0.2rem 0;
+}
+
+.cal-grid-app {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.cal-dia-app {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: rgba(26, 26, 26, 0.5);
+  border: 1px solid transparent;
+  position: relative;
+}
+
+.cal-dia-app.vacio {
+  background: transparent;
+}
+
+.cal-dia-app.tiene-clase {
+  border-color: rgba(232, 101, 43, 0.15);
+}
+
+.cal-dia-app.hoy {
+  border-color: var(--dorado);
+  box-shadow: 0 0 6px rgba(232, 101, 43, 0.2);
+}
+
+.cal-dia-app.hoy .cal-num-app {
+  background: var(--dorado);
+  color: var(--negro);
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cal-num-app {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.6rem;
+  color: var(--blanco-suave);
+  font-weight: 500;
+}
+
+.cal-dia-app.tiene-clase .cal-num-app {
+  color: var(--blanco);
+}
+
+.cal-puntos-app {
+  display: flex;
+  gap: 1px;
+  margin-top: 1px;
+}
+
+.cal-punto-app {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+}
+
+.cal-dot-bachata-bas { background: #2ecc71; }
+.cal-dot-casino-bas { background: #3498db; }
+.cal-dot-bachata-int { background: var(--dorado); }
+.cal-dot-casino-int { background: #e74c3c; }
+.cal-dot-mambo { background: #9b59b6; }
+
+.cal-legend-app {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  justify-content: center;
+}
+
+.cal-legend-item-app {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.6rem;
+  color: var(--blanco-suave);
+}
+
+.cal-dot-app {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.btn-download-ics {
+  display: block;
+  text-align: center;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 0.85rem;
+}
+
+/* ---- EVALUACION APP ---- */
+.eval-app-form {
+  padding: 1.2rem;
+}
+
+.eval-app-label {
+  display: block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--blanco-suave);
+  margin-bottom: 0.5rem;
+}
+
+.eval-app-clase-btns {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.eval-app-clase-btn {
+  flex: 1;
+  padding: 0.8rem;
+  border-radius: 10px;
+  border: 1px solid var(--gris-borde);
+  background: var(--gris);
+  color: var(--blanco-suave);
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.eval-app-clase-btn.selected {
+  background: rgba(232, 101, 43, 0.15);
+  border-color: var(--dorado);
+  color: var(--dorado);
+}
+
+.eval-app-slider-group {
+  margin-bottom: 1.2rem;
+}
+
+.eval-app-slider-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.eval-app-slider-label span:first-child {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--blanco-suave);
+}
+
+.eval-app-slider-val {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--dorado);
+}
+
+.eval-app-form input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: var(--gris-borde);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+
+.eval-app-form input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--dorado);
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(232, 101, 43, 0.3);
+}
+
+.eval-app-form input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--dorado);
+  cursor: pointer;
+  border: none;
+}
+
+.eval-app-binaria {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.eval-app-binaria-btn {
+  flex: 1;
+  padding: 0.7rem;
+  border-radius: 10px;
+  border: 1px solid var(--gris-borde);
+  background: var(--gris);
+  color: var(--blanco-suave);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.eval-app-binaria-btn.selected-si {
+  background: rgba(46, 204, 113, 0.12);
+  border-color: #2ecc71;
+  color: #2ecc71;
+}
+
+.eval-app-binaria-btn.selected-no {
+  background: rgba(231, 76, 60, 0.08);
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+
+.eval-app-textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.eval-app-msg {
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  text-align: center;
+  margin-bottom: 0.8rem;
+}
+
+.eval-app-msg-error {
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  color: #e74c3c;
+}
+
+.eval-app-msg-success {
+  background: rgba(46, 204, 113, 0.1);
+  border: 1px solid rgba(46, 204, 113, 0.3);
+  color: #2ecc71;
+}
+
+.eval-app-submit {
+  width: 100%;
+  padding: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 12px;
 }
 
 /* ---- RESPONSIVE ---- */

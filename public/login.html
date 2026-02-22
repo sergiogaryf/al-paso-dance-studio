@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Iniciar Sesion - Estacion Salsera</title>
-  <meta name="description" content="Acceso para alumnos de Estacion Salsera - El Tren del Sabor">
+  <title>Iniciar Sesion - Al Paso Dance Studio</title>
+  <meta name="description" content="Acceso para alumnos y profesores de Al Paso Dance Studio - Donde el ritmo comienza">
 
   <!-- Theme & Mobile -->
   <meta name="theme-color" content="#0a0a0a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Estacion Salsera">
+  <meta name="apple-mobile-web-app-title" content="Al Paso Dance Studio">
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
@@ -27,61 +27,102 @@
 
   <!-- Contenedor principal -->
   <main class="login-container">
-    <div class="login-card glass-card">
 
-      <!-- Logo -->
-      <div class="login-logo">
-        <img src="img/Logo.png" alt="Estacion Salsera - El Tren del Sabor">
+    <!-- ====== VISTA: SELECTOR DE ROL ====== -->
+    <div id="vistaSelector" class="login-vista active">
+      <div class="login-card glass-card">
+
+        <!-- Logo -->
+        <div class="login-logo">
+          <img src="img/Logo.png" alt="Al Paso Dance Studio - Donde el ritmo comienza">
+        </div>
+
+        <!-- Titulo -->
+        <h1 class="login-title">Bienvenido</h1>
+        <p class="login-subtitle">Donde el ritmo comienza</p>
+
+        <!-- Cards de rol -->
+        <div class="login-roles">
+          <button class="login-role-card" id="btnRolAlumno">
+            <span class="login-role-icon">&#127891;</span>
+            <span class="login-role-text">Alumno</span>
+          </button>
+          <button class="login-role-card" id="btnRolProfesor">
+            <span class="login-role-icon">&#128218;</span>
+            <span class="login-role-text">Profesor</span>
+          </button>
+          <button class="login-role-card" id="btnRolInvitado">
+            <span class="login-role-icon">&#128065;</span>
+            <span class="login-role-text">Invitado</span>
+          </button>
+        </div>
+
+        <!-- Link volver -->
+        <a href="index.html" class="back-link">
+          <span class="back-arrow">&larr;</span> Volver a Al Paso Dance Studio
+        </a>
       </div>
-
-      <!-- Titulo -->
-      <h1 class="login-title">Acceso Alumnos</h1>
-      <p class="login-subtitle">El Tren del Sabor</p>
-
-      <!-- Formulario -->
-      <form id="loginForm" autocomplete="on">
-        <div class="form-group">
-          <label for="email">Correo electronico</label>
-          <input
-            type="email"
-            id="email"
-            class="form-input"
-            placeholder="tu@correo.com"
-            autocomplete="email"
-            required
-          >
-        </div>
-
-        <div class="form-group">
-          <label for="password">Contrasena</label>
-          <input
-            type="password"
-            id="password"
-            class="form-input"
-            placeholder="Tu contrasena"
-            autocomplete="current-password"
-            required
-          >
-        </div>
-
-        <!-- Mensaje de error -->
-        <div id="errorMessage" class="error-message hidden"></div>
-
-        <!-- Boton de login -->
-        <button type="submit" id="loginBtn" class="btn-primary login-btn">
-          <span class="btn-text">Iniciar Sesion</span>
-          <span class="btn-loader hidden">
-            <span class="spinner-small"></span>
-            Verificando...
-          </span>
-        </button>
-      </form>
-
-      <!-- Link volver -->
-      <a href="index.html" class="back-link">
-        <span class="back-arrow">&larr;</span> Volver a Estacion Salsera
-      </a>
     </div>
+
+    <!-- ====== VISTA: FORMULARIO LOGIN ====== -->
+    <div id="vistaLoginForm" class="login-vista">
+      <div class="login-card glass-card">
+
+        <!-- Logo -->
+        <div class="login-logo">
+          <img src="img/Logo.png" alt="Al Paso Dance Studio - Donde el ritmo comienza">
+        </div>
+
+        <!-- Titulo dinamico -->
+        <h1 class="login-title" id="loginFormTitle">Acceso Alumno</h1>
+        <p class="login-subtitle">Donde el ritmo comienza</p>
+
+        <!-- Formulario -->
+        <form id="loginForm" autocomplete="on">
+          <div class="form-group">
+            <label for="email">Correo electronico</label>
+            <input
+              type="email"
+              id="email"
+              class="form-input"
+              placeholder="tu@correo.com"
+              autocomplete="email"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="password">Contrasena</label>
+            <input
+              type="password"
+              id="password"
+              class="form-input"
+              placeholder="Tu contrasena"
+              autocomplete="current-password"
+              required
+            >
+          </div>
+
+          <!-- Mensaje de error -->
+          <div id="errorMessage" class="error-message hidden"></div>
+
+          <!-- Boton de login -->
+          <button type="submit" id="loginBtn" class="btn-primary login-btn">
+            <span class="btn-text">Iniciar Sesion</span>
+            <span class="btn-loader hidden">
+              <span class="spinner-small"></span>
+              Verificando...
+            </span>
+          </button>
+        </form>
+
+        <!-- Boton volver al selector -->
+        <button class="back-link-btn" id="btnVolverSelector">
+          <span class="back-arrow">&larr;</span> Volver
+        </button>
+      </div>
+    </div>
+
   </main>
 
   <!-- Scripts -->

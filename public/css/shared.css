@@ -1,9 +1,9 @@
 /* ============================================
-   ESTACION SALSERA - Estilos compartidos
+   AL PASO DANCE STUDIO - Estilos compartidos
    Variables, componentes reutilizables
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
 
 /* ---- VARIABLES ---- */
 :root {
@@ -12,9 +12,12 @@
   --gris-oscuro: #1a1a1a;
   --gris: #222;
   --gris-borde: #2a2a2a;
-  --dorado: #d4a017;
-  --dorado-claro: #e8c547;
-  --dorado-oscuro: #b8860b;
+  --dorado: #E8652B;
+  --dorado-claro: #FF9A5C;
+  --dorado-oscuro: #C44D1A;
+  --morado: #6B2D6B;
+  --morado-claro: #8B4D8B;
+  --morado-oscuro: #4A0E4E;
   --blanco: #f0f0f0;
   --blanco-suave: #aaa;
   --verde-wa: #25d366;
@@ -53,8 +56,8 @@ ul { list-style: none; }
 }
 
 .glass-card:hover {
-  border-color: rgba(212, 160, 23, 0.3);
-  box-shadow: 0 8px 30px rgba(212, 160, 23, 0.08);
+  border-color: rgba(232, 101, 43, 0.3);
+  box-shadow: 0 8px 30px rgba(232, 101, 43, 0.08);
 }
 
 /* ---- BOTONES ---- */
@@ -63,8 +66,8 @@ ul { list-style: none; }
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, var(--dorado), var(--dorado-oscuro));
-  color: var(--negro);
+  background: linear-gradient(135deg, var(--dorado), var(--morado));
+  color: var(--blanco);
   padding: 0.8rem 2rem;
   border-radius: 50px;
   font-size: 0.95rem;
@@ -78,8 +81,8 @@ ul { list-style: none; }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 35px rgba(212, 160, 23, 0.4);
-  background: linear-gradient(135deg, var(--dorado-claro), var(--dorado));
+  box-shadow: 0 8px 35px rgba(232, 101, 43, 0.4);
+  background: linear-gradient(135deg, var(--dorado-claro), var(--morado-claro));
 }
 
 .btn-secondary {
@@ -100,8 +103,8 @@ ul { list-style: none; }
 }
 
 .btn-secondary:hover {
-  background: rgba(212, 160, 23, 0.1);
-  box-shadow: 0 4px 20px rgba(212, 160, 23, 0.2);
+  background: rgba(232, 101, 43, 0.1);
+  box-shadow: 0 4px 20px rgba(232, 101, 43, 0.2);
 }
 
 .btn-danger {
@@ -138,8 +141,8 @@ ul { list-style: none; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(212, 160, 23, 0.1);
-  border: 1px solid rgba(212, 160, 23, 0.2);
+  background: rgba(232, 101, 43, 0.1);
+  border: 1px solid rgba(232, 101, 43, 0.2);
   color: var(--dorado);
   cursor: pointer;
   transition: all 0.3s;
@@ -147,7 +150,7 @@ ul { list-style: none; }
 }
 
 .btn-icon:hover {
-  background: rgba(212, 160, 23, 0.2);
+  background: rgba(232, 101, 43, 0.2);
   border-color: var(--dorado);
 }
 
@@ -158,7 +161,7 @@ ul { list-style: none; }
 
 .form-group label {
   display: block;
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -181,7 +184,7 @@ ul { list-style: none; }
 
 .form-input:focus {
   border-color: var(--dorado);
-  box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.1);
+  box-shadow: 0 0 0 3px rgba(232, 101, 43, 0.1);
 }
 
 .form-input::placeholder {
@@ -191,7 +194,7 @@ ul { list-style: none; }
 select.form-input {
   appearance: none;
   -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23d4a017' stroke-width='2'%3E%3Cpolyline points='6,9 12,15 18,9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23E8652B' stroke-width='2'%3E%3Cpolyline points='6,9 12,15 18,9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 1rem center;
   padding-right: 2.5rem;
@@ -257,13 +260,13 @@ textarea.form-input {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 .badge-gold {
-  background: rgba(212, 160, 23, 0.15);
+  background: rgba(232, 101, 43, 0.15);
   color: var(--dorado);
-  border: 1px solid rgba(212, 160, 23, 0.3);
+  border: 1px solid rgba(232, 101, 43, 0.3);
 }
 
 .badge-green {
@@ -285,7 +288,7 @@ textarea.form-input {
 }
 
 .data-table th {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -304,7 +307,7 @@ textarea.form-input {
 }
 
 .data-table tr:hover td {
-  background: rgba(212, 160, 23, 0.03);
+  background: rgba(232, 101, 43, 0.03);
 }
 
 /* ---- MODAL ---- */
@@ -345,7 +348,7 @@ textarea.form-input {
 }
 
 .modal-header h3 {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.1rem;
   color: var(--dorado);
 }
@@ -438,14 +441,14 @@ textarea.form-input {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--dorado), var(--dorado-oscuro));
+  background: linear-gradient(135deg, var(--dorado), var(--morado));
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.8rem;
   font-weight: 700;
-  color: var(--negro);
+  color: var(--blanco);
   flex-shrink: 0;
 }
 

@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Mi App - Estacion Salsera</title>
-  <meta name="description" content="Panel del alumno - Estacion Salsera, El Tren del Sabor">
+  <title>Mi App - Al Paso Dance Studio</title>
+  <meta name="description" content="Panel del alumno - Al Paso Dance Studio, Donde el ritmo comienza">
 
   <!-- PWA Meta Tags -->
   <meta name="theme-color" content="#0a0a0a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Estacion Salsera">
+  <meta name="apple-mobile-web-app-title" content="Al Paso Dance Studio">
 
   <!-- Manifest & Icons -->
   <link rel="manifest" href="manifest.json">
@@ -40,8 +40,8 @@
       <!-- Header -->
       <div class="app-header">
         <div class="app-header-brand">
-          <img src="img/Logo.png" alt="Estacion Salsera" class="app-logo">
-          <span class="app-brand-text">Estacion Salsera</span>
+          <img src="img/Logo.png" alt="Al Paso Dance Studio" class="app-logo">
+          <span class="app-brand-text">Al Paso Dance Studio</span>
         </div>
       </div>
 
@@ -73,6 +73,9 @@
         <div class="card-label">Tu sede</div>
         <div class="card-sede-name" id="userSede">-</div>
       </div>
+
+      <!-- Eventos inline -->
+      <div id="eventosInicio" class="eventos-inicio"></div>
     </section>
 
     <!-- ====== TAB: HORARIO ====== -->
@@ -86,6 +89,107 @@
       </div>
     </section>
 
+    <!-- ====== TAB: CALENDARIO ====== -->
+    <section id="tab-calendario" class="tab-section">
+      <h2 class="section-title">Calendario Marzo 2026</h2>
+      <p class="cal-reminder-app">Recuerda llegar 10 minutos antes a clases.</p>
+      <div class="cal-app-wrapper glass-card">
+        <div class="cal-header-dias-app">
+          <span>Lun</span><span>Mar</span><span>Mie</span><span>Jue</span><span>Vie</span><span>Sab</span><span>Dom</span>
+        </div>
+        <div class="cal-grid-app" id="calGridApp"></div>
+      </div>
+      <div class="cal-legend-app">
+        <span class="cal-legend-item-app"><span class="cal-dot-app cal-dot-bachata-bas"></span> Bachata Bas</span>
+        <span class="cal-legend-item-app"><span class="cal-dot-app cal-dot-casino-bas"></span> Casino Bas</span>
+        <span class="cal-legend-item-app"><span class="cal-dot-app cal-dot-bachata-int"></span> Bachata Int</span>
+        <span class="cal-legend-item-app"><span class="cal-dot-app cal-dot-casino-int"></span> Casino Int</span>
+        <span class="cal-legend-item-app"><span class="cal-dot-app cal-dot-mambo"></span> Mambo</span>
+      </div>
+      <a href="marzo_clases_2026.ics" download class="btn-secondary btn-download-ics">Descargar calendario (.ics)</a>
+    </section>
+
+    <!-- ====== TAB: EVALUACION ====== -->
+    <section id="tab-evaluacion" class="tab-section">
+      <h2 class="section-title">Evaluacion del dia</h2>
+
+      <div class="glass-card eval-app-form">
+        <!-- Selector de curso -->
+        <div class="form-group">
+          <label class="eval-app-label">Tu curso</label>
+          <select id="evalAppCurso" class="form-input">
+            <option value="">Selecciona tu curso</option>
+          </select>
+        </div>
+
+        <!-- Numero de clase -->
+        <div class="form-group">
+          <label class="eval-app-label">Numero de clase</label>
+          <div class="eval-app-clase-btns">
+            <button type="button" class="eval-app-clase-btn" data-clase="1">1</button>
+            <button type="button" class="eval-app-clase-btn" data-clase="2">2</button>
+            <button type="button" class="eval-app-clase-btn" data-clase="3">3</button>
+            <button type="button" class="eval-app-clase-btn" data-clase="4">4</button>
+          </div>
+        </div>
+
+        <!-- Sliders -->
+        <div class="eval-app-slider-group">
+          <div class="eval-app-slider-label">
+            <span>Disfrute</span>
+            <span class="eval-app-slider-val" id="evalAppDisfruteVal">5</span>
+          </div>
+          <input type="range" id="evalAppDisfrute" min="1" max="10" value="5">
+        </div>
+
+        <div class="eval-app-slider-group">
+          <div class="eval-app-slider-label">
+            <span>Comprension</span>
+            <span class="eval-app-slider-val" id="evalAppComprensionVal">5</span>
+          </div>
+          <input type="range" id="evalAppComprension" min="1" max="10" value="5">
+        </div>
+
+        <div class="eval-app-slider-group">
+          <div class="eval-app-slider-label">
+            <span>Comodidad en pareja</span>
+            <span class="eval-app-slider-val" id="evalAppComodidadVal">5</span>
+          </div>
+          <input type="range" id="evalAppComodidad" min="1" max="10" value="5">
+        </div>
+
+        <div class="eval-app-slider-group">
+          <div class="eval-app-slider-label">
+            <span>Confianza</span>
+            <span class="eval-app-slider-val" id="evalAppConfianzaVal">5</span>
+          </div>
+          <input type="range" id="evalAppConfianza" min="1" max="10" value="5">
+        </div>
+
+        <!-- Binaria -->
+        <div class="form-group">
+          <label class="eval-app-label">Bailaste con alguien nuevo?</label>
+          <div class="eval-app-binaria">
+            <button type="button" class="eval-app-binaria-btn" id="evalAppBaileSi">Si</button>
+            <button type="button" class="eval-app-binaria-btn" id="evalAppBaileNo">No</button>
+          </div>
+        </div>
+
+        <!-- Comentario -->
+        <div class="form-group">
+          <label class="eval-app-label">Comentario (opcional)</label>
+          <textarea id="evalAppComentario" class="form-input eval-app-textarea" placeholder="Como te sentiste hoy?" rows="3"></textarea>
+        </div>
+
+        <!-- Mensajes -->
+        <div id="evalAppError" class="eval-app-msg eval-app-msg-error hidden"></div>
+        <div id="evalAppExito" class="eval-app-msg eval-app-msg-success hidden"></div>
+
+        <!-- Boton enviar -->
+        <button type="button" id="btnEnviarEvalApp" class="btn-primary eval-app-submit">Enviar mi evaluacion</button>
+      </div>
+    </section>
+
     <!-- ====== TAB: COMPANEROS ====== -->
     <section id="tab-companeros" class="tab-section">
       <h2 class="section-title">Companeros</h2>
@@ -93,17 +197,6 @@
         <div class="empty-state">
           <span class="empty-icon">&#128101;</span>
           <p>Cargando companeros...</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ====== TAB: EVENTOS ====== -->
-    <section id="tab-eventos" class="tab-section">
-      <h2 class="section-title">Proximos Eventos</h2>
-      <div id="eventosList" class="eventos-list">
-        <div class="empty-state">
-          <span class="empty-icon">&#9733;</span>
-          <p>Cargando eventos...</p>
         </div>
       </div>
     </section>
@@ -156,7 +249,7 @@
   </main>
 
   <!-- ============================================ -->
-  <!-- BOTTOM TAB BAR -->
+  <!-- BOTTOM TAB BAR (6 tabs) -->
   <!-- ============================================ -->
   <nav id="tabBar" class="tab-bar hidden">
     <button class="tab-item active" data-tab="tab-inicio">
@@ -167,13 +260,17 @@
       <span class="tab-icon">&#128336;</span>
       <span class="tab-label">Horario</span>
     </button>
+    <button class="tab-item" data-tab="tab-calendario">
+      <span class="tab-icon">&#128197;</span>
+      <span class="tab-label">Calendario</span>
+    </button>
+    <button class="tab-item" data-tab="tab-evaluacion">
+      <span class="tab-icon">&#9998;</span>
+      <span class="tab-label">Evaluacion</span>
+    </button>
     <button class="tab-item" data-tab="tab-companeros">
       <span class="tab-icon">&#128101;</span>
       <span class="tab-label">Companeros</span>
-    </button>
-    <button class="tab-item" data-tab="tab-eventos">
-      <span class="tab-icon">&#9733;</span>
-      <span class="tab-label">Eventos</span>
     </button>
     <button class="tab-item" data-tab="tab-perfil">
       <span class="tab-icon">&#9787;</span>

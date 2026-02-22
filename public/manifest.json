@@ -1,7 +1,7 @@
 {
-  "name": "Estación Salsera",
+  "name": "Al Paso Dance Studio",
   "short_name": "Salsera",
-  "description": "Estación Salsera - El Tren del Sabor. Tu academia de danza en Calera y Quillota.",
+  "description": "Al Paso Dance Studio - Donde el ritmo comienza. Tu academia de danza en Calera y Quillota.",
   "start_url": "/app.html",
   "display": "standalone",
   "orientation": "portrait",

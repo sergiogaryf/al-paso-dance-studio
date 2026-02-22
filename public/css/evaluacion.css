@@ -17,9 +17,9 @@
   width: 100%;
   height: 100%;
   background:
-    radial-gradient(ellipse at 20% 50%, rgba(212, 160, 23, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(232, 197, 71, 0.04) 0%, transparent 40%),
-    radial-gradient(ellipse at 50% 80%, rgba(212, 160, 23, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 50%, rgba(232, 101, 43, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(107, 45, 107, 0.05) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 80%, rgba(74, 14, 78, 0.04) 0%, transparent 50%),
     #0a0a0a;
   z-index: 0;
 }
@@ -50,13 +50,13 @@
   background: rgba(18, 18, 18, 0.88);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(212, 160, 23, 0.15);
+  border: 1px solid rgba(232, 101, 43, 0.15);
   border-radius: 24px;
   padding: 2.5rem 2rem;
   width: 100%;
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.5),
-    0 0 80px rgba(212, 160, 23, 0.03),
+    0 0 80px rgba(232, 101, 43, 0.03),
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
   animation: cardAppear 0.6s ease-out;
 }
@@ -92,12 +92,12 @@
   width: 120px;
   height: auto;
   mix-blend-mode: screen;
-  filter: drop-shadow(0 4px 20px rgba(212, 160, 23, 0.15));
+  filter: drop-shadow(0 4px 20px rgba(232, 101, 43, 0.15));
 }
 
 /* ---- TITULOS ---- */
 .eval-title {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.4rem;
   font-weight: 700;
   color: var(--dorado);
@@ -117,7 +117,7 @@
 }
 
 .eval-section-title {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--blanco);
@@ -131,7 +131,7 @@
 }
 
 .eval-card-title {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -163,10 +163,10 @@
 }
 
 .eval-role-card:hover {
-  border-color: rgba(212, 160, 23, 0.4);
-  background: rgba(212, 160, 23, 0.06);
+  border-color: rgba(232, 101, 43, 0.4);
+  background: rgba(232, 101, 43, 0.06);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(212, 160, 23, 0.08);
+  box-shadow: 0 8px 25px rgba(232, 101, 43, 0.08);
 }
 
 .eval-role-icon {
@@ -174,7 +174,7 @@
 }
 
 .eval-role-text {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -273,7 +273,7 @@
 .eval-pin-input {
   text-align: center;
   font-size: 1.8rem;
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   letter-spacing: 0.5rem;
 }
 
@@ -316,7 +316,7 @@
 }
 
 .eval-alumno-nombre {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.9rem;
   color: var(--blanco);
   margin-right: 0.8rem;
@@ -335,17 +335,17 @@
   border: 1px solid var(--gris-borde);
   background: var(--gris);
   color: var(--blanco-suave);
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.2rem;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .eval-clase-btn.selected {
-  background: rgba(212, 160, 23, 0.15);
+  background: rgba(232, 101, 43, 0.15);
   border-color: var(--dorado);
   color: var(--dorado);
-  box-shadow: 0 0 12px rgba(212, 160, 23, 0.1);
+  box-shadow: 0 0 12px rgba(232, 101, 43, 0.1);
 }
 
 /* ---- SLIDERS ---- */
@@ -361,7 +361,7 @@
 }
 
 .eval-slider-label span:first-child {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -369,7 +369,7 @@
 }
 
 .eval-slider-val {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--dorado);
@@ -395,7 +395,7 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 50%;
   background: var(--dorado);
   cursor: pointer;
-  box-shadow: 0 0 10px rgba(212, 160, 23, 0.3);
+  box-shadow: 0 0 10px rgba(232, 101, 43, 0.3);
   transition: transform 0.15s;
 }
 
@@ -410,7 +410,7 @@ input[type="range"]::-moz-range-thumb {
   background: var(--dorado);
   cursor: pointer;
   border: none;
-  box-shadow: 0 0 10px rgba(212, 160, 23, 0.3);
+  box-shadow: 0 0 10px rgba(232, 101, 43, 0.3);
 }
 
 /* ---- PREGUNTA BINARIA ---- */
@@ -426,7 +426,7 @@ input[type="range"]::-moz-range-thumb {
   border: 1px solid var(--gris-borde);
   background: var(--gris);
   color: var(--blanco-suave);
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.2s;
@@ -449,7 +449,7 @@ input[type="range"]::-moz-range-thumb {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: rgba(212, 160, 23, 0.1);
+  background: rgba(232, 101, 43, 0.1);
   border: 2px solid var(--dorado);
   display: flex;
   align-items: center;
@@ -460,8 +460,8 @@ input[type="range"]::-moz-range-thumb {
 }
 
 @keyframes pulseGold {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 160, 23, 0.3); }
-  50% { box-shadow: 0 0 0 15px rgba(212, 160, 23, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 101, 43, 0.3); }
+  50% { box-shadow: 0 0 0 15px rgba(232, 101, 43, 0); }
 }
 
 /* ---- DASHBOARD HEADER ---- */
@@ -487,7 +487,7 @@ input[type="range"]::-moz-range-thumb {
   border: none;
   border-bottom: 2px solid transparent;
   color: var(--blanco-suave);
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.55rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -524,7 +524,7 @@ input[type="range"]::-moz-range-thumb {
 
 .eval-stat-value {
   display: block;
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--dorado);
@@ -614,7 +614,7 @@ input[type="range"]::-moz-range-thumb {
 
 .eval-estrellas-item label {
   display: block;
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.55rem;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -686,7 +686,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .eval-ultima-score {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1rem;
   color: var(--dorado);
   font-weight: 700;

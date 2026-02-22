@@ -372,8 +372,8 @@ function renderGraficaSVG(evaluaciones) {
   }).join('');
 
   const puntos = points.map(p =>
-    `<circle cx="${p.x}" cy="${p.y}" r="4" fill="#d4a017"/>
-     <text x="${p.x}" y="${p.y - 10}" text-anchor="middle" fill="#d4a017" font-size="10" font-weight="600">${p.prom.toFixed(1)}</text>
+    `<circle cx="${p.x}" cy="${p.y}" r="4" fill="#E8652B"/>
+     <text x="${p.x}" y="${p.y - 10}" text-anchor="middle" fill="#E8652B" font-size="10" font-weight="600">${p.prom.toFixed(1)}</text>
      <text x="${p.x}" y="${H - 8}" text-anchor="middle" fill="#aaa" font-size="9">C${p.clase}</text>`
   ).join('');
 
@@ -381,13 +381,13 @@ function renderGraficaSVG(evaluaciones) {
     <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#d4a017" stop-opacity="0.3"/>
-          <stop offset="100%" stop-color="#d4a017" stop-opacity="0"/>
+          <stop offset="0%" stop-color="#E8652B" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#E8652B" stop-opacity="0"/>
         </linearGradient>
       </defs>
       ${guias}
       <polygon points="${polygon}" fill="url(#goldGrad)"/>
-      <polyline points="${polyline}" fill="none" stroke="#d4a017" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="${polyline}" fill="none" stroke="#E8652B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       ${puntos}
     </svg>`;
 }
@@ -553,7 +553,7 @@ function exportarCSV() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'evaluaciones_estacion_salsera_' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.download = 'evaluaciones_al_paso_dance_' + new Date().toISOString().slice(0, 10) + '.csv';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);

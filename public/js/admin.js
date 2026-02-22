@@ -31,6 +31,7 @@ function initAdmin() {
   setupForms();
   setupLogout();
   setupSidebar();
+  setupEvaluacionesAdmin();
   loadDashboard();
 }
 
@@ -67,6 +68,7 @@ function loadSection(section) {
     case 'alumnos': loadAlumnos(); break;
     case 'clases': loadClases(); break;
     case 'eventos': loadEventos(); break;
+    case 'evaluaciones': loadEvaluaciones(); break;
     case 'banners': loadBanners(); break;
   }
 }
@@ -617,6 +619,319 @@ document.getElementById('btnConfirmDelete').addEventListener('click', async () =
   pendingDeleteId = null;
   pendingDeleteType = null;
 });
+
+// ============================================
+// EVALUACIONES
+// ============================================
+let evalAdminCache = [];
+
+function setupEvaluacionesAdmin() {
+  // Sub-tabs
+  document.querySelectorAll('.eval-admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.eval-admin-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.eval-admin-tab-section').forEach(s => s.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.etab).classList.add('active');
+      if (tab.dataset.etab === 'etab-admin-historial') renderAdminHistorial();
+    });
+  });
+
+  // Filtro curso
+  document.getElementById('evalAdminFiltroCurso').addEventListener('change', () => {
+    renderAdminDashboard(evalAdminCache);
+  });
+
+  // Estrellas
+  document.querySelectorAll('#section-evaluaciones .eval-estrellas-grupo').forEach(grupo => {
+    grupo.querySelectorAll('.eval-estrella').forEach((estrella, idx) => {
+      estrella.addEventListener('click', () => {
+        const valor = idx + 1;
+        grupo.dataset.valor = valor;
+        grupo.querySelectorAll('.eval-estrella').forEach((s, i) => {
+          s.classList.toggle('activa', i < valor);
+        });
+      });
+      estrella.addEventListener('mouseenter', () => {
+        grupo.querySelectorAll('.eval-estrella').forEach((s, i) => {
+          s.classList.toggle('activa', i <= idx);
+        });
+      });
+      estrella.addEventListener('mouseleave', () => {
+        const valorActual = parseInt(grupo.dataset.valor) || 0;
+        grupo.querySelectorAll('.eval-estrella').forEach((s, i) => {
+          s.classList.toggle('activa', i < valorActual);
+        });
+      });
+    });
+  });
+
+  // Fecha por defecto
+  const fechaInput = document.getElementById('obsAdminFecha');
+  if (fechaInput) fechaInput.value = new Date().toISOString().slice(0, 10);
+
+  // Form observacion
+  document.getElementById('formAdminObservacion').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await guardarAdminObservacion();
+  });
+
+  // Exportar CSV
+  document.getElementById('btnAdminExportarCSV').addEventListener('click', exportarAdminCSV);
+}
+
+async function loadEvaluaciones() {
+  try {
+    const res = await ApiService._fetch('/api/evaluaciones');
+    if (!res.ok) throw new Error('Error cargando evaluaciones');
+    evalAdminCache = await res.json();
+    renderAdminDashboard(evalAdminCache);
+  } catch (err) {
+    console.error('Error cargando evaluaciones:', err);
+    showToast('Error al cargar evaluaciones', 'error');
+  }
+}
+
+function renderAdminDashboard(evaluaciones) {
+  const cursoFiltro = document.getElementById('evalAdminFiltroCurso').value;
+  const filtradas = cursoFiltro
+    ? evaluaciones.filter(e => e.Curso === cursoFiltro)
+    : evaluaciones;
+
+  // Stats
+  const total = filtradas.length;
+  const alumnosUnicos = new Set(filtradas.map(e => e.NombreAlumno + '|' + e.Curso)).size;
+  const porcentajeBaileNuevo = filtradas.length
+    ? Math.round(filtradas.filter(e => e.BaileNuevo).length / filtradas.length * 100)
+    : 0;
+
+  document.getElementById('evalAdminStatTotal').textContent = total;
+  document.getElementById('evalAdminStatAlumnos').textContent = alumnosUnicos;
+  document.getElementById('evalAdminStatBaileNuevo').textContent = porcentajeBaileNuevo + '%';
+
+  // Promedios
+  const promedio = (campo) => filtradas.length
+    ? (filtradas.reduce((a, e) => a + (parseFloat(e[campo]) || 0), 0) / filtradas.length).toFixed(1)
+    : '0';
+
+  const metricas = ['Disfrute', 'Comprension', 'ComodidadPareja', 'Confianza'];
+  metricas.forEach(m => {
+    const prom = promedio(m);
+    document.getElementById('evalAdminProm' + m).textContent = prom;
+    document.getElementById('evalAdminBarra' + m).style.width = (parseFloat(prom) / 10 * 100) + '%';
+  });
+
+  // Grafica SVG
+  renderAdminGraficaSVG(filtradas);
+
+  // Comentarios
+  const comentarios = filtradas
+    .filter(e => e.Comentario)
+    .sort((a, b) => (b.FechaHoraISO || '').localeCompare(a.FechaHoraISO || ''))
+    .slice(0, 5);
+
+  const contenedor = document.getElementById('evalAdminComentarios');
+  if (comentarios.length === 0) {
+    contenedor.innerHTML = '<p class="text-muted">Sin comentarios aun.</p>';
+  } else {
+    contenedor.innerHTML = comentarios.map(e => `
+      <div class="eval-admin-comentario glass-card">
+        <div class="eval-admin-comentario-header">
+          <span class="text-gold">${sanitize(e.NombreAlumno || '')}</span>
+          <span class="badge badge-gold">${sanitize(e.Curso || '')}</span>
+        </div>
+        <p class="text-muted">"${sanitize(e.Comentario || '')}"</p>
+      </div>
+    `).join('');
+  }
+}
+
+function renderAdminGraficaSVG(evaluaciones) {
+  const container = document.getElementById('evalAdminGrafica');
+
+  const porClase = {};
+  evaluaciones.forEach(e => {
+    const nc = e.NumeroClase;
+    if (!nc) return;
+    if (!porClase[nc]) porClase[nc] = [];
+    porClase[nc].push(parseFloat(e.Disfrute) || 0);
+  });
+
+  const clases = [1, 2, 3, 4].filter(n => porClase[n] && porClase[n].length > 0);
+  if (clases.length < 2) {
+    container.innerHTML = '<p class="text-muted" style="text-align:center;font-size:0.85rem">Se necesitan al menos 2 clases con datos</p>';
+    return;
+  }
+
+  const datos = clases.map(n => ({
+    clase: n,
+    prom: porClase[n].reduce((a, b) => a + b, 0) / porClase[n].length
+  }));
+
+  const W = 400;
+  const H = 160;
+  const PAD = 35;
+  const xStep = (W - PAD * 2) / (datos.length - 1);
+
+  const points = datos.map((d, i) => {
+    const x = PAD + i * xStep;
+    const y = H - PAD - ((d.prom - 1) / 9) * (H - PAD * 2);
+    return { x, y, prom: d.prom, clase: d.clase };
+  });
+
+  const polyline = points.map(p => `${p.x},${p.y}`).join(' ');
+  const polygon = polyline + ` ${points[points.length - 1].x},${H - PAD} ${points[0].x},${H - PAD}`;
+
+  const guias = [2, 4, 6, 8, 10].map(v => {
+    const y = H - PAD - ((v - 1) / 9) * (H - PAD * 2);
+    return `<line x1="${PAD}" y1="${y}" x2="${W - PAD}" y2="${y}" stroke="#2a2a2a" stroke-width="1"/>
+            <text x="${PAD - 5}" y="${y + 3}" text-anchor="end" fill="#555" font-size="9">${v}</text>`;
+  }).join('');
+
+  const puntos = points.map(p =>
+    `<circle cx="${p.x}" cy="${p.y}" r="4" fill="#E8652B"/>
+     <text x="${p.x}" y="${p.y - 10}" text-anchor="middle" fill="#E8652B" font-size="10" font-weight="600">${p.prom.toFixed(1)}</text>
+     <text x="${p.x}" y="${H - 8}" text-anchor="middle" fill="#aaa" font-size="9">C${p.clase}</text>`
+  ).join('');
+
+  container.innerHTML = `
+    <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="adminGoldGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#E8652B" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#E8652B" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      ${guias}
+      <polygon points="${polygon}" fill="url(#adminGoldGrad)"/>
+      <polyline points="${polyline}" fill="none" stroke="#E8652B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      ${puntos}
+    </svg>`;
+}
+
+async function guardarAdminObservacion() {
+  const curso = document.getElementById('obsAdminCurso').value;
+  if (!curso) {
+    showToast('Selecciona un curso', 'error');
+    return;
+  }
+
+  const payload = {
+    Curso: curso,
+    NumeroClase: parseInt(document.getElementById('obsAdminClase').value),
+    Fecha: document.getElementById('obsAdminFecha').value,
+    ObjetivoDelDia: document.getElementById('obsAdminObjetivo').value.trim(),
+    PasosTrabajados: document.getElementById('obsAdminPasos').value.trim(),
+    EstrellaParticipacion: parseInt(document.getElementById('obsAdminEstrellasParticipacion').dataset.valor) || 0,
+    EstrellaComprension: parseInt(document.getElementById('obsAdminEstrellasComprension').dataset.valor) || 0,
+    EstrellaConexion: parseInt(document.getElementById('obsAdminEstrellasConexion').dataset.valor) || 0,
+    EstrellaEnergia: parseInt(document.getElementById('obsAdminEstrellasEnergia').dataset.valor) || 0,
+    LogrosDelDia: document.getElementById('obsAdminLogros').value.trim(),
+    DificultadesDetectadas: document.getElementById('obsAdminDificultades').value.trim(),
+    AjustesProximaClase: document.getElementById('obsAdminAjustes').value.trim(),
+    Notas: document.getElementById('obsAdminNotas').value.trim(),
+  };
+
+  try {
+    const btn = document.getElementById('btnAdminSubmitObs');
+    btn.disabled = true;
+    btn.textContent = 'Guardando...';
+
+    const res = await ApiService._fetch('/api/observaciones', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) throw new Error();
+
+    showToast('Observacion guardada correctamente', 'success');
+    document.getElementById('formAdminObservacion').reset();
+    document.getElementById('obsAdminFecha').value = new Date().toISOString().slice(0, 10);
+    // Reset estrellas
+    document.querySelectorAll('#section-evaluaciones .eval-estrellas-grupo').forEach(g => {
+      g.dataset.valor = '0';
+      g.querySelectorAll('.eval-estrella').forEach(s => s.classList.remove('activa'));
+    });
+  } catch (err) {
+    showToast('Error al guardar observacion', 'error');
+  } finally {
+    const btn = document.getElementById('btnAdminSubmitObs');
+    btn.disabled = false;
+    btn.textContent = 'Guardar observacion';
+  }
+}
+
+function renderAdminHistorial() {
+  const cursos = ['Bachata Basico', 'Casino Basico', 'Bachata Intermedio', 'Casino Intermedio', 'Mambo Open'];
+  const tbody = document.getElementById('tbodyAdminResumen');
+  tbody.innerHTML = cursos.map(c => {
+    const evCurso = evalAdminCache.filter(e => e.Curso === c);
+    const promDisfrute = evCurso.length
+      ? (evCurso.reduce((a, e) => a + (parseFloat(e.Disfrute) || 0), 0) / evCurso.length).toFixed(1)
+      : '-';
+    return `<tr>
+      <td>${sanitize(c)}</td>
+      <td>${evCurso.length}</td>
+      <td>${promDisfrute}</td>
+    </tr>`;
+  }).join('');
+
+  // Ultimas 10
+  const ultimas = [...evalAdminCache]
+    .sort((a, b) => (b.FechaHoraISO || '').localeCompare(a.FechaHoraISO || ''))
+    .slice(0, 10);
+
+  const lista = document.getElementById('listaAdminUltimasEval');
+  if (ultimas.length === 0) {
+    lista.innerHTML = '<p class="text-muted">No hay evaluaciones aun.</p>';
+  } else {
+    lista.innerHTML = ultimas.map(e => {
+      const promedio = ((parseFloat(e.Disfrute || 0) + parseFloat(e.Comprension || 0) +
+        parseFloat(e.ComodidadPareja || 0) + parseFloat(e.Confianza || 0)) / 4).toFixed(1);
+      return `<div class="eval-admin-ultima">
+        <div class="eval-admin-ultima-info">
+          <span class="eval-admin-ultima-nombre">${sanitize(e.NombreAlumno || '')}</span>
+          <span class="eval-admin-ultima-curso">${sanitize(e.Curso || '')} - Clase ${e.NumeroClase || '?'}</span>
+        </div>
+        <span class="eval-admin-ultima-score">${promedio}</span>
+      </div>`;
+    }).join('');
+  }
+}
+
+function exportarAdminCSV() {
+  if (evalAdminCache.length === 0) {
+    showToast('No hay datos para exportar', 'error');
+    return;
+  }
+
+  const headers = ['Nombre', 'Curso', 'Clase', 'Disfrute', 'Comprension', 'Comodidad en Pareja', 'Confianza', 'Bailo con alguien nuevo', 'Comentario', 'Fecha'];
+  const filas = evalAdminCache.map(e => [
+    '"' + (e.NombreAlumno || '').replace(/"/g, '""') + '"',
+    '"' + (e.Curso || '') + '"',
+    e.NumeroClase || '',
+    e.Disfrute || '',
+    e.Comprension || '',
+    e.ComodidadPareja || '',
+    e.Confianza || '',
+    e.BaileNuevo ? 'Si' : 'No',
+    '"' + (e.Comentario || '').replace(/"/g, '""') + '"',
+    e.FechaEvaluacion || ''
+  ].join(','));
+
+  const csv = [headers.join(','), ...filas].join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'evaluaciones_al_paso_dance_' + new Date().toISOString().slice(0, 10) + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('CSV descargado', 'success');
+}
 
 // ============================================
 // HELPERS

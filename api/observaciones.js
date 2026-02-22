@@ -1,12 +1,20 @@
 const { tables, findAll, createRecord } = require('./_lib/airtable');
+const { verifyToken } = require('./_lib/auth');
 
 const PROFESOR_PIN = '1234';
 
 module.exports = async function handler(req, res) {
-  // Verificar PIN del profesor
+  // Autorizacion: JWT admin O PIN profesor
+  const jwtUser = verifyToken(req);
   const pin = req.headers['x-eval-pin'];
-  if (pin !== PROFESOR_PIN) {
+
+  if (!jwtUser && pin !== PROFESOR_PIN) {
     return res.status(401).json({ error: 'Acceso no autorizado' });
+  }
+
+  // Si es JWT, verificar que sea admin
+  if (jwtUser && jwtUser.role !== 'admin' && pin !== PROFESOR_PIN) {
+    return res.status(403).json({ error: 'Acceso denegado' });
   }
 
   try {

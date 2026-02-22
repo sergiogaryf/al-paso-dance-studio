@@ -10,6 +10,9 @@ const passwordInput = document.getElementById('password');
 const loginBtn = document.getElementById('loginBtn');
 const errorMessage = document.getElementById('errorMessage');
 
+// ---- ESTADO ----
+let rolSeleccionado = null; // 'alumno' o 'profesor'
+
 /**
  * Muestra un mensaje de error en la interfaz
  */
@@ -40,6 +43,15 @@ function setLoading(isLoading) {
     loginBtn.classList.remove('loading');
     loginBtn.disabled = false;
   }
+}
+
+/**
+ * Navega entre vistas del login
+ */
+function irAVista(vistaId) {
+  document.querySelectorAll('.login-vista').forEach(v => v.classList.remove('active'));
+  const vista = document.getElementById(vistaId);
+  if (vista) vista.classList.add('active');
 }
 
 /**
@@ -128,6 +140,43 @@ if (loginForm) {
       });
   }
 
+  // ---- SELECTOR DE ROL ----
+  const btnAlumno = document.getElementById('btnRolAlumno');
+  const btnProfesor = document.getElementById('btnRolProfesor');
+  const btnInvitado = document.getElementById('btnRolInvitado');
+  const btnVolver = document.getElementById('btnVolverSelector');
+  const loginFormTitle = document.getElementById('loginFormTitle');
+
+  if (btnAlumno) {
+    btnAlumno.addEventListener('click', () => {
+      rolSeleccionado = 'alumno';
+      if (loginFormTitle) loginFormTitle.textContent = 'Acceso Alumno';
+      irAVista('vistaLoginForm');
+    });
+  }
+
+  if (btnProfesor) {
+    btnProfesor.addEventListener('click', () => {
+      rolSeleccionado = 'profesor';
+      if (loginFormTitle) loginFormTitle.textContent = 'Acceso Profesor';
+      irAVista('vistaLoginForm');
+    });
+  }
+
+  if (btnInvitado) {
+    btnInvitado.addEventListener('click', () => {
+      window.location.href = 'index.html?modo=invitado';
+    });
+  }
+
+  if (btnVolver) {
+    btnVolver.addEventListener('click', () => {
+      hideError();
+      loginForm.reset();
+      irAVista('vistaSelector');
+    });
+  }
+
   // Manejar envio del formulario
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -152,6 +201,6 @@ if (loginForm) {
 
   // Limpiar error al escribir
   [emailInput, passwordInput].forEach(input => {
-    input.addEventListener('input', hideError);
+    if (input) input.addEventListener('input', hideError);
   });
 }
