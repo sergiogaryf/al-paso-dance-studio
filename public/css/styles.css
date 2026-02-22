@@ -1,6 +1,6 @@
 /* ============================================
    ESTACION SALSERA - Estilos principales
-   Paleta: Negro (#0a0a0a) + Dorado (#E8652B)
+   Paleta: Negro (#0a0a0a) + Dorado (#9B59B6)
    ============================================ */
 
 /* Poppins: moderna, geometrica, llamativa (titulos)
@@ -16,9 +16,9 @@
   --gris-oscuro: #1a1a1a;
   --gris: #222;
   --gris-borde: #2a2a2a;
-  --dorado: #E8652B;
-  --dorado-claro: #e8c547;
-  --dorado-oscuro: #b8860b;
+  --dorado: #9B59B6;
+  --dorado-claro: #D7BDE2;
+  --dorado-oscuro: #6C3483;
   --blanco: #f0f0f0;
   --blanco-suave: #aaa;
   --verde-wa: #25d366;
@@ -51,7 +51,7 @@ nav {
   background: rgba(10,10,10,0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(232,101,43,0.1);
+  border-bottom: 1px solid rgba(155,89,182,0.1);
   transition: padding 0.3s, background 0.3s;
 }
 
@@ -262,7 +262,7 @@ nav.scrolled .nav-logo-img {
 
 .btn-cta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 35px rgba(232,101,43,0.4);
+  box-shadow: 0 8px 35px rgba(155,89,182,0.4);
   background: linear-gradient(135deg, var(--dorado-claro), var(--dorado));
 }
 
@@ -576,8 +576,8 @@ nav.scrolled .nav-logo-img {
 }
 
 .boleto:hover {
-  border-color: rgba(232,101,43,0.4);
-  box-shadow: 0 8px 30px rgba(232,101,43,0.08);
+  border-color: rgba(155,89,182,0.4);
+  box-shadow: 0 8px 30px rgba(155,89,182,0.08);
 }
 
 /* Lado izquierdo - destino */
@@ -585,11 +585,11 @@ nav.scrolled .nav-logo-img {
   flex-shrink: 0;
   width: 200px;
   padding: 2rem 1.5rem;
-  background: linear-gradient(135deg, rgba(232,101,43,0.1), rgba(232,101,43,0.03));
+  background: linear-gradient(135deg, rgba(155,89,182,0.1), rgba(155,89,182,0.03));
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border-right: 1px dashed rgba(232,101,43,0.2);
+  border-right: 1px dashed rgba(155,89,182,0.2);
   position: relative;
 }
 
@@ -645,7 +645,7 @@ nav.scrolled .nav-logo-img {
 
 .boleto:hover .boleto-perforado::before,
 .boleto:hover .boleto-perforado::after {
-  border-color: rgba(232,101,43,0.4);
+  border-color: rgba(155,89,182,0.4);
 }
 
 /* Lado derecho - horarios */
@@ -670,7 +670,7 @@ nav.scrolled .nav-logo-img {
   margin-top: 0.8rem;
   margin-bottom: 0.3rem;
   padding-bottom: 0.3rem;
-  border-bottom: 1px solid rgba(232,101,43,0.1);
+  border-bottom: 1px solid rgba(155,89,182,0.1);
 }
 
 .boleto-dia:first-child {
@@ -725,7 +725,7 @@ nav.scrolled .nav-logo-img {
 }
 
 .director-photo:hover {
-  border-color: rgba(232,101,43,0.3);
+  border-color: rgba(155,89,182,0.3);
 }
 
 .director-photo img {
@@ -880,7 +880,7 @@ footer span { color: var(--dorado-oscuro); }
     backdrop-filter: blur(20px);
     padding: 1.5rem;
     gap: 1.2rem;
-    border-bottom: 1px solid rgba(232,101,43,0.1);
+    border-bottom: 1px solid rgba(155,89,182,0.1);
   }
   .nav-links.active { display: flex; }
   .menu-toggle { display: block; }
@@ -895,7 +895,7 @@ footer span { color: var(--dorado-oscuro); }
   .boleto-izq {
     width: 100%;
     border-right: none;
-    border-bottom: 1px dashed rgba(232,101,43,0.2);
+    border-bottom: 1px dashed rgba(155,89,182,0.2);
     padding: 1.5rem;
   }
   .boleto-perforado {
@@ -928,14 +928,14 @@ footer span { color: var(--dorado-oscuro); }
 /* ---- ACCESO ALUMNOS NAV ---- */
 .nav-acceso {
   color: var(--dorado) !important;
-  border: 1px solid rgba(232,101,43,0.4);
+  border: 1px solid rgba(155,89,182,0.4);
   padding: 0.4rem 1rem;
   border-radius: 20px;
   transition: all 0.3s;
 }
 
 .nav-acceso:hover {
-  background: rgba(232,101,43,0.1) !important;
+  background: rgba(155,89,182,0.1) !important;
   border-color: var(--dorado);
 }
 
@@ -968,7 +968,7 @@ footer span { color: var(--dorado-oscuro); }
 }
 
 .banner-slide:hover {
-  border-color: rgba(232,101,43,0.3);
+  border-color: rgba(155,89,182,0.3);
 }
 
 .banner-img {
@@ -997,8 +997,8 @@ footer span { color: var(--dorado-oscuro); }
 }
 
 .evento-landing-card:hover {
-  border-color: rgba(232,101,43,0.3);
-  box-shadow: 0 8px 30px rgba(232,101,43,0.08);
+  border-color: rgba(155,89,182,0.3);
+  box-shadow: 0 8px 30px rgba(155,89,182,0.08);
 }
 
 .evento-landing-img {
@@ -1066,8 +1066,8 @@ footer span { color: var(--dorado-oscuro); }
 }
 
 .curso-card:hover {
-  border-color: rgba(232, 101, 43, 0.3);
-  box-shadow: 0 8px 30px rgba(232, 101, 43, 0.08);
+  border-color: rgba(155, 89, 182, 0.3);
+  box-shadow: 0 8px 30px rgba(155, 89, 182, 0.08);
   transform: translateY(-4px);
 }
 
@@ -1081,7 +1081,7 @@ footer span { color: var(--dorado-oscuro); }
   font-family: 'Poppins', sans-serif;
   font-size: 2.5rem;
   font-weight: 900;
-  color: rgba(232, 101, 43, 0.2);
+  color: rgba(155, 89, 182, 0.2);
   line-height: 1;
   flex-shrink: 0;
 }
@@ -1122,9 +1122,9 @@ footer span { color: var(--dorado-oscuro); }
 }
 
 .nivel-intermedio {
-  background: rgba(232, 101, 43, 0.12);
+  background: rgba(155, 89, 182, 0.12);
   color: var(--dorado);
-  border: 1px solid rgba(232, 101, 43, 0.3);
+  border: 1px solid rgba(155, 89, 182, 0.3);
 }
 
 .nivel-open {
@@ -1176,7 +1176,7 @@ footer span { color: var(--dorado-oscuro); }
 
 .btn-cta-sm:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(232, 101, 43, 0.35);
+  box-shadow: 0 6px 25px rgba(155, 89, 182, 0.35);
 }
 
 @media (max-width: 768px) {
@@ -1241,12 +1241,12 @@ footer span { color: var(--dorado-oscuro); }
 }
 
 .cal-dia-inline.tiene-clase {
-  border-color: rgba(232, 101, 43, 0.2);
+  border-color: rgba(155, 89, 182, 0.2);
 }
 
 .cal-dia-inline.hoy {
   border-color: var(--dorado);
-  box-shadow: 0 0 8px rgba(232, 101, 43, 0.2);
+  box-shadow: 0 0 8px rgba(155, 89, 182, 0.2);
 }
 
 .cal-dia-inline.hoy .cal-dia-num-inline {
@@ -1319,8 +1319,8 @@ footer span { color: var(--dorado-oscuro); }
   font-weight: 500;
   margin-bottom: 1.5rem;
   padding: 0.6rem 1rem;
-  background: rgba(232, 101, 43, 0.08);
-  border: 1px solid rgba(232, 101, 43, 0.2);
+  background: rgba(155, 89, 182, 0.08);
+  border: 1px solid rgba(155, 89, 182, 0.2);
   border-radius: 10px;
   max-width: 500px;
   margin-left: auto;
