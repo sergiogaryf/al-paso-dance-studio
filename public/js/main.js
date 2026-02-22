@@ -1,5 +1,5 @@
 /* ============================================
-   ESTACION SALSERA - JavaScript principal
+   AL PASO DANCE STUDIO - JavaScript principal
    ============================================ */
 
 // ---- MODO INVITADO ----
@@ -16,7 +16,7 @@
 })();
 
 // Nav scroll effect
-const nav = document.querySelector('nav');
+const nav = document.querySelector('.navbar');
 window.addEventListener('scroll', () => {
   nav.classList.toggle('scrolled', window.scrollY > 50);
 });

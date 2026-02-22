@@ -367,27 +367,27 @@ function renderGraficaSVG(evaluaciones) {
 
   const guias = [2, 4, 6, 8, 10].map(v => {
     const y = H - PAD - ((v - 1) / 9) * (H - PAD * 2);
-    return `<line x1="${PAD}" y1="${y}" x2="${W - PAD}" y2="${y}" stroke="#2a2a2a" stroke-width="1"/>
+    return `<line x1="${PAD}" y1="${y}" x2="${W - PAD}" y2="${y}" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
             <text x="${PAD - 5}" y="${y + 3}" text-anchor="end" fill="#555" font-size="9">${v}</text>`;
   }).join('');
 
   const puntos = points.map(p =>
-    `<circle cx="${p.x}" cy="${p.y}" r="4" fill="#E8652B"/>
-     <text x="${p.x}" y="${p.y - 10}" text-anchor="middle" fill="#E8652B" font-size="10" font-weight="600">${p.prom.toFixed(1)}</text>
-     <text x="${p.x}" y="${H - 8}" text-anchor="middle" fill="#aaa" font-size="9">C${p.clase}</text>`
+    `<circle cx="${p.x}" cy="${p.y}" r="4" fill="#FFFFFF"/>
+     <text x="${p.x}" y="${p.y - 10}" text-anchor="middle" fill="#FFFFFF" font-size="10" font-weight="600">${p.prom.toFixed(1)}</text>
+     <text x="${p.x}" y="${H - 8}" text-anchor="middle" fill="#B8B0BC" font-size="9">C${p.clase}</text>`
   ).join('');
 
   container.innerHTML = `
     <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#E8652B" stop-opacity="0.3"/>
-          <stop offset="100%" stop-color="#E8652B" stop-opacity="0"/>
+          <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.2"/>
+          <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
         </linearGradient>
       </defs>
       ${guias}
       <polygon points="${polygon}" fill="url(#goldGrad)"/>
-      <polyline points="${polyline}" fill="none" stroke="#E8652B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="${polyline}" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       ${puntos}
     </svg>`;
 }

@@ -197,7 +197,7 @@ async function loadEventosInicio() {
       ${eventos.slice(0, 3).map(ev => {
         const fecha = formatDate(ev.fecha);
         return `<div class="glass-card" style="margin-bottom:0.6rem;padding:0.8rem 1rem">
-          <div style="font-size:0.9rem;color:var(--dorado);font-weight:600">${sanitize(ev.titulo)}</div>
+          <div style="font-size:0.9rem;color:var(--blanco);font-weight:600">${sanitize(ev.titulo)}</div>
           <div style="font-size:0.75rem;color:var(--blanco-suave)">${fecha}${ev.lugar ? ' &middot; ' + sanitize(ev.lugar) : ''}</div>
         </div>`;
       }).join('')}

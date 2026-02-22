@@ -1,9 +1,9 @@
 /* ============================================
-   ESTACION SALSERA - Service Worker
+   AL PASO DANCE STUDIO - Service Worker
    Cache-first para assets, network-first para API
    ============================================ */
 
-const CACHE_NAME = 'al-paso-dance-v3';
+const CACHE_NAME = 'al-paso-dance-v6';
 const OFFLINE_URL = '/offline.html';
 
 const ASSETS_TO_CACHE = [
@@ -16,9 +16,9 @@ const ASSETS_TO_CACHE = [
   '/css/login.css',
   '/marzo_clases_2026.ics',
   '/img/Logo.png',
-  '/img/favicon.svg',
+  '/img/favicon.png',
   '/manifest.json',
-  'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap'
+  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@400;500;600;700;800;900&display=swap'
 ];
 
 // Instalación: cachear assets estáticos

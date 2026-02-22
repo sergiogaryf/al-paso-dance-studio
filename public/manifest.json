@@ -1,12 +1,12 @@
 {
   "name": "Al Paso Dance Studio",
-  "short_name": "Salsera",
-  "description": "Al Paso Dance Studio - Donde el ritmo comienza. Tu academia de danza en Calera y Quillota.",
+  "short_name": "Al Paso",
+  "description": "Al Paso Dance Studio - Donde el ritmo comienza. Tu academia de danza en Concon.",
   "start_url": "/app.html",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0a0a0a",
-  "theme_color": "#0a0a0a",
+  "background_color": "#140A18",
+  "theme_color": "#140A18",
   "icons": [
     {
       "src": "img/icons/icon-72x72.png",

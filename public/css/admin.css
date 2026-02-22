@@ -1,5 +1,5 @@
 /* ============================================
-   ESTACION SALSERA - Panel Admin Estilos
+   AL PASO DANCE STUDIO - Panel Admin Estilos
    ============================================ */
 
 /* ---- LAYOUT ---- */
@@ -18,7 +18,7 @@
   background: rgba(17, 17, 17, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-right: 1px solid var(--gris-borde);
+  border-right: 1px solid var(--borde);
   display: flex;
   flex-direction: column;
   z-index: 50;
@@ -27,7 +27,7 @@
 
 .sidebar-header {
   padding: 1.8rem 1.5rem;
-  border-bottom: 1px solid var(--gris-borde);
+  border-bottom: 1px solid var(--borde);
   text-align: center;
 }
 
@@ -35,14 +35,14 @@
   width: 60px;
   height: auto;
   mix-blend-mode: screen;
-  filter: drop-shadow(0 0 15px rgba(232, 101, 43, 0.2));
+  filter: drop-shadow(0 0 15px rgba(255,255,255,0.1));
   margin-bottom: 0.5rem;
 }
 
 .sidebar-title {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.75rem;
-  color: var(--dorado);
+  color: var(--blanco);
   text-transform: uppercase;
   letter-spacing: 3px;
   font-weight: 600;
@@ -75,14 +75,14 @@
 }
 
 .nav-item:hover {
-  background: rgba(232, 101, 43, 0.05);
-  color: var(--dorado-claro);
+  background: rgba(255,255,255,0.03);
+  color: var(--blanco-suave);
 }
 
 .nav-item.active {
-  background: rgba(232, 101, 43, 0.08);
-  color: var(--dorado);
-  border-left-color: var(--dorado);
+  background: rgba(255,255,255,0.04);
+  color: var(--blanco);
+  border-left-color: var(--blanco);
 }
 
 .nav-icon {
@@ -98,7 +98,7 @@
 /* Sidebar Footer */
 .sidebar-footer {
   padding: 1.2rem 1.5rem;
-  border-top: 1px solid var(--gris-borde);
+  border-top: 1px solid var(--borde);
 }
 
 .btn-logout {
@@ -130,8 +130,8 @@
   left: 1rem;
   z-index: 60;
   background: rgba(17, 17, 17, 0.9);
-  border: 1px solid var(--gris-borde);
-  color: var(--dorado);
+  border: 1px solid var(--borde);
+  color: var(--blanco);
   font-size: 1.3rem;
   padding: 0.5rem 0.7rem;
   border-radius: 10px;
@@ -164,11 +164,11 @@
   align-items: center;
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--gris-borde);
+  border-bottom: 1px solid var(--borde);
 }
 
 .top-bar-greeting {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 1.3rem;
   color: var(--blanco);
   font-weight: 600;
@@ -197,9 +197,9 @@
 }
 
 .section-title {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 1.3rem;
-  color: var(--dorado);
+  color: var(--blanco);
   font-weight: 700;
 }
 
@@ -225,7 +225,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(232, 101, 43, 0.08);
+  background: rgba(255,255,255,0.04);
   border-radius: 12px;
   flex-shrink: 0;
 }
@@ -236,10 +236,10 @@
 }
 
 .stat-value {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--dorado);
+  color: var(--blanco);
   line-height: 1.2;
 }
 
@@ -257,9 +257,9 @@
 }
 
 .card-title {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.85rem;
-  color: var(--dorado);
+  color: var(--blanco);
   margin-bottom: 1rem;
   font-weight: 600;
 }
@@ -289,12 +289,12 @@
 }
 
 .clase-hoy-badge {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.6rem;
   padding: 0.3rem 0.6rem;
   border-radius: 8px;
-  background: rgba(232, 101, 43, 0.1);
-  color: var(--dorado);
+  background: rgba(255,255,255,0.05);
+  color: var(--blanco);
 }
 
 /* ---- ALUMNO RECIENTE ---- */
@@ -342,7 +342,7 @@
   overflow-x: auto;
   background: rgba(20, 20, 20, 0.85);
   border-radius: 16px;
-  border: 1px solid var(--gris-borde);
+  border: 1px solid var(--borde);
 }
 
 .table-actions {
@@ -360,14 +360,14 @@
 .entity-card {
   background: rgba(20, 20, 20, 0.85);
   backdrop-filter: blur(12px);
-  border: 1px solid var(--gris-borde);
+  border: 1px solid var(--borde);
   border-radius: 16px;
   padding: 1.2rem;
   transition: border-color 0.3s;
 }
 
 .entity-card:hover {
-  border-color: rgba(232, 101, 43, 0.3);
+  border-color: rgba(255,255,255,0.2);
 }
 
 .entity-card-header {
@@ -378,9 +378,9 @@
 }
 
 .entity-card-title {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.95rem;
-  color: var(--dorado);
+  color: var(--blanco);
   font-weight: 600;
 }
 
@@ -451,9 +451,9 @@
 }
 
 .asistencia-clase h4 {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.8rem;
-  color: var(--dorado);
+  color: var(--blanco);
   margin-bottom: 0.5rem;
 }
 
@@ -468,7 +468,7 @@
 }
 
 .asistencia-item:hover {
-  background: rgba(232, 101, 43, 0.03);
+  background: rgba(255,255,255,0.02);
 }
 
 .asistencia-item label {
@@ -483,7 +483,7 @@
 .asistencia-check {
   width: 18px;
   height: 18px;
-  accent-color: var(--dorado);
+  accent-color: var(--blanco);
   cursor: pointer;
 }
 
@@ -491,7 +491,7 @@
 .eval-admin-tabs {
   display: flex;
   gap: 0;
-  border-bottom: 1px solid var(--gris-borde);
+  border-bottom: 1px solid var(--borde);
   margin-bottom: 1.5rem;
 }
 
@@ -502,7 +502,7 @@
   border: none;
   border-bottom: 2px solid transparent;
   color: var(--blanco-suave);
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -511,8 +511,8 @@
 }
 
 .eval-admin-tab.active {
-  color: var(--dorado);
-  border-bottom-color: var(--dorado);
+  color: var(--blanco);
+  border-bottom-color: var(--blanco);
 }
 
 .eval-admin-tab-section {
@@ -544,10 +544,10 @@
 
 .eval-admin-stat-value {
   display: block;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--dorado);
+  color: var(--blanco);
   margin-bottom: 0.3rem;
 }
 
@@ -582,14 +582,14 @@
 
 .eval-admin-barra-track {
   height: 8px;
-  background: var(--gris-borde);
+  background: var(--borde);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .eval-admin-barra-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--dorado-oscuro), var(--dorado));
+  background: linear-gradient(90deg, var(--morado-claro), var(--blanco));
   border-radius: 4px;
   transition: width 0.6s ease;
   width: 0;
@@ -633,7 +633,7 @@
 
 .eval-admin-estrellas-item label {
   display: block;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.55rem;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -648,14 +648,14 @@
 
 .eval-estrella {
   font-size: 1.5rem;
-  color: var(--gris-borde);
+  color: var(--borde);
   cursor: pointer;
   transition: color 0.15s, transform 0.15s;
   user-select: none;
 }
 
 .eval-estrella.activa {
-  color: var(--dorado);
+  color: var(--blanco);
 }
 
 .eval-estrella:hover {
@@ -668,7 +668,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.8rem 0;
-  border-bottom: 1px solid var(--gris-borde);
+  border-bottom: 1px solid var(--borde);
 }
 
 .eval-admin-ultima:last-child {
@@ -693,9 +693,9 @@
 }
 
 .eval-admin-ultima-score {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 1rem;
-  color: var(--dorado);
+  color: var(--blanco);
   font-weight: 700;
 }
 

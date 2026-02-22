@@ -1,5 +1,5 @@
 /* ============================================
-   ESTACION SALSERA - Calendario Styles
+   AL PASO DANCE STUDIO - Calendario Styles
    ============================================ */
 
 .cal-page {
@@ -15,9 +15,9 @@
   width: 100%;
   height: 100%;
   background:
-    radial-gradient(ellipse at 20% 50%, rgba(232, 101, 43, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.03) 0%, transparent 50%),
     radial-gradient(ellipse at 80% 20%, rgba(232, 197, 71, 0.04) 0%, transparent 40%),
-    #0a0a0a;
+    #140A18;
   z-index: 0;
 }
 
@@ -33,7 +33,7 @@
   background: rgba(10, 10, 10, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--gris-borde);
+  border-bottom: 1px solid var(--borde);
 }
 
 .cal-nav-logo {
@@ -58,7 +58,7 @@
 }
 
 .cal-header h1 {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 1.8rem;
   font-weight: 800;
   color: var(--blanco);
@@ -91,7 +91,7 @@
 }
 
 /* Colores por curso */
-.cal-dot-bachata-int { background: #E8652B; }
+.cal-dot-bachata-int { background: #FFFFFF; }
 .cal-dot-casino-bas  { background: #3498db; }
 .cal-dot-casino-int  { background: #e74c3c; }
 .cal-dot-mambo       { background: #9b59b6; }
@@ -111,7 +111,7 @@
 }
 
 .cal-dias-header span {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.55rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -142,8 +142,8 @@
 }
 
 .cal-dia.hoy {
-  border: 1px solid var(--dorado);
-  background: rgba(232, 101, 43, 0.06);
+  border: 1px solid var(--blanco);
+  background: rgba(255,255,255,0.03);
 }
 
 .cal-dia-num {
@@ -183,11 +183,11 @@
 }
 
 .cal-section-title {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: var(--dorado);
+  color: var(--blanco);
   margin-bottom: 1rem;
 }
 

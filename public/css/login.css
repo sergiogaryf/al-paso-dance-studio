@@ -1,6 +1,6 @@
 /* ============================================
-   ESTACION SALSERA - Login Styles
-   Glassmorphism + Train theme
+   AL PASO DANCE STUDIO - Login Styles
+   Glassmorphism dark theme
    ============================================ */
 
 /* ---- FONDO ---- */
@@ -20,10 +20,10 @@
   width: 100%;
   height: 100%;
   background:
-    radial-gradient(ellipse at 20% 50%, rgba(232, 101, 43, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
     radial-gradient(ellipse at 80% 20%, rgba(107, 45, 107, 0.05) 0%, transparent 40%),
     radial-gradient(ellipse at 50% 80%, rgba(74, 14, 78, 0.04) 0%, transparent 50%),
-    #0a0a0a;
+    #140A18;
   z-index: 0;
 }
 
@@ -52,20 +52,20 @@
   background: rgba(18, 18, 18, 0.88);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(232, 101, 43, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 24px;
   padding: 2.5rem 2rem;
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.5),
-    0 0 80px rgba(232, 101, 43, 0.03),
+    0 0 80px rgba(255, 255, 255, 0.02),
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .login-card:hover {
-  border-color: rgba(232, 101, 43, 0.25);
+  border-color: rgba(67, 4, 64, 0.25);
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.5),
-    0 0 80px rgba(232, 101, 43, 0.06),
+    0 0 80px rgba(255, 255, 255, 0.03),
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
@@ -91,7 +91,7 @@
   width: 140px;
   height: auto;
   mix-blend-mode: screen;
-  filter: drop-shadow(0 4px 20px rgba(232, 101, 43, 0.15));
+  filter: drop-shadow(0 4px 20px rgba(255, 255, 255, 0.08));
   transition: transform 0.3s ease;
 }
 
@@ -112,10 +112,10 @@
 
 /* ---- TITULOS ---- */
 .login-title {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 1.4rem;
   font-weight: 700;
-  color: var(--dorado);
+  color: var(--blanco);
   text-align: center;
   margin-bottom: 0.3rem;
   letter-spacing: -0.5px;
@@ -147,7 +147,7 @@
   gap: 0.6rem;
   padding: 1.5rem 0.8rem;
   background: rgba(26, 26, 26, 0.6);
-  border: 1px solid var(--gris-borde);
+  border: 1px solid var(--borde);
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -156,10 +156,10 @@
 }
 
 .login-role-card:hover {
-  border-color: rgba(232, 101, 43, 0.4);
-  background: rgba(232, 101, 43, 0.06);
+  border-color: rgba(67, 4, 64, 0.25);
+  background: rgba(255, 255, 255, 0.03);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(232, 101, 43, 0.08);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.04);
 }
 
 .login-role-icon {
@@ -167,7 +167,7 @@
 }
 
 .login-role-text {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -181,7 +181,7 @@
 
 .login-card .form-group label {
   display: block;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 2.5px;
@@ -194,7 +194,7 @@
   width: 100%;
   padding: 0.9rem 1.2rem;
   background: rgba(26, 26, 26, 0.95);
-  border: 1px solid var(--gris-borde);
+  border: 1px solid var(--borde);
   border-radius: 12px;
   color: var(--blanco);
   font-size: 0.95rem;
@@ -204,8 +204,8 @@
 }
 
 .login-card .form-input:focus {
-  border-color: var(--dorado);
-  box-shadow: 0 0 0 3px rgba(232, 101, 43, 0.12), 0 0 20px rgba(232, 101, 43, 0.05);
+  border-color: var(--blanco);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06), 0 0 20px rgba(255, 255, 255, 0.03);
   background: rgba(30, 30, 30, 0.95);
 }
 
@@ -273,7 +273,7 @@
   width: 18px;
   height: 18px;
   border: 2px solid rgba(10, 10, 10, 0.3);
-  border-top-color: var(--negro);
+  border-top-color: var(--fondo);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
@@ -313,7 +313,7 @@
 }
 
 .back-link:hover {
-  color: var(--dorado);
+  color: var(--blanco);
 }
 
 .back-arrow {
@@ -342,7 +342,7 @@
 }
 
 .back-link-btn:hover {
-  color: var(--dorado);
+  color: var(--blanco);
 }
 
 .back-link-btn:hover .back-arrow {

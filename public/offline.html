@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sin Conexión - Al Paso Dance Studio</title>
-  <meta name="theme-color" content="#0a0a0a">
-  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <title>Sin Conexion - Al Paso Dance Studio</title>
+  <meta name="theme-color" content="#140A18">
+  <link rel="icon" type="image/png" href="img/favicon.png">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=DM+Sans:wght@300;400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=DM+Sans:wght@300;400&display=swap');
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'DM Sans', sans-serif;
-      background: #0a0a0a;
-      color: #f0f0f0;
+      background: #140A18;
+      color: #FFFFFF;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -32,8 +32,7 @@
       width: 120px;
       height: auto;
       margin-bottom: 2rem;
-      mix-blend-mode: screen;
-      filter: drop-shadow(0 0 20px rgba(232, 101, 43, 0.3));
+      filter: drop-shadow(0 0 20px rgba(255,255,255,0.15));
       opacity: 0.8;
     }
 
@@ -44,14 +43,16 @@
     }
 
     h1 {
-      font-family: 'Poppins', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 1.5rem;
-      color: #E8652B;
+      color: #FFFFFF;
+      text-transform: uppercase;
+      letter-spacing: 2px;
       margin-bottom: 0.8rem;
     }
 
     p {
-      color: #aaa;
+      color: #B8B0BC;
       font-weight: 300;
       font-size: 0.95rem;
       line-height: 1.7;
@@ -62,50 +63,41 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      background: linear-gradient(135deg, #E8652B, #b8860b);
-      color: #0a0a0a;
+      background: #FFFFFF;
+      color: #430440;
       padding: 0.8rem 2rem;
       border-radius: 50px;
       font-size: 0.95rem;
       font-weight: 700;
-      border: none;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid rgba(255,255,255,0.3);
+      box-shadow:
+        0 4px 20px rgba(67, 4, 64, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
       cursor: pointer;
       transition: all 0.3s;
-      font-family: 'DM Sans', sans-serif;
       text-decoration: none;
     }
 
     .btn-retry:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 35px rgba(232, 101, 43, 0.4);
-    }
-
-    .train-track {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: repeating-linear-gradient(
-        90deg,
-        transparent 0px,
-        transparent 30px,
-        rgba(232, 101, 43, 0.15) 30px,
-        rgba(232, 101, 43, 0.15) 32px
-      );
+      box-shadow:
+        0 8px 35px rgba(67, 4, 64, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
     }
   </style>
 </head>
 <body>
   <div class="offline-container">
-    <img src="img/Logo.png" alt="Al Paso Dance Studio" class="offline-logo">
+    <img src="img/logo-icon.png" alt="Al Paso Dance Studio" class="offline-logo">
     <div class="offline-icon">&#9888;</div>
-    <h1>Tren Detenido</h1>
-    <p>No hay conexión a internet en este momento. Verifica tu conexión e intenta nuevamente para seguir bailando.</p>
+    <h1>Sin Conexion</h1>
+    <p>No hay conexion a internet en este momento. Verifica tu conexion e intenta nuevamente para seguir bailando.</p>
     <a href="/" class="btn-retry" onclick="window.location.reload(); return false;">
-      Reintentar Conexión
+      Reintentar Conexion
     </a>
   </div>
-  <div class="train-track"></div>
 </body>
 </html>
