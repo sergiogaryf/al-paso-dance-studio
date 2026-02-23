@@ -1434,12 +1434,22 @@ footer span { color: var(--blanco); }
   margin-right: auto;
 }
 
-/* Sección galería: reduce padding inferior para que la tira quede cercana */
+/* ---- GALERÍA ---- */
 .section-galeria {
-  padding-bottom: 1.5rem;
+  max-width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 4rem;
 }
 
-/* Link Instagram en subtítulo */
+.section-galeria .section-header {
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 2rem;
+}
+
+/* Link Instagram en subtítulo galería */
 .ig-link {
   color: rgba(168, 85, 247, 0.9);
   text-decoration: none;
@@ -1448,68 +1458,69 @@ footer span { color: var(--blanco); }
 }
 .ig-link:hover { color: #f97316; }
 
-/* ---- GALERÍA MARQUEE — tira horizontal continua ---- */
-.galeria-marquee {
-  overflow: hidden;
+/* Contenedor externo: recorta el overflow */
+.galeria-outer {
   width: 100%;
-  padding-bottom: 3rem;
-  /* vignette en los bordes laterales */
-  mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%);
+  overflow: hidden;
+  /* vignette lateral */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
 }
 
-.galeria-track {
+/* Pista animada */
+.galeria-inner {
   display: flex;
-  gap: 6px;
+  flex-direction: row;
+  gap: 10px;
   width: max-content;
-  animation: scrollGaleria 32s linear infinite;
+  animation: galeriaScroll 42s linear infinite;
 }
 
-.galeria-track:hover {
+.galeria-inner:hover {
   animation-play-state: paused;
 }
 
-.galeria-slide {
-  width: 248px;
-  height: 370px;
+/* Tarjeta individual */
+.gslide {
+  width: 320px;
+  height: 450px;
   border-radius: 10px;
   overflow: hidden;
-  border: none;
   flex-shrink: 0;
+  flex-grow: 0;
   position: relative;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.galeria-slide:hover {
-  transform: scale(1.02);
-  box-shadow: 0 0 24px rgba(168, 85, 247, 0.35), 0 8px 30px rgba(0,0,0,0.4);
+.gslide:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 32px rgba(168, 85, 247, 0.4), 0 4px 20px rgba(0,0,0,0.5);
   z-index: 2;
 }
 
-/* overlay oscuro sutil para consistencia de tono */
-.galeria-slide::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.08) 0%, rgba(15,4,18,0.3) 100%);
-  pointer-events: none;
-}
-
-.galeria-slide img {
+.gslide img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
-  transition: transform 0.4s;
+  transition: transform 0.5s ease;
 }
 
-.galeria-slide:hover img {
-  transform: scale(1.05);
+.gslide:hover img {
+  transform: scale(1.06);
 }
 
-@keyframes scrollGaleria {
+@keyframes galeriaScroll {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
+}
+
+@media (max-width: 768px) {
+  .gslide {
+    width: 220px;
+    height: 300px;
+  }
 }
 
 /* ---- PRECIOS ---- */
