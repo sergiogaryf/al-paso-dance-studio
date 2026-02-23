@@ -666,6 +666,59 @@ ul { list-style: none; }
   font-weight: 300;
   font-size: 0.9rem;
   line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+/* ---- INSTRUCTOR STATS (15+ años / 1K+ alumnos / 5 premios) ---- */
+.instructor-stats {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.instructor-stat {
+  flex: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 14px;
+  padding: 1rem 0.5rem 0.8rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.instructor-stat:hover {
+  border-color: rgba(168, 85, 247, 0.5);
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.2);
+}
+
+.instructor-stat svg {
+  width: 22px;
+  height: 22px;
+  color: rgba(168, 85, 247, 0.85);
+  margin-bottom: 0.1rem;
+}
+
+.stat-valor {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #c084fc 0%, #f97316 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.stat-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--blanco-suave);
+  font-weight: 500;
 }
 
 @media (max-width: 700px) {
