@@ -671,15 +671,15 @@ function setupFotoUpload() {
   const btn = document.getElementById('fotoUploadBtn');
   if (!input || !btn) return;
 
-  btn.addEventListener('click', () => input.click());
-
+  let uploading = false;
   input.addEventListener('change', async (e) => {
+    if (uploading) return;
     const file = e.target.files[0];
     if (!file) return;
 
+    uploading = true;
     const origContent = btn.innerHTML;
     btn.textContent = '...';
-    btn.disabled = true;
 
     try {
       const base64 = await comprimirFoto(file);
@@ -694,7 +694,7 @@ function setupFotoUpload() {
       console.error('Error subiendo foto:', err);
     } finally {
       btn.innerHTML = origContent;
-      btn.disabled = false;
+      uploading = false;
       input.value = '';
     }
   });

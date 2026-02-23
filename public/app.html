@@ -225,8 +225,8 @@
       <div class="perfil-header">
         <div class="perfil-avatar-wrapper">
           <div class="avatar avatar-xl" id="perfilAvatar">--</div>
-          <button class="foto-upload-btn" id="fotoUploadBtn" title="Cambiar foto">&#9998;</button>
-          <input type="file" id="fotoInput" accept="image/*" style="display:none">
+          <label class="foto-upload-btn" id="fotoUploadBtn" for="fotoInput" title="Cambiar foto">&#9998;</label>
+          <input type="file" id="fotoInput" accept="image/*" style="position:absolute;width:0;height:0;opacity:0;overflow:hidden">
         </div>
         <h2 class="perfil-name" id="perfilName">-</h2>
         <span class="badge badge-gold" id="perfilRole">alumno</span>
