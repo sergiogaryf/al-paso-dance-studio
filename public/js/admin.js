@@ -69,7 +69,6 @@ function loadSection(section) {
     case 'clases': loadClases(); break;
     case 'eventos': loadEventos(); break;
     case 'evaluaciones': loadEvaluaciones(); break;
-    case 'banners': loadBanners(); break;
   }
 }
 
@@ -129,8 +128,6 @@ function setupModals() {
   document.getElementById('btnNuevoAlumno').addEventListener('click', () => openAlumnoModal());
   document.getElementById('btnNuevaClase').addEventListener('click', () => openClaseModal());
   document.getElementById('btnNuevoEvento').addEventListener('click', () => openEventoModal());
-  document.getElementById('btnNuevoBanner').addEventListener('click', () => openBannerModal());
-
   // Boton editar desde modal detalle
   document.getElementById('detalleAlumnoEditarBtn').addEventListener('click', () => {
     const id = document.getElementById('detalleAlumnoEditarBtn').dataset.alumnoId;
@@ -152,8 +149,6 @@ function setupForms() {
   document.getElementById('formAlumno').addEventListener('submit', handleAlumnoSubmit);
   document.getElementById('formClase').addEventListener('submit', handleClaseSubmit);
   document.getElementById('formEvento').addEventListener('submit', handleEventoSubmit);
-  document.getElementById('formBanner').addEventListener('submit', handleBannerSubmit);
-
   // Filters
   document.getElementById('filterAlumnoNombre').addEventListener('input', filterAlumnos);
   document.getElementById('filterAlumnoCurso').addEventListener('change', filterAlumnos);
@@ -517,92 +512,6 @@ async function handleEventoSubmit(e) {
 }
 
 // ============================================
-// BANNERS
-// ============================================
-async function loadBanners() {
-  try {
-    const banners = await FirestoreService.getBanners();
-    const grid = document.getElementById('bannersGrid');
-    if (banners.length === 0) {
-      grid.innerHTML = '<p class="text-muted">No hay banners registrados</p>';
-      return;
-    }
-    grid.innerHTML = banners.map(b => `
-      <div class="entity-card">
-        ${b.imagenURL ? `<img src="${sanitize(b.imagenURL)}" alt="${sanitize(b.titulo)}" class="entity-card-img" onerror="this.style.display='none'">` : ''}
-        <div class="entity-card-header">
-          <span class="entity-card-title">${sanitize(b.titulo)}</span>
-          ${b.activo ? '<span class="badge badge-green">Activo</span>' : '<span class="badge badge-red">Inactivo</span>'}
-        </div>
-        <div class="entity-card-body">
-          <div class="detail-row"><span class="detail-label">Orden</span><span class="detail-value">${b.orden || 0}</span></div>
-          <div class="detail-row"><span class="detail-label">Enlace</span><span class="detail-value">${b.enlace ? sanitize(b.enlace).substring(0, 30) + '...' : '-'}</span></div>
-          <div class="detail-row"><span class="detail-label">Inicio</span><span class="detail-value">${b.fechaInicio || '-'}</span></div>
-          <div class="detail-row"><span class="detail-label">Fin</span><span class="detail-value">${b.fechaFin || '-'}</span></div>
-        </div>
-        <div class="entity-card-footer">
-          <button class="btn-icon" onclick="editBanner('${b.id}')" title="Editar">&#9998;</button>
-          <button class="btn-icon" onclick="confirmDelete('${b.id}', 'banner', '${sanitize(b.titulo)}')" title="Eliminar">&#10006;</button>
-        </div>
-      </div>
-    `).join('');
-  } catch (e) {
-    console.error('Error cargando banners:', e);
-    showToast('Error al cargar banners', 'error');
-  }
-}
-
-function openBannerModal(data = null) {
-  document.getElementById('modalBannerTitle').textContent = data ? 'Editar Banner' : 'Nuevo Banner';
-  document.getElementById('bannerId').value = data ? data.id : '';
-  document.getElementById('bannerTitulo').value = data ? data.titulo : '';
-  document.getElementById('bannerImagenURL').value = data ? data.imagenURL || '' : '';
-  document.getElementById('bannerEnlace').value = data ? data.enlace || '' : '';
-  document.getElementById('bannerOrden').value = data ? data.orden || 0 : 0;
-  document.getElementById('bannerActivo').checked = data ? data.activo !== false : true;
-  document.getElementById('bannerFechaInicio').value = data ? data.fechaInicio || '' : '';
-  document.getElementById('bannerFechaFin').value = data ? data.fechaFin || '' : '';
-  openModal('modalBanner');
-}
-
-async function editBanner(id) {
-  try {
-    const banner = await FirestoreService.getBanner(id);
-    if (banner) openBannerModal(banner);
-  } catch (e) {
-    showToast('Error al cargar datos del banner', 'error');
-  }
-}
-
-async function handleBannerSubmit(e) {
-  e.preventDefault();
-  const id = document.getElementById('bannerId').value;
-  const data = {
-    titulo: document.getElementById('bannerTitulo').value,
-    imagenURL: document.getElementById('bannerImagenURL').value,
-    enlace: document.getElementById('bannerEnlace').value,
-    orden: parseInt(document.getElementById('bannerOrden').value) || 0,
-    activo: document.getElementById('bannerActivo').checked,
-    fechaInicio: document.getElementById('bannerFechaInicio').value,
-    fechaFin: document.getElementById('bannerFechaFin').value
-  };
-
-  try {
-    if (id) {
-      await FirestoreService.updateBanner(id, data);
-      showToast('Banner actualizado correctamente', 'success');
-    } else {
-      await FirestoreService.createBanner(data);
-      showToast('Banner creado correctamente', 'success');
-    }
-    closeModal('modalBanner');
-    loadBanners();
-  } catch (e) {
-    showToast('Error al guardar banner: ' + e.message, 'error');
-  }
-}
-
-// ============================================
 // DELETE CONFIRM
 // ============================================
 let pendingDeleteId = null;
@@ -622,7 +531,6 @@ document.getElementById('btnConfirmDelete').addEventListener('click', async () =
       case 'alumno': await ApiService.deleteUser(pendingDeleteId); loadAlumnos(); break;
       case 'clase': await ApiService.deleteClase(pendingDeleteId); loadClases(); break;
       case 'evento': await ApiService.deleteEvento(pendingDeleteId); loadEventos(); break;
-      case 'banner': await ApiService.deleteBanner(pendingDeleteId); loadBanners(); break;
     }
     showToast('Registro eliminado correctamente', 'success');
   } catch (e) {

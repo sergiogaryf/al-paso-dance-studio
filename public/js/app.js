@@ -61,6 +61,7 @@ function initApp() {
   setupTabs();
   setupLogout();
   setupEvaluacion();
+  setupFotoUpload();
   loadInicio();
   registerSW();
 }
@@ -541,39 +542,32 @@ async function loadCompaneros() {
     return;
   }
 
+  container.innerHTML = '<div class="empty-state"><p>Cargando...</p></div>';
+
   try {
-    // Cargar clases si no estan cargadas
-    if (userClases.length === 0) {
-      const allClases = await FirestoreService.getClasesActivas();
-      userClases = allClases.filter(c =>
-        cursosNombres.some(n => c.nombre && c.nombre.toLowerCase().includes(n.toLowerCase()))
-      );
-    }
-
-    // Si no hay clases en API, mostrar por nombre de curso
-    const clasesParaMostrar = userClases.length > 0
-      ? userClases
-      : cursosNombres.map(n => ({ id: null, nombre: n, dia: '' }));
-
     let html = '';
-    for (const clase of clasesParaMostrar) {
+    for (const cursoNombre of cursosNombres) {
       let companeros = [];
-      if (clase.id) {
-        try { companeros = await FirestoreService.getAlumnosByClase(clase.id); } catch {}
-      }
-      const otros = companeros.filter(c => c.id !== currentUser.uid);
+      try {
+        companeros = await ApiService._fetch(`/api/companeros?curso=${encodeURIComponent(cursoNombre)}`);
+        if (!Array.isArray(companeros)) companeros = [];
+      } catch {}
 
       html += `
         <div class="companeros-grupo">
-          <div class="companeros-grupo-title">${clase.nombre}</div>
-          ${otros.length === 0
+          <div class="companeros-grupo-title">${sanitize(cursoNombre)}</div>
+          ${companeros.length === 0
             ? '<p class="text-muted" style="font-size:0.85rem;padding:0.3rem 0;">Aun no hay companeros inscritos</p>'
-            : otros.map(comp => `
+            : companeros.map(comp => `
               <div class="companero-item">
-                <div class="avatar">${getInitials(comp.nombre)}</div>
+                <div class="avatar" style="${comp.fotoUrl ? 'padding:0;overflow:hidden;' : ''}">
+                  ${comp.fotoUrl
+                    ? `<img src="${comp.fotoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`
+                    : getInitials(comp.nombre)}
+                </div>
                 <div class="companero-info">
-                  <h4>${comp.nombre}</h4>
-                  <span class="badge badge-gold">${comp.nivel || '-'}</span>
+                  <h4>${sanitize(comp.nombre)}</h4>
+                  <span class="badge badge-gold">${sanitize(comp.genero || '-')}</span>
                 </div>
               </div>
             `).join('')
@@ -600,7 +594,14 @@ async function loadCompaneros() {
 function loadPerfil() {
   if (!currentUser) return;
 
-  document.getElementById('perfilAvatar').textContent = getInitials(currentUser.nombre);
+  const avatarEl = document.getElementById('perfilAvatar');
+  if (currentUser.fotoUrl) {
+    avatarEl.innerHTML = `<img src="${currentUser.fotoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
+    avatarEl.style.padding = '0';
+    avatarEl.style.overflow = 'hidden';
+  } else {
+    avatarEl.textContent = getInitials(currentUser.nombre);
+  }
   document.getElementById('perfilName').textContent = currentUser.nombre || '-';
   document.getElementById('perfilRole').textContent = currentUser.role || 'alumno';
   document.getElementById('perfilPlan').textContent = currentUser.plan || '-';
@@ -660,4 +661,66 @@ function calcMeses(fechaIngreso) {
     const meses = (hoy.getFullYear() - inicio.getFullYear()) * 12 + (hoy.getMonth() - inicio.getMonth());
     return Math.max(0, meses);
   } catch { return 0; }
+}
+
+// ============================================
+// FOTO PERFIL
+// ============================================
+function setupFotoUpload() {
+  const input = document.getElementById('fotoInput');
+  const btn = document.getElementById('fotoUploadBtn');
+  if (!input || !btn) return;
+
+  btn.addEventListener('click', () => input.click());
+
+  input.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const origContent = btn.innerHTML;
+    btn.textContent = '...';
+    btn.disabled = true;
+
+    try {
+      const base64 = await comprimirFoto(file);
+      await ApiService.updateUser(currentUser.uid, { fotoUrl: base64 });
+      currentUser.fotoUrl = base64;
+
+      const avatarEl = document.getElementById('perfilAvatar');
+      avatarEl.innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
+      avatarEl.style.padding = '0';
+      avatarEl.style.overflow = 'hidden';
+    } catch (err) {
+      console.error('Error subiendo foto:', err);
+    } finally {
+      btn.innerHTML = origContent;
+      btn.disabled = false;
+      input.value = '';
+    }
+  });
+}
+
+function comprimirFoto(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const size = 200;
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        const minDim = Math.min(img.width, img.height);
+        const sx = (img.width - minDim) / 2;
+        const sy = (img.height - minDim) / 2;
+        ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }

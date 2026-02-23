@@ -78,12 +78,6 @@
             <span class="nav-text">Evaluaciones</span>
           </a>
         </li>
-        <li>
-          <a href="#" class="nav-item" data-section="banners">
-            <span class="nav-icon">&#127912;</span>
-            <span class="nav-text">Banners</span>
-          </a>
-        </li>
       </ul>
     </nav>
 
@@ -467,18 +461,6 @@
       </div>
     </section>
 
-    <!-- ======================== BANNERS ======================== -->
-    <section class="admin-section" id="section-banners">
-      <div class="section-header">
-        <h2 class="section-title">Banners</h2>
-        <button class="btn-primary btn-sm" id="btnNuevoBanner">+ Nuevo Banner</button>
-      </div>
-
-      <div class="cards-grid" id="bannersGrid">
-        <p class="text-muted">Cargando banners...</p>
-      </div>
-    </section>
-
   </main>
 
   <!-- ======================== MODALS ======================== -->
@@ -690,58 +672,6 @@
         </div>
         <div class="modal-actions">
           <button type="button" class="btn-secondary btn-sm" data-close="modalEvento">Cancelar</button>
-          <button type="submit" class="btn-primary btn-sm">Guardar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal Banner -->
-  <div class="modal-overlay" id="modalBanner">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 id="modalBannerTitle">Nuevo Banner</h3>
-        <button class="modal-close" data-close="modalBanner">&times;</button>
-      </div>
-      <form id="formBanner">
-        <input type="hidden" id="bannerId">
-        <div class="form-group">
-          <label for="bannerTitulo">Titulo</label>
-          <input type="text" id="bannerTitulo" class="form-input" placeholder="Titulo del banner" required>
-        </div>
-        <div class="form-group">
-          <label for="bannerImagenURL">URL de imagen</label>
-          <input type="url" id="bannerImagenURL" class="form-input" placeholder="https://ejemplo.com/banner.jpg" required>
-        </div>
-        <div class="form-group">
-          <label for="bannerEnlace">Enlace</label>
-          <input type="url" id="bannerEnlace" class="form-input" placeholder="https://ejemplo.com/destino">
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="bannerOrden">Orden</label>
-            <input type="number" id="bannerOrden" class="form-input" min="0" value="0">
-          </div>
-          <div class="form-group form-toggle">
-            <label>Activo</label>
-            <label class="toggle-switch">
-              <input type="checkbox" id="bannerActivo" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="bannerFechaInicio">Fecha inicio</label>
-            <input type="date" id="bannerFechaInicio" class="form-input">
-          </div>
-          <div class="form-group">
-            <label for="bannerFechaFin">Fecha fin</label>
-            <input type="date" id="bannerFechaFin" class="form-input">
-          </div>
-        </div>
-        <div class="modal-actions">
-          <button type="button" class="btn-secondary btn-sm" data-close="modalBanner">Cancelar</button>
           <button type="submit" class="btn-primary btn-sm">Guardar</button>
         </div>
       </form>

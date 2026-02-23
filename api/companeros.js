@@ -9,19 +9,28 @@ module.exports = async function handler(req, res) {
   const user = requireAuth(req, res);
   if (!user) return;
 
-  const { claseId } = req.query;
-  if (!claseId) {
-    return res.status(400).json({ error: 'claseId es requerido' });
+  const { curso } = req.query;
+  if (!curso) {
+    return res.status(400).json({ error: 'curso es requerido' });
   }
 
   try {
-    const alumnos = await findAll(tables.alumnos, `FIND('${claseId.replace(/'/g, "\\'")}', {CursosInscritos})`);
-    const result = alumnos.map(a => ({
-      id: a.id,
-      nombre: a.Nombre,
-      nivel: a.Nivel,
-      sede: a.Sede,
-    }));
+    // Buscar alumnos activos inscritos en ese curso
+    const cursoSafe = curso.replace(/'/g, "\\'");
+    const alumnos = await findAll(
+      tables.alumnos,
+      `AND(FIND('${cursoSafe}', {Curso}), {Activo} = 1, {Role} = 'alumno')`
+    );
+
+    const result = alumnos
+      .filter(a => a.id !== user.id)
+      .map(a => ({
+        id: a.id,
+        nombre: a.Nombre || '',
+        genero: a.Genero || '',
+        fotoUrl: a.FotoUrl || '',
+      }));
+
     return res.status(200).json(result);
   } catch (error) {
     console.error('Error en /api/companeros:', error);

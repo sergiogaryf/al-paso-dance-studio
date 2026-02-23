@@ -223,7 +223,11 @@
     <!-- ====== TAB: PERFIL ====== -->
     <section id="tab-perfil" class="tab-section">
       <div class="perfil-header">
-        <div class="avatar avatar-xl" id="perfilAvatar">--</div>
+        <div class="perfil-avatar-wrapper">
+          <div class="avatar avatar-xl" id="perfilAvatar">--</div>
+          <button class="foto-upload-btn" id="fotoUploadBtn" title="Cambiar foto">&#128247;</button>
+          <input type="file" id="fotoInput" accept="image/*" style="display:none">
+        </div>
         <h2 class="perfil-name" id="perfilName">-</h2>
         <span class="badge badge-gold" id="perfilRole">alumno</span>
       </div>

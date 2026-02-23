@@ -30,6 +30,7 @@ function buildAlumno(a) {
     observacion: a.Observacion || '',
     pin: a.PIN || '',
     linkToken: a.LinkToken || '',
+    fotoUrl: a.FotoUrl || '',
     clasesContratadas: a.ClasesContratadas || 0,
     clasesAsistidas: a.ClasesAsistidas || 0,
     activo: a.Activo !== false,
@@ -115,6 +116,7 @@ module.exports = async function handler(req, res) {
       if (data.fechaIngreso !== undefined) fields.FechaIngreso = data.fechaIngreso;
       if (data.observacion !== undefined) fields.Observacion = data.observacion;
       if (data.pin !== undefined) fields.PIN = data.pin;
+      if (data.fotoUrl !== undefined) fields.FotoUrl = data.fotoUrl;
       if (data.clasesContratadas !== undefined) fields.ClasesContratadas = data.clasesContratadas;
       if (data.clasesAsistidas !== undefined) fields.ClasesAsistidas = data.clasesAsistidas;
       if (data.activo !== undefined) fields.Activo = data.activo;

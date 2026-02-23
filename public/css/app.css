@@ -886,3 +886,37 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ---- PERFIL FOTO UPLOAD ---- */
+.perfil-avatar-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 0.8rem;
+}
+
+.foto-upload-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--dorado, #D4AF37);
+  border: 2px solid var(--fondo-oscuro, #140A18);
+  color: #fff;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: transform 0.2s;
+}
+
+.foto-upload-btn:hover {
+  transform: scale(1.1);
+}
+
+.perfil-avatar-wrapper .avatar.avatar-xl {
+  overflow: hidden;
+}
