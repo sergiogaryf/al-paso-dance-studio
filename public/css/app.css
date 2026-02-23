@@ -168,6 +168,47 @@
   font-weight: 700;
 }
 
+/* ---- INICIO: PLAN + RACHA + MESES ---- */
+.inicio-plan-racha {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.card-stat-mini {
+  padding: 0.8rem 0.5rem;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.card-stat-mini-icon {
+  font-size: 1.3rem;
+  margin-bottom: 0.2rem;
+}
+
+.card-stat-mini-val {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--blanco);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-stat-mini-label {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--blanco-suave);
+  margin-top: 0.2rem;
+}
+
+.card-stat-racha .card-stat-mini-val {
+  color: #fb923c;
+}
+
 /* ---- SECTION TITLE ---- */
 .section-title {
   font-family: 'Inter', sans-serif;
@@ -434,6 +475,22 @@
   color: var(--blanco-suave);
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+.stat-card-racha .stat-number {
+  color: #fb923c;
+}
+
+/* ---- PERFIL CURSOS ---- */
+.perfil-cursos-card {
+  margin-bottom: 1.2rem;
+  padding: 1rem 1.2rem;
+}
+
+.perfil-cursos-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
 }
 
 .logout-btn {

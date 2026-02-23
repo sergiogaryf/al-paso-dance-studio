@@ -131,7 +131,13 @@ async function loadInicio() {
   document.getElementById('clasesProgress').style.width = pct + '%';
 
   // Sede
-  document.getElementById('userSede').textContent = currentUser.sede || 'Sin asignar';
+  document.getElementById('userSede').textContent = currentUser.sede || 'Costa de Montemar, Concon';
+
+  // Plan + Meses + Racha
+  const meses = calcMeses(currentUser.fechaIngreso);
+  document.getElementById('inicioPlan').textContent = currentUser.plan || '-';
+  document.getElementById('inicioMeses').textContent = meses;
+  document.getElementById('inicioRacha').textContent = asistidas;
 
   // Proxima clase
   await loadProximaClase();
@@ -143,16 +149,18 @@ async function loadInicio() {
 async function loadProximaClase() {
   const container = document.getElementById('proximaClaseContent');
   try {
-    const cursosIds = currentUser.cursosInscritos || [];
-    if (cursosIds.length === 0) {
+    const cursosNombres = currentUser.cursosInscritos || [];
+    if (cursosNombres.length === 0) {
       container.innerHTML = '<p class="text-muted" style="font-size:0.9rem;">No tienes clases inscritas</p>';
       return;
     }
 
-    // Load enrolled classes
+    // Load enrolled classes matching by name
     if (userClases.length === 0) {
       const allClases = await FirestoreService.getClasesActivas();
-      userClases = allClases.filter(c => cursosIds.includes(c.id));
+      userClases = allClases.filter(c =>
+        cursosNombres.some(n => c.nombre && c.nombre.toLowerCase().includes(n.toLowerCase()))
+      );
     }
 
     if (userClases.length === 0) {
@@ -235,9 +243,9 @@ async function loadEventosInicio() {
 // ============================================
 async function loadHorario() {
   const container = document.getElementById('horarioList');
-  const cursosIds = currentUser.cursosInscritos || [];
+  const cursosNombres = currentUser.cursosInscritos || [];
 
-  if (cursosIds.length === 0) {
+  if (cursosNombres.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
         <span class="empty-icon">&#128336;</span>
@@ -250,7 +258,9 @@ async function loadHorario() {
   try {
     if (userClases.length === 0) {
       const allClases = await FirestoreService.getClasesActivas();
-      userClases = allClases.filter(c => cursosIds.includes(c.id));
+      userClases = allClases.filter(c =>
+        cursosNombres.some(n => c.nombre && c.nombre.toLowerCase().includes(n.toLowerCase()))
+      );
     }
 
     if (userClases.length === 0) {
@@ -401,16 +411,29 @@ function loadEvaluacion() {
   if (evalAppInitialized) return;
   evalAppInitialized = true;
 
-  // Poblar select de cursos desde cursosInscritos
   const select = document.getElementById('evalAppCurso');
-  const cursosIds = currentUser.cursosInscritos || [];
+  const cursosNombres = currentUser.cursosInscritos || [];
 
   if (userClases.length > 0) {
     poblarCursos(select, userClases);
-  } else if (cursosIds.length > 0) {
+  } else if (cursosNombres.length > 0) {
     FirestoreService.getClasesActivas().then(all => {
-      userClases = all.filter(c => cursosIds.includes(c.id));
-      poblarCursos(select, userClases);
+      userClases = all.filter(c =>
+        cursosNombres.some(n => c.nombre && c.nombre.toLowerCase().includes(n.toLowerCase()))
+      );
+      if (userClases.length > 0) {
+        poblarCursos(select, userClases);
+      } else {
+        // Fallback: usar los nombres directamente si no hay clases en API
+        select.innerHTML = '<option value="">Selecciona tu curso</option>';
+        cursosNombres.forEach(n => {
+          const opt = document.createElement('option');
+          opt.value = n;
+          opt.textContent = n;
+          select.appendChild(opt);
+        });
+        if (cursosNombres.length === 1) select.value = cursosNombres[0];
+      }
     });
   }
 }
@@ -420,12 +443,10 @@ function poblarCursos(select, clases) {
   clases.forEach(c => {
     const opt = document.createElement('option');
     opt.value = c.nombre;
-    opt.textContent = c.nombre + ' - ' + c.dia;
+    opt.textContent = c.nombre + (c.dia ? ' — ' + c.dia : '');
     select.appendChild(opt);
   });
-  if (clases.length === 1) {
-    select.value = clases[0].nombre;
-  }
+  if (clases.length === 1) select.value = clases[0].nombre;
 }
 
 async function enviarEvaluacionAlumno() {
@@ -508,9 +529,9 @@ async function enviarEvaluacionAlumno() {
 // ============================================
 async function loadCompaneros() {
   const container = document.getElementById('companerosList');
-  const cursosIds = currentUser.cursosInscritos || [];
+  const cursosNombres = currentUser.cursosInscritos || [];
 
-  if (cursosIds.length === 0) {
+  if (cursosNombres.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
         <span class="empty-icon">&#128101;</span>
@@ -521,15 +542,25 @@ async function loadCompaneros() {
   }
 
   try {
-    // Load class names if needed
+    // Cargar clases si no estan cargadas
     if (userClases.length === 0) {
       const allClases = await FirestoreService.getClasesActivas();
-      userClases = allClases.filter(c => cursosIds.includes(c.id));
+      userClases = allClases.filter(c =>
+        cursosNombres.some(n => c.nombre && c.nombre.toLowerCase().includes(n.toLowerCase()))
+      );
     }
 
+    // Si no hay clases en API, mostrar por nombre de curso
+    const clasesParaMostrar = userClases.length > 0
+      ? userClases
+      : cursosNombres.map(n => ({ id: null, nombre: n, dia: '' }));
+
     let html = '';
-    for (const clase of userClases) {
-      const companeros = await FirestoreService.getAlumnosByClase(clase.id);
+    for (const clase of clasesParaMostrar) {
+      let companeros = [];
+      if (clase.id) {
+        try { companeros = await FirestoreService.getAlumnosByClase(clase.id); } catch {}
+      }
       const otros = companeros.filter(c => c.id !== currentUser.uid);
 
       html += `
@@ -572,18 +603,28 @@ function loadPerfil() {
   document.getElementById('perfilAvatar').textContent = getInitials(currentUser.nombre);
   document.getElementById('perfilName').textContent = currentUser.nombre || '-';
   document.getElementById('perfilRole').textContent = currentUser.role || 'alumno';
-  document.getElementById('perfilEmail').textContent = currentUser.email || '-';
+  document.getElementById('perfilPlan').textContent = currentUser.plan || '-';
   document.getElementById('perfilTelefono').textContent = currentUser.telefono || '-';
-  document.getElementById('perfilSede').textContent = currentUser.sede || '-';
-  document.getElementById('perfilNivel').textContent = currentUser.nivel || '-';
+  document.getElementById('perfilSede').textContent = currentUser.sede || 'Costa de Montemar, Concon';
 
-  const contratadas = currentUser.clasesContratadas || 0;
+  // Fecha de ingreso formateada
+  const desde = currentUser.fechaIngreso
+    ? new Date(currentUser.fechaIngreso + 'T00:00:00').toLocaleDateString('es-CL', { month: 'long', year: 'numeric' })
+    : '-';
+  document.getElementById('perfilDesde').textContent = desde;
+
+  // Cursos
+  const cursos = currentUser.cursosInscritos || [];
+  document.getElementById('perfilCursos').innerHTML = cursos.length > 0
+    ? cursos.map(c => `<span class="badge badge-gold" style="margin:0.2rem 0.2rem 0.2rem 0;">${sanitize(c)}</span>`).join('')
+    : '<span style="color:var(--blanco-suave);font-size:0.9rem;">Sin cursos asignados</span>';
+
+  // Stats
+  const meses = calcMeses(currentUser.fechaIngreso);
   const asistidas = currentUser.clasesAsistidas || 0;
-  const pct = contratadas > 0 ? Math.round((asistidas / contratadas) * 100) : 0;
-
-  document.getElementById('statContratadas').textContent = contratadas;
+  document.getElementById('statMeses').textContent = meses;
+  document.getElementById('statRacha').innerHTML = '&#128293; ' + asistidas;
   document.getElementById('statAsistidas').textContent = asistidas;
-  document.getElementById('statPorcentaje').textContent = pct + '%';
 }
 
 // ============================================
@@ -609,4 +650,14 @@ function sanitize(str) {
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
+}
+
+function calcMeses(fechaIngreso) {
+  if (!fechaIngreso) return 0;
+  try {
+    const inicio = new Date(fechaIngreso + 'T00:00:00');
+    const hoy = new Date();
+    const meses = (hoy.getFullYear() - inicio.getFullYear()) * 12 + (hoy.getMonth() - inicio.getMonth());
+    return Math.max(0, meses);
+  } catch { return 0; }
 }

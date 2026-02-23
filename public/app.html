@@ -74,6 +74,25 @@
         <div class="card-sede-name" id="userSede">-</div>
       </div>
 
+      <!-- Plan activo + racha -->
+      <div class="inicio-plan-racha">
+        <div class="glass-card card-stat-mini">
+          <div class="card-stat-mini-icon">&#127891;</div>
+          <div class="card-stat-mini-val" id="inicioPlan">-</div>
+          <div class="card-stat-mini-label">Plan</div>
+        </div>
+        <div class="glass-card card-stat-mini">
+          <div class="card-stat-mini-icon">&#128197;</div>
+          <div class="card-stat-mini-val" id="inicioMeses">0</div>
+          <div class="card-stat-mini-label">Meses</div>
+        </div>
+        <div class="glass-card card-stat-mini card-stat-racha">
+          <div class="card-stat-mini-icon">&#128293;</div>
+          <div class="card-stat-mini-val" id="inicioRacha">0</div>
+          <div class="card-stat-mini-label">Racha</div>
+        </div>
+      </div>
+
       <!-- Eventos inline -->
       <div id="eventosInicio" class="eventos-inicio"></div>
     </section>
@@ -211,8 +230,8 @@
 
       <div class="perfil-info-grid">
         <div class="glass-card perfil-info-card">
-          <div class="perfil-info-label">Email</div>
-          <div class="perfil-info-value" id="perfilEmail">-</div>
+          <div class="perfil-info-label">Plan</div>
+          <div class="perfil-info-value" id="perfilPlan">-</div>
         </div>
         <div class="glass-card perfil-info-card">
           <div class="perfil-info-label">Telefono</div>
@@ -223,23 +242,30 @@
           <div class="perfil-info-value" id="perfilSede">-</div>
         </div>
         <div class="glass-card perfil-info-card">
-          <div class="perfil-info-label">Nivel</div>
-          <div class="perfil-info-value" id="perfilNivel">-</div>
+          <div class="perfil-info-label">Desde</div>
+          <div class="perfil-info-value" id="perfilDesde">-</div>
         </div>
       </div>
 
+      <!-- Mis cursos -->
+      <div class="glass-card perfil-cursos-card">
+        <div class="perfil-info-label" style="margin-bottom:0.6rem">Mis cursos</div>
+        <div id="perfilCursos" class="perfil-cursos-lista">-</div>
+      </div>
+
+      <!-- Stats racha -->
       <div class="perfil-stats">
         <div class="glass-card stat-card">
-          <div class="stat-number" id="statContratadas">0</div>
-          <div class="stat-label">Contratadas</div>
+          <div class="stat-number" id="statMeses">0</div>
+          <div class="stat-label">Meses</div>
+        </div>
+        <div class="glass-card stat-card stat-card-racha">
+          <div class="stat-number" id="statRacha">&#128293; 0</div>
+          <div class="stat-label">Racha</div>
         </div>
         <div class="glass-card stat-card">
           <div class="stat-number" id="statAsistidas">0</div>
-          <div class="stat-label">Asistidas</div>
-        </div>
-        <div class="glass-card stat-card">
-          <div class="stat-number" id="statPorcentaje">0%</div>
-          <div class="stat-label">Asistencia</div>
+          <div class="stat-label">Clases</div>
         </div>
       </div>
 
