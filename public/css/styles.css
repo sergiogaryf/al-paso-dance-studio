@@ -163,17 +163,6 @@ ul { list-style: none; }
   animation: fadeInUp 0.8s ease 0.1s both;
 }
 
-.hero-slowlife {
-  font-family: 'Poppins', sans-serif;
-  font-size: 0.65rem;
-  color: rgba(255,255,255,0.55);
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  font-weight: 400;
-  margin-bottom: 0.8rem;
-  animation: fadeInUp 0.8s ease 0.15s both;
-  display: block;
-}
 
 /* Titulo principal */
 .hero-title {
@@ -329,242 +318,6 @@ ul { list-style: none; }
 }
 
 
-/* ---- CURSOS (TERMINALES FLIP) ---- */
-.cursos-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  position: relative;
-  z-index: 1;
-}
-
-.curso-flip {
-  perspective: 1000px;
-  height: 380px;
-}
-
-.curso-flip-inner {
-  position: relative;
-  width: 100%; height: 100%;
-  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-style: preserve-3d;
-}
-
-.curso-flip:hover .curso-flip-inner {
-  transform: rotateY(180deg);
-}
-
-.curso-front,
-.curso-back {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-/* FRENTE */
-.curso-front {
-  background: rgba(31,18,40,0.85);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--borde);
-  padding: 2.5rem 2rem 2rem;
-  display: flex;
-  flex-direction: column;
-  transition: border-color 0.4s;
-}
-
-.curso-front::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 3px;
-  background: var(--borde);
-  transition: background 0.4s;
-}
-
-.curso-flip:hover .curso-front {
-  border-color: var(--blanco);
-}
-
-.curso-flip:hover .curso-front::before {
-  background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3), rgba(255,255,255,0.1));
-}
-
-.curso-front .numero {
-  font-family: 'Inter', sans-serif;
-  font-size: 2.2rem;
-  color: var(--borde);
-  font-weight: 900;
-  line-height: 1;
-  margin-bottom: 1rem;
-}
-
-.curso-front .estacion-label {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.6rem;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  color: var(--blanco-suave);
-  margin-bottom: 0.3rem;
-}
-
-.curso-front h3 {
-  font-family: 'Inter', sans-serif;
-  font-size: 1.6rem;
-  color: var(--blanco);
-  margin-bottom: 1rem;
-}
-
-.curso-front .desc {
-  color: var(--blanco-suave);
-  font-size: 0.95rem;
-  font-weight: 300;
-  line-height: 1.8;
-  margin-bottom: 1.5rem;
-  flex-grow: 1;
-}
-
-.niveles {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.nivel {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.6rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 0.3rem 0.8rem;
-  border-radius: 20px;
-  border: 1px solid var(--borde);
-  color: var(--blanco-suave);
-}
-
-/* DORSO (VIDEO) */
-.curso-back {
-  transform: rotateY(180deg);
-  border: 1px solid var(--borde-hover);
-  display: flex;
-  flex-direction: column;
-  background: var(--fondo);
-}
-
-.curso-back video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 15px;
-}
-
-.curso-back-overlay {
-  position: absolute;
-  bottom: 0; left: 0;
-  width: 100%;
-  padding: 1.5rem;
-  background: linear-gradient(transparent, rgba(20,10,24,0.9));
-  border-radius: 0 0 15px 15px;
-}
-
-.curso-back-overlay .estacion-label {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.55rem;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  color: var(--blanco);
-  margin-bottom: 0.2rem;
-}
-
-.curso-back-overlay h3 {
-  font-family: 'Inter', sans-serif;
-  font-size: 1.4rem;
-  color: var(--blanco);
-}
-
-/* ---- SEDE (CARD MODERNA) ---- */
-.sede-card {
-  background: rgba(31, 18, 40, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--borde);
-  border-radius: 20px;
-  padding: 2.5rem;
-  max-width: 600px;
-  margin: 0 auto;
-  text-align: center;
-  box-shadow: 0 0 15px rgba(168, 85, 247, 0.08), 0 4px 20px rgba(0,0,0,0.2);
-  transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
-}
-
-.sede-card:hover {
-  border-color: rgba(168, 85, 247, 0.4);
-  box-shadow:
-    0 0 20px rgba(168, 85, 247, 0.3),
-    0 0 50px rgba(168, 85, 247, 0.1),
-    0 8px 30px rgba(0,0,0,0.3);
-}
-
-.sede-card h3 {
-  font-family: 'Inter', sans-serif;
-  font-size: 1.4rem;
-  color: var(--blanco);
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.sede-ubicacion {
-  color: var(--blanco-suave);
-  font-size: 0.9rem;
-  margin-bottom: 1.5rem;
-}
-
-.sede-horarios {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.sede-horario-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.7rem 1.2rem;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.04);
-  transition: background 0.2s;
-}
-
-.sede-horario-row:hover {
-  background: rgba(255,255,255,0.04);
-}
-
-.sede-horario-dia {
-  font-family: 'Inter', sans-serif;
-  color: var(--blanco);
-  font-weight: 600;
-  font-size: 0.85rem;
-  min-width: 80px;
-  text-align: left;
-}
-
-.sede-horario-clase {
-  color: var(--blanco-suave);
-  font-size: 0.85rem;
-  flex: 1;
-  text-align: center;
-}
-
-.sede-horario-hora {
-  color: var(--blanco);
-  font-size: 0.85rem;
-  font-weight: 500;
-  min-width: 100px;
-  text-align: right;
-}
 
 /* ---- INSTRUCTOR CARD (horizontal) ---- */
 .instructor-card {
@@ -703,92 +456,70 @@ ul { list-style: none; }
   .instructor-card-body { text-align: center; }
 }
 
-/* ---- CTA FINAL ---- */
-.cta {
+
+/* ---- WALL OF LOVE ---- */
+.section-wol {
+  max-width: 1200px;
+}
+
+/* Masonry 3 columnas */
+.wol-masonry {
+  columns: 3;
+  column-gap: 1.6rem;
+}
+
+.wol-card {
+  break-inside: avoid;
   position: relative;
-  z-index: 1;
-  text-align: center;
-  padding: 6rem 2rem 4rem;
+  margin-bottom: 1.6rem;
+  padding-top: 14px;
+  transform: rotate(var(--r, 0deg));
+  transition: transform 0.3s ease, filter 0.3s ease;
 }
 
-.cta h2 {
-  font-family: 'Montserrat', sans-serif;
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
-  color: var(--blanco);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 0.8rem;
+.wol-card:hover {
+  transform: rotate(0deg) scale(1.04);
+  z-index: 10;
+  filter: brightness(1.05);
 }
 
-.cta p {
-  color: var(--blanco-suave);
-  font-weight: 300;
-  margin-bottom: 2.5rem;
-  font-size: 1rem;
+.wol-pin {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 18px;
+  background: #a855f7;
+  border-radius: 50%;
+  z-index: 2;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.7), 0 0 22px rgba(168, 85, 247, 0.3);
 }
 
-.cta .btn-cta {
-  font-size: 1.1rem;
-  padding: 1.2rem 3.2rem;
-  animation: none;
+.wol-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.wol-card:hover img {
+  border-color: rgba(168, 85, 247, 0.7);
   box-shadow:
-    0 0 15px rgba(168, 85, 247, 0.4),
-    0 0 40px rgba(168, 85, 247, 0.15),
-    0 4px 20px rgba(67, 4, 64, 0.25);
+    0 0 18px rgba(168, 85, 247, 0.55),
+    0 0 45px rgba(168, 85, 247, 0.2),
+    0 8px 30px rgba(0,0,0,0.45);
 }
 
-/* ---- MURO DE AMOR (Wall of Love) ---- */
-.wall-of-love {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+@media (max-width: 900px) {
+  .wol-masonry { columns: 2; }
 }
 
-.love-note {
-  background: rgba(31, 18, 40, 0.85);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--borde);
-  border-radius: 16px;
-  padding: 1.5rem 1.8rem;
-  transform: rotate(var(--rotation, 0deg));
-  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-  box-shadow: 0 0 12px rgba(168, 85, 247, 0.06), 0 4px 15px rgba(0,0,0,0.2);
-}
-
-.love-note:hover {
-  transform: rotate(0deg) translateY(-4px);
-  border-color: rgba(168, 85, 247, 0.4);
-  box-shadow:
-    0 0 20px rgba(168, 85, 247, 0.3),
-    0 0 50px rgba(168, 85, 247, 0.1),
-    0 8px 25px rgba(0,0,0,0.3);
-}
-
-.love-note-source {
-  font-family: 'Poppins', sans-serif;
-  font-size: 0.6rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: rgba(168, 85, 247, 0.8);
-  margin-bottom: 0.8rem;
-}
-
-.love-note p {
-  color: var(--blanco);
-  font-size: 0.9rem;
-  font-weight: 300;
-  line-height: 1.7;
-  font-style: italic;
-  margin-bottom: 0.8rem;
-}
-
-.love-note-author {
-  font-family: 'Poppins', sans-serif;
-  font-size: 0.75rem;
-  color: var(--blanco-suave);
-  font-weight: 500;
+@media (max-width: 560px) {
+  .wol-masonry { columns: 1; }
 }
 
 /* ---- CONTACTO: MAPA + FORMULARIO ---- */
@@ -944,11 +675,6 @@ footer span { color: var(--blanco); }
 .wa-float svg { width: 28px; height: 28px; fill: #fff; }
 
 /* ---- RESPONSIVE ---- */
-@media (max-width: 900px) {
-  .cursos-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
-  .curso-flip { height: 350px; }
-}
-
 @media (max-width: 768px) {
   .navbar { padding: 0.6rem 1.2rem; }
   .navbar.scrolled { padding: 0.5rem 1.2rem; }
@@ -972,38 +698,17 @@ footer span { color: var(--blanco); }
   .hero-logo-icon { width: 120px; }
 
   .section { padding: 4rem 1.5rem; }
-
-  .sede-horario-row {
-    flex-wrap: wrap;
-    gap: 0.3rem;
-    text-align: center;
-  }
-  .sede-horario-dia,
-  .sede-horario-hora {
-    text-align: center;
-  }
 }
 
 @media (max-width: 480px) {
-  .hero-tag { font-size: 0.6rem; letter-spacing: 2px; }
   .curso-card { padding: 2rem 1.5rem; }
-  .btn-cta { padding: 0.9rem 2rem; font-size: 0.9rem; }
-  .cta .btn-cta { padding: 1rem 2.2rem; font-size: 1rem; }
 }
 
-/* ---- ACCESO ALUMNOS NAV ---- */
-.nav-acceso {
-  color: var(--blanco) !important;
-  border: 1px solid rgba(255,255,255,0.2);
-  padding: 0.4rem 1rem;
-  border-radius: 20px;
-  transition: all 0.3s;
-}
-
-.nav-acceso:hover {
-  background: rgba(255,255,255,0.05) !important;
-  border-color: rgba(255,255,255,0.4);
-}
+/* ---- MODO INVITADO ---- */
+.invitado-hidden { display: none; }
+.invitado-only  { display: none; }
+.modo-invitado .invitado-hidden { display: none !important; }
+.modo-invitado .invitado-only  { display: block !important; }
 
 /* ---- BANNERS CARRUSEL ---- */
 .banners-section {
@@ -1264,10 +969,6 @@ footer span { color: var(--blanco); }
   }
 }
 
-/* ---- MODO INVITADO ---- */
-.modo-invitado .invitado-hidden {
-  display: none !important;
-}
 
 /* ---- CALENDARIO INLINE (para invitados) ---- */
 .cal-inline-wrapper {
@@ -1448,10 +1149,6 @@ footer span { color: var(--blanco); }
   animation: galeriaScroll 42s linear infinite;
 }
 
-.galeria-inner:hover {
-  animation-play-state: paused;
-}
-
 /* Tarjeta individual */
 .gslide {
   width: 320px;
@@ -1460,14 +1157,6 @@ footer span { color: var(--blanco); }
   overflow: hidden;
   flex-shrink: 0;
   flex-grow: 0;
-  position: relative;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.gslide:hover {
-  transform: scale(1.03);
-  box-shadow: 0 8px 32px rgba(168, 85, 247, 0.4), 0 4px 20px rgba(0,0,0,0.5);
-  z-index: 2;
 }
 
 .gslide img {
@@ -1476,11 +1165,6 @@ footer span { color: var(--blanco); }
   object-fit: cover;
   object-position: center;
   display: block;
-  transition: transform 0.5s ease;
-}
-
-.gslide:hover img {
-  transform: scale(1.06);
 }
 
 @keyframes galeriaScroll {

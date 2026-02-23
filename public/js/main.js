@@ -55,7 +55,7 @@ document.querySelectorAll('.fade-in').forEach(el => {
   observer.observe(el);
 });
 
-// ---- HOVER PLAY/PAUSE PARA VIDEOS DE CURSOS ----
+// ---- HOVER / TOUCH PLAY/PAUSE PARA VIDEOS DE CURSOS ----
 document.querySelectorAll('.curso-card').forEach(card => {
   const video = card.querySelector('.curso-card-video video');
   if (!video) return;
@@ -66,6 +66,14 @@ document.querySelectorAll('.curso-card').forEach(card => {
     video.pause();
     video.currentTime = 0;
   });
+  card.addEventListener('touchstart', () => {
+    if (video.paused) {
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+      video.currentTime = 0;
+    }
+  }, { passive: true });
 });
 
 // ---- CALENDARIO INLINE (para invitados) ----
