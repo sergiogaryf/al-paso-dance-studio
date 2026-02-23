@@ -32,8 +32,7 @@ function irAVista(id) {
   if (v) v.classList.add('active');
 }
 function redirigirSegunRol(role) {
-  if (role === 'admin') window.location.href = 'admin.html';
-  else if (role === 'profesor') window.location.href = 'profesor.html';
+  if (role === 'admin' || role === 'profesor') window.location.href = 'admin.html';
   else window.location.href = 'app.html';
 }
 

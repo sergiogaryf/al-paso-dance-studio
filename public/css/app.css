@@ -183,17 +183,9 @@
 }
 
 .card-stat-mini-icon {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   margin-bottom: 0.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255,255,255,0.7);
-}
-.card-stat-mini-icon svg {
-  width: 1.4rem;
-  height: 1.4rem;
-  display: block;
+  line-height: 1;
 }
 
 .card-stat-mini-val {
@@ -572,15 +564,15 @@
 }
 
 .tab-icon {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .tab-icon svg {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   display: block;
 }
 

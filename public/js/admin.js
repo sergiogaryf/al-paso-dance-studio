@@ -10,7 +10,7 @@
       return;
     }
     const userData = await ApiService.getCurrentUser();
-    if (!userData || (userData.role !== 'admin')) {
+    if (!userData || !['admin', 'profesor'].includes(userData.role)) {
       window.location.href = 'app.html';
       return;
     }
