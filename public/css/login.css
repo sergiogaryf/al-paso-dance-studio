@@ -403,6 +403,109 @@
   }
 }
 
+/* ---- PIN INPUT ---- */
+.pin-container {
+  display: flex;
+  justify-content: center;
+  margin: 1.8rem 0 1rem;
+}
+
+.pin-inputs {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.pin-box {
+  width: 60px;
+  height: 68px;
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 700;
+  font-family: 'Inter', monospace;
+  color: var(--blanco);
+  background: rgba(26, 26, 26, 0.95);
+  border: 1.5px solid var(--borde);
+  border-radius: 14px;
+  outline: none;
+  caret-color: transparent;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+  -webkit-appearance: none;
+}
+
+.pin-box:focus {
+  border-color: rgba(168, 85, 247, 0.7);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15), 0 0 20px rgba(168, 85, 247, 0.1);
+  transform: scale(1.06);
+}
+
+.pin-box.filled {
+  border-color: rgba(168, 85, 247, 0.5);
+  background: rgba(168, 85, 247, 0.06);
+}
+
+.pin-box.pin-error {
+  border-color: rgba(231, 76, 60, 0.7);
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+  animation: errorShake 0.4s ease;
+}
+
+.pin-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--blanco-suave);
+  font-size: 0.85rem;
+  margin: 1rem 0;
+}
+
+.pin-nombres {
+  margin: 1.2rem 0 0.5rem;
+  text-align: center;
+}
+
+.pin-nombres-titulo {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--blanco-suave);
+  margin-bottom: 0.8rem;
+}
+
+.pin-nombre-btn {
+  display: block;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.5rem;
+  background: rgba(26, 26, 26, 0.8);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  color: var(--blanco);
+  font-size: 0.95rem;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: left;
+}
+
+.pin-nombre-btn:hover {
+  border-color: rgba(168, 85, 247, 0.5);
+  background: rgba(168, 85, 247, 0.06);
+  transform: translateX(4px);
+}
+
+@media (max-width: 480px) {
+  .pin-box {
+    width: 52px;
+    height: 60px;
+    font-size: 1.6rem;
+    border-radius: 12px;
+  }
+  .pin-inputs {
+    gap: 0.6rem;
+  }
+}
+
 /* ---- ACCESIBILIDAD ---- */
 @media (prefers-reduced-motion: reduce) {
   .login-card,

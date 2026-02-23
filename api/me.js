@@ -12,18 +12,26 @@ module.exports = async function handler(req, res) {
   try {
     const alumno = await findById(tables.alumnos, user.id);
 
+    const cursos = alumno.Curso
+      ? alumno.Curso.split(',').map(s => s.trim()).filter(Boolean)
+      : (alumno.CursosInscritos ? (() => { try { return JSON.parse(alumno.CursosInscritos); } catch { return []; } })() : []);
+
     return res.status(200).json({
       id: alumno.id,
       nombre: alumno.Nombre,
-      email: alumno.Email,
+      email: alumno.Email || '',
       role: alumno.Role || 'alumno',
-      sede: alumno.Sede,
-      nivel: alumno.Nivel,
-      telefono: alumno.Telefono,
+      sede: alumno.Sede || 'Costa de Montemar, Concon',
+      nivel: alumno.Nivel || '',
+      telefono: alumno.Telefono || '',
+      curso: alumno.Curso || '',
+      cursosInscritos: cursos,
+      plan: alumno.Plan || '',
+      estado: alumno.Estado || '',
+      fechaIngreso: alumno.FechaIngreso || '',
       clasesContratadas: alumno.ClasesContratadas || 0,
       clasesAsistidas: alumno.ClasesAsistidas || 0,
       activo: alumno.Activo !== false,
-      cursosInscritos: alumno.CursosInscritos ? JSON.parse(alumno.CursosInscritos) : [],
     });
   } catch (error) {
     console.error('Error en /api/me:', error);

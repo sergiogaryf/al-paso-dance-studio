@@ -72,6 +72,26 @@ const ApiService = {
     return data.user;
   },
 
+  // Acceso por link directo (?token=LINKTOKEN en URL)
+  async loginConLink(linkToken) {
+    const data = await this._fetch(`/api/acceso?token=${encodeURIComponent(linkToken)}`);
+    this._setToken(data.token);
+    return data.user;
+  },
+
+  // Acceso por PIN de 4 digitos. Si hay colision retorna { opciones: [...] }
+  async loginConPIN(pin, nombre = null) {
+    const body = { pin };
+    if (nombre) body.nombre = nombre;
+    const data = await this._fetch('/api/login', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+    if (data.opciones) return data;
+    this._setToken(data.token);
+    return data.user;
+  },
+
   logout() {
     this._setToken(null);
     window.location.href = 'login.html';

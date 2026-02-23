@@ -8,6 +8,30 @@ let userClases = [];
 // ---- AUTH CHECK ----
 (async function () {
   try {
+    // Acceso por link directo: app.html?token=XXXXX
+    const urlParams = new URLSearchParams(window.location.search);
+    const linkToken = urlParams.get('token');
+
+    if (linkToken) {
+      try {
+        const userData = await ApiService.loginConLink(linkToken);
+        // Limpiar token de la URL sin recargar
+        window.history.replaceState({}, document.title, window.location.pathname);
+        if (userData.role === 'admin') { window.location.href = 'admin.html'; return; }
+        currentUser = { uid: userData.id, ...userData };
+        document.getElementById('appLoading').style.display = 'none';
+        document.getElementById('appContent').classList.remove('hidden');
+        document.getElementById('tabBar').classList.remove('hidden');
+        initApp();
+        return;
+      } catch (e) {
+        console.error('Link invalido:', e);
+        window.location.href = 'login.html';
+        return;
+      }
+    }
+
+    // Acceso normal con sesion existente
     if (!ApiService.isLoggedIn()) {
       window.location.href = 'login.html';
       return;
@@ -17,7 +41,6 @@ let userClases = [];
       window.location.href = 'login.html';
       return;
     }
-    // If admin, redirect to admin panel
     if (userData.role === 'admin') {
       window.location.href = 'admin.html';
       return;

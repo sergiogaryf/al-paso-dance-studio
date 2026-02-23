@@ -64,6 +64,42 @@
       </div>
     </div>
 
+    <!-- ====== VISTA: PIN ALUMNO ====== -->
+    <div id="vistaPIN" class="login-vista">
+      <div class="login-card glass-card">
+        <div class="login-logo">
+          <img src="img/Logo.png" alt="Al Paso Dance Studio">
+        </div>
+        <h1 class="login-title">Tu PIN de acceso</h1>
+        <p class="login-subtitle">&#218;ltimos 4 d&#237;gitos de tu tel&#233;fono</p>
+
+        <div class="pin-container">
+          <div class="pin-inputs">
+            <input type="tel" class="pin-box" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off">
+            <input type="tel" class="pin-box" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off">
+            <input type="tel" class="pin-box" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off">
+            <input type="tel" class="pin-box" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off">
+          </div>
+        </div>
+
+        <div id="pinError" class="error-message hidden"></div>
+
+        <!-- Selector de nombre si hay colision de PIN -->
+        <div id="pinNombres" class="pin-nombres hidden">
+          <p class="pin-nombres-titulo">&#191;Eres t&#250;?</p>
+          <div id="pinNombresBtns"></div>
+        </div>
+
+        <div id="pinLoader" class="pin-loader hidden">
+          <span class="spinner-small"></span>&nbsp; Verificando...
+        </div>
+
+        <button class="back-link-btn" id="btnVolverDesdePin">
+          <span class="back-arrow">&larr;</span> Volver
+        </button>
+      </div>
+    </div>
+
     <!-- ====== VISTA: FORMULARIO LOGIN ====== -->
     <div id="vistaLoginForm" class="login-vista">
       <div class="login-card glass-card">
