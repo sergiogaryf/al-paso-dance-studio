@@ -16,11 +16,12 @@
     }
     document.getElementById('greetingText').textContent = `Hola, ${userData.nombre || 'Admin'}`;
     document.getElementById('loadingOverlay').style.display = 'none';
-    initAdmin();
   } catch (e) {
     console.error('Error verificando admin:', e);
     window.location.href = 'login.html';
+    return;
   }
+  initAdmin();
 })();
 
 // ---- INIT ----

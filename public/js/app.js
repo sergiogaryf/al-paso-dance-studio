@@ -624,7 +624,7 @@ function loadPerfil() {
   const meses = calcMeses(currentUser.fechaIngreso);
   const asistidas = currentUser.clasesAsistidas || 0;
   document.getElementById('statMeses').textContent = meses;
-  document.getElementById('statRacha').innerHTML = '&#128293; ' + asistidas;
+  document.getElementById('statRacha').textContent = asistidas;
   document.getElementById('statAsistidas').textContent = asistidas;
 }
 
