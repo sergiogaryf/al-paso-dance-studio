@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Panel Profesor - Al Paso Dance Studio</title>
+  <meta name="theme-color" content="#140A18">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Al Paso Profesor">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="img/icons/icon-192x192.png">
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/profesor.css">
+</head>
+<body class="app-page">
+
+  <!-- Loading Overlay -->
+  <div id="profLoading" class="loading-overlay">
+    <div class="spinner"></div>
+    <p class="text-muted" style="font-size:0.85rem">Cargando panel...</p>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main id="profContent" class="app-content hidden">
+
+    <!-- ====== TAB: INICIO ====== -->
+    <section id="tab-inicio" class="tab-section active">
+      <div class="app-header">
+        <div class="app-header-brand">
+          <img src="img/Logo.png" alt="Al Paso Dance Studio" class="app-logo">
+          <span class="app-brand-text">Al Paso Dance Studio</span>
+        </div>
+      </div>
+
+      <h1 class="greeting">Hola, <span id="profNombre">...</span>!</h1>
+
+      <!-- Stats mini -->
+      <div class="inicio-plan-racha">
+        <div class="glass-card card-stat-mini">
+          <div class="card-stat-mini-icon">&#128101;</div>
+          <div class="card-stat-mini-val" id="profStatAlumnos">0</div>
+          <div class="card-stat-mini-label">Alumnos</div>
+        </div>
+        <div class="glass-card card-stat-mini">
+          <div class="card-stat-mini-icon">&#9998;</div>
+          <div class="card-stat-mini-val" id="profStatEvalHoy">0</div>
+          <div class="card-stat-mini-label">Eval. hoy</div>
+        </div>
+        <div class="glass-card card-stat-mini">
+          <div class="card-stat-mini-icon">&#127891;</div>
+          <div class="card-stat-mini-val" id="profStatCursos">0</div>
+          <div class="card-stat-mini-label">Cursos</div>
+        </div>
+      </div>
+
+      <!-- Clases de hoy -->
+      <div class="glass-card" style="margin-bottom:1rem">
+        <div class="card-label">Clases de hoy</div>
+        <div id="profClasesHoy">
+          <p class="text-muted" style="font-size:0.9rem">Cargando...</p>
+        </div>
+      </div>
+
+      <!-- Alumnos pendientes de pago -->
+      <div class="glass-card" id="profPendientesCard" style="display:none;margin-bottom:1rem">
+        <div class="card-label" style="color:#e74c3c">&#x26A0; Pendientes de pago</div>
+        <div id="profPendientesList"></div>
+      </div>
+    </section>
+
+    <!-- ====== TAB: ALUMNOS ====== -->
+    <section id="tab-alumnos" class="tab-section">
+      <h2 class="section-title">Mis Alumnos</h2>
+      <div id="profCursosPills" class="curso-pills"></div>
+      <div id="profAlumnosList" class="prof-alumnos-lista"></div>
+    </section>
+
+    <!-- ====== TAB: EVALUACIONES ====== -->
+    <section id="tab-evaluaciones" class="tab-section">
+      <h2 class="section-title">Evaluaciones</h2>
+      <div id="profEvalPills" class="curso-pills"></div>
+
+      <!-- Promedios -->
+      <div class="glass-card prof-eval-promedios" id="profEvalPromedios" style="display:none">
+        <div class="prof-eval-barra-grupo">
+          <div class="prof-eval-barra-label"><span>Disfrute</span><span class="text-gold" id="profPromDisfrute">-</span></div>
+          <div class="eval-admin-barra-track"><div class="eval-admin-barra-fill" id="profBarraDisfrute" style="width:0%"></div></div>
+        </div>
+        <div class="prof-eval-barra-grupo">
+          <div class="prof-eval-barra-label"><span>Comprension</span><span class="text-gold" id="profPromComprension">-</span></div>
+          <div class="eval-admin-barra-track"><div class="eval-admin-barra-fill" id="profBarraComprension" style="width:0%"></div></div>
+        </div>
+        <div class="prof-eval-barra-grupo">
+          <div class="prof-eval-barra-label"><span>Comodidad en pareja</span><span class="text-gold" id="profPromComodidad">-</span></div>
+          <div class="eval-admin-barra-track"><div class="eval-admin-barra-fill" id="profBarraComodidad" style="width:0%"></div></div>
+        </div>
+        <div class="prof-eval-barra-grupo">
+          <div class="prof-eval-barra-label"><span>Confianza</span><span class="text-gold" id="profPromConfianza">-</span></div>
+          <div class="eval-admin-barra-track"><div class="eval-admin-barra-fill" id="profBarraConfianza" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <!-- Lista evaluaciones -->
+      <div id="profEvalLista" class="prof-eval-lista"></div>
+    </section>
+
+    <!-- ====== TAB: OBSERVACIONES ====== -->
+    <section id="tab-observaciones" class="tab-section">
+      <h2 class="section-title">Observacion de clase</h2>
+      <div class="glass-card eval-app-form">
+        <div class="form-group">
+          <label class="eval-app-label">Curso</label>
+          <select id="obsProCurso" class="form-input" required>
+            <option value="">Selecciona tu curso</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="eval-app-label">Numero de clase</label>
+          <div class="eval-app-clase-btns">
+            <button type="button" class="eval-app-clase-btn" data-clase="1">1</button>
+            <button type="button" class="eval-app-clase-btn" data-clase="2">2</button>
+            <button type="button" class="eval-app-clase-btn" data-clase="3">3</button>
+            <button type="button" class="eval-app-clase-btn" data-clase="4">4</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="eval-app-label">Fecha</label>
+          <input type="date" id="obsProFecha" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label class="eval-app-label">Objetivo del dia</label>
+          <textarea id="obsProObjetivo" class="form-input eval-app-textarea" rows="2" placeholder="Que se busco lograr hoy"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="eval-app-label">Pasos trabajados</label>
+          <textarea id="obsProPasos" class="form-input eval-app-textarea" rows="2" placeholder="Pasos y figuras practicadas"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="eval-app-label">Logros del dia</label>
+          <textarea id="obsProLogros" class="form-input eval-app-textarea" rows="2" placeholder="Que se logro"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="eval-app-label">Dificultades detectadas</label>
+          <textarea id="obsProDificultades" class="form-input eval-app-textarea" rows="2" placeholder="Que costo mas"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="eval-app-label">Ajustes para proxima clase</label>
+          <textarea id="obsProAjustes" class="form-input eval-app-textarea" rows="2" placeholder="Que cambiar o reforzar"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="eval-app-label">Notas adicionales</label>
+          <textarea id="obsProNotas" class="form-input eval-app-textarea" rows="2" placeholder="Observaciones generales"></textarea>
+        </div>
+
+        <div id="obsProError" class="eval-app-msg eval-app-msg-error hidden"></div>
+        <div id="obsProExito" class="eval-app-msg eval-app-msg-success hidden"></div>
+
+        <button type="button" id="btnEnviarObsPro" class="btn-primary eval-app-submit">Guardar observacion</button>
+      </div>
+    </section>
+
+    <!-- ====== TAB: PERFIL ====== -->
+    <section id="tab-perfil" class="tab-section">
+      <div class="perfil-header">
+        <div class="avatar avatar-xl" id="profAvatar">--</div>
+        <h2 class="perfil-name" id="profPerfilNombre">-</h2>
+        <span class="badge badge-gold">Profesor</span>
+      </div>
+
+      <div class="glass-card perfil-cursos-card">
+        <div class="perfil-info-label" style="margin-bottom:0.6rem">Mis cursos</div>
+        <div id="profPerfilCursos" class="perfil-cursos-lista">-</div>
+      </div>
+
+      <div class="perfil-info-grid">
+        <div class="glass-card perfil-info-card">
+          <div class="perfil-info-label">Telefono</div>
+          <div class="perfil-info-value" id="profPerfilTel">-</div>
+        </div>
+        <div class="glass-card perfil-info-card">
+          <div class="perfil-info-label">Email</div>
+          <div class="perfil-info-value" id="profPerfilEmail">-</div>
+        </div>
+      </div>
+
+      <button id="profLogoutBtn" class="btn-secondary logout-btn">Cerrar Sesion</button>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM TAB BAR -->
+  <nav id="profTabBar" class="tab-bar hidden">
+    <button class="tab-item active" data-tab="tab-inicio">
+      <span class="tab-icon">&#8962;</span>
+      <span class="tab-label">Inicio</span>
+    </button>
+    <button class="tab-item" data-tab="tab-alumnos">
+      <span class="tab-icon">&#128101;</span>
+      <span class="tab-label">Alumnos</span>
+    </button>
+    <button class="tab-item" data-tab="tab-evaluaciones">
+      <span class="tab-icon">&#9998;</span>
+      <span class="tab-label">Eval.</span>
+    </button>
+    <button class="tab-item" data-tab="tab-observaciones">
+      <span class="tab-icon">&#128221;</span>
+      <span class="tab-label">Obs.</span>
+    </button>
+    <button class="tab-item" data-tab="tab-perfil">
+      <span class="tab-icon">&#9787;</span>
+      <span class="tab-label">Perfil</span>
+    </button>
+  </nav>
+
+  <!-- Modal asistencia alumno -->
+  <div class="prof-asistencia-modal hidden" id="profAsistModal">
+    <div class="prof-asistencia-card glass-card">
+      <h3 id="profAsistNombre" style="margin-bottom:0.5rem">-</h3>
+      <p class="text-muted" style="font-size:0.85rem;margin-bottom:1rem" id="profAsistInfo">-</p>
+      <div style="display:flex;gap:0.8rem">
+        <button class="btn-primary" id="btnMarcarAsistencia" style="flex:1">&#x2714; Asistio hoy</button>
+        <button class="btn-secondary" id="btnCerrarAsist" style="flex:1">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/api-service.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/profesor.js"></script>
+</body>
+</html>

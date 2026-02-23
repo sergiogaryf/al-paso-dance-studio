@@ -32,7 +32,18 @@ function irAVista(id) {
   if (v) v.classList.add('active');
 }
 function redirigirSegunRol(role) {
-  window.location.href = role === 'admin' ? 'admin.html' : 'app.html';
+  if (role === 'admin') window.location.href = 'admin.html';
+  else if (role === 'profesor') window.location.href = 'profesor.html';
+  else window.location.href = 'app.html';
+}
+
+async function checkProfesorAuth() {
+  const user = await checkAuth();
+  if (!['admin', 'profesor'].includes(user.role || user.rol)) {
+    window.location.href = 'app.html';
+    throw new Error('No es profesor');
+  }
+  return user;
 }
 
 // ---- GUARDS ----

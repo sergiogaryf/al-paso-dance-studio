@@ -773,3 +773,101 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ---- DETALLE ALUMNO ---- */
+.detalle-alumno-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.detalle-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--borde);
+}
+
+.detalle-row:last-child {
+  border-bottom: none;
+}
+
+.detalle-row .detail-label {
+  min-width: 110px;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--blanco-suave);
+  padding-top: 0.1rem;
+}
+
+.detalle-row .detail-value {
+  font-size: 0.9rem;
+  color: var(--blanco);
+  flex: 1;
+}
+
+.detalle-row-full {
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.detalle-row-full .detail-label {
+  min-width: unset;
+}
+
+.detalle-acceso {
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  margin-top: 0.4rem;
+  border: 1px solid var(--borde);
+}
+
+.detalle-pin {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: 'Inter', monospace;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+}
+
+.detalle-link {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.detalle-link-text {
+  font-size: 0.75rem;
+  color: var(--blanco-suave);
+  word-break: break-all;
+  flex: 1;
+}
+
+.btn-copy {
+  padding: 0.3rem 0.8rem;
+  font-size: 0.75rem;
+  font-family: 'Inter', sans-serif;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  color: var(--blanco);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-copy:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.3);
+}
+
+.btn-copy:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

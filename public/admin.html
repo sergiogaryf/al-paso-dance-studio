@@ -88,6 +88,9 @@
     </nav>
 
     <div class="sidebar-footer">
+      <a href="profesor.html" class="btn-logout" style="display:block;text-align:center;text-decoration:none;margin-bottom:0.6rem;opacity:0.8">
+        <span>&#127891;</span> Ver como Profesor
+      </a>
       <button class="btn-logout" id="btnLogout">
         <span>&#x279C;</span> Cerrar Sesion
       </button>
@@ -124,17 +127,17 @@
           </div>
         </div>
         <div class="stat-card glass-card">
-          <div class="stat-icon">&#128218;</div>
+          <div class="stat-icon">&#x2705;</div>
           <div class="stat-info">
-            <span class="stat-value" id="statClasesActivas">0</span>
-            <span class="stat-label">Clases Activas</span>
+            <span class="stat-value" id="statPagados">0</span>
+            <span class="stat-label">Pagados</span>
           </div>
         </div>
         <div class="stat-card glass-card">
-          <div class="stat-icon">&#127881;</div>
+          <div class="stat-icon">&#x23F3;</div>
           <div class="stat-info">
-            <span class="stat-value" id="statEventosProximos">0</span>
-            <span class="stat-label">Eventos Proximos</span>
+            <span class="stat-value" id="statPendientes">0</span>
+            <span class="stat-label">Pendientes</span>
           </div>
         </div>
         <div class="stat-card glass-card">
@@ -179,9 +182,18 @@
       <!-- Filters -->
       <div class="filter-bar">
         <input type="text" class="form-input filter-input" id="filterAlumnoNombre" placeholder="Buscar por nombre...">
-        <select class="form-input filter-select" id="filterAlumnoSede">
-          <option value="">Todas las sedes</option>
-          <option value="Concon">Costa de Montemar, Concon</option>
+        <select class="form-input filter-select" id="filterAlumnoCurso">
+          <option value="">Todos los cursos</option>
+          <option value="Bachata Basico">Bachata Basico</option>
+          <option value="Casino Basico">Casino Basico</option>
+          <option value="Bachata Intermedio">Bachata Intermedio</option>
+          <option value="Casino Intermedio">Casino Intermedio</option>
+          <option value="Mambo Open">Mambo Open</option>
+        </select>
+        <select class="form-input filter-select" id="filterAlumnoEstado">
+          <option value="">Todos los estados</option>
+          <option value="Pagado">Pagado</option>
+          <option value="Pendiente">Pendiente</option>
         </select>
       </div>
 
@@ -191,11 +203,11 @@
           <thead>
             <tr>
               <th>Nombre</th>
-              <th>Email</th>
-              <th>Sede</th>
-              <th>Nivel</th>
+              <th>Telefono</th>
+              <th>Curso</th>
+              <th>Plan</th>
+              <th>Estado pago</th>
               <th>Clases</th>
-              <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -484,40 +496,55 @@
           <label for="alumnoNombre">Nombre completo</label>
           <input type="text" id="alumnoNombre" class="form-input" placeholder="Nombre del alumno" required>
         </div>
-        <div class="form-group">
-          <label for="alumnoEmail">Correo electronico</label>
-          <input type="email" id="alumnoEmail" class="form-input" placeholder="correo@ejemplo.com" required>
-        </div>
-        <div class="form-group" id="passwordGroup">
-          <label for="alumnoPassword">Contrasena</label>
-          <input type="password" id="alumnoPassword" class="form-input" placeholder="Contrasena del alumno" minlength="6">
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="alumnoSede">Sede</label>
-            <select id="alumnoSede" class="form-input" required>
-              <option value="">Seleccionar</option>
-              <option value="Concon">Costa de Montemar, Concon</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="alumnoNivel">Nivel</label>
-            <select id="alumnoNivel" class="form-input" required>
-              <option value="">Seleccionar</option>
-              <option value="Basico">Basico</option>
-              <option value="Intermedio">Intermedio</option>
-            </select>
-          </div>
-        </div>
         <div class="form-row">
           <div class="form-group">
             <label for="alumnoTelefono">Telefono</label>
             <input type="tel" id="alumnoTelefono" class="form-input" placeholder="+56 9 1234 5678">
           </div>
           <div class="form-group">
+            <label for="alumnoGenero">Genero</label>
+            <select id="alumnoGenero" class="form-input">
+              <option value="">Seleccionar</option>
+              <option value="Lider">Lider</option>
+              <option value="Seguidor">Seguidor</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="alumnoCurso">Curso(s)</label>
+          <input type="text" id="alumnoCurso" class="form-input" placeholder="Ej: Bachata Basico, Casino Basico">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="alumnoPlan">Plan</label>
+            <select id="alumnoPlan" class="form-input">
+              <option value="">Seleccionar</option>
+              <option value="1 vez por semana">1 vez por semana</option>
+              <option value="2 veces por semana">2 veces por semana</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="alumnoEstado">Estado pago</label>
+            <select id="alumnoEstado" class="form-input">
+              <option value="">Seleccionar</option>
+              <option value="Pagado">Pagado</option>
+              <option value="Pendiente">Pendiente</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
             <label for="alumnoClasesContratadas">Clases contratadas</label>
             <input type="number" id="alumnoClasesContratadas" class="form-input" min="0" value="0">
           </div>
+          <div class="form-group">
+            <label for="alumnoFechaIngreso">Fecha ingreso</label>
+            <input type="date" id="alumnoFechaIngreso" class="form-input">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="alumnoObservacion">Observacion</label>
+          <textarea id="alumnoObservacion" class="form-input" rows="2" placeholder="Notas internas sobre el alumno"></textarea>
         </div>
         <div class="form-group form-toggle">
           <label>Activo</label>
@@ -718,6 +745,23 @@
           <button type="submit" class="btn-primary btn-sm">Guardar</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Modal Detalle Alumno (solo lectura) -->
+  <div class="modal-overlay" id="modalDetalleAlumno">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="detalleAlumnoNombre">-</h3>
+        <button class="modal-close" data-close="modalDetalleAlumno">&times;</button>
+      </div>
+      <div id="detalleAlumnoContent" style="padding-bottom:0.5rem">
+        <!-- Renderizado por JS -->
+      </div>
+      <div class="modal-actions" style="margin-top:1rem">
+        <button type="button" class="btn-secondary btn-sm" data-close="modalDetalleAlumno">Cerrar</button>
+        <button type="button" class="btn-primary btn-sm" id="detalleAlumnoEditarBtn">Editar</button>
+      </div>
     </div>
   </div>
 

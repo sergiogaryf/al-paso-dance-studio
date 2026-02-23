@@ -15,8 +15,8 @@ module.exports = async function handler(req, res) {
         return res.status(401).json({ error: 'Acceso no autorizado' });
       }
 
-      // Si es JWT, verificar que sea admin
-      if (jwtUser && jwtUser.role !== 'admin' && pin !== PROFESOR_PIN) {
+      // Si es JWT, verificar que sea admin o profesor
+      if (jwtUser && !['admin', 'profesor'].includes(jwtUser.role) && pin !== PROFESOR_PIN) {
         return res.status(403).json({ error: 'Acceso denegado' });
       }
 

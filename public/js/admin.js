@@ -130,6 +130,13 @@ function setupModals() {
   document.getElementById('btnNuevaClase').addEventListener('click', () => openClaseModal());
   document.getElementById('btnNuevoEvento').addEventListener('click', () => openEventoModal());
   document.getElementById('btnNuevoBanner').addEventListener('click', () => openBannerModal());
+
+  // Boton editar desde modal detalle
+  document.getElementById('detalleAlumnoEditarBtn').addEventListener('click', () => {
+    const id = document.getElementById('detalleAlumnoEditarBtn').dataset.alumnoId;
+    closeModal('modalDetalleAlumno');
+    if (id) editAlumno(id);
+  });
 }
 
 function openModal(id) {
@@ -149,7 +156,8 @@ function setupForms() {
 
   // Filters
   document.getElementById('filterAlumnoNombre').addEventListener('input', filterAlumnos);
-  document.getElementById('filterAlumnoSede').addEventListener('change', filterAlumnos);
+  document.getElementById('filterAlumnoCurso').addEventListener('change', filterAlumnos);
+  document.getElementById('filterAlumnoEstado').addEventListener('change', filterAlumnos);
 }
 
 // ============================================
@@ -158,14 +166,17 @@ function setupForms() {
 async function loadDashboard() {
   try {
     const [alumnos, clases, eventos] = await Promise.all([
-      FirestoreService.getAlumnos(),
-      FirestoreService.getClasesActivas(),
-      FirestoreService.getEventosActivos()
+      ApiService.getAlumnos(),
+      ApiService.getClasesActivas(),
+      ApiService.getEventosActivos()
     ]);
 
+    const pagados = alumnos.filter(a => (a.estado || '').toLowerCase() === 'pagado').length;
+    const pendientes = alumnos.filter(a => (a.estado || '').toLowerCase() === 'pendiente').length;
+
     document.getElementById('statTotalAlumnos').textContent = alumnos.length;
-    document.getElementById('statClasesActivas').textContent = clases.length;
-    document.getElementById('statEventosProximos').textContent = eventos.length;
+    document.getElementById('statPagados').textContent = pagados;
+    document.getElementById('statPendientes').textContent = pendientes;
     document.getElementById('statAlumnosActivos').textContent = alumnos.filter(a => a.activo).length;
 
     // Clases de hoy
@@ -180,15 +191,15 @@ async function loadDashboard() {
       container.innerHTML = clasesHoy.map(c => `
         <div class="clase-hoy-item">
           <div class="clase-hoy-info">
-            <h4>${c.nombre}</h4>
-            <p>${c.hora} - ${c.sede}</p>
+            <h4>${sanitize(c.nombre)}</h4>
+            <p>${c.hora} - ${sanitize(c.sede || '')}</p>
           </div>
-          <span class="clase-hoy-badge">${c.disciplina}</span>
+          <span class="clase-hoy-badge">${sanitize(c.disciplina || '')}</span>
         </div>
       `).join('');
     }
 
-    // Alumnos recientes
+    // Alumnos recientes (ultimos 5 por fecha ingreso o al final)
     const recientes = alumnos.slice(0, 5);
     const alumnosContainer = document.getElementById('alumnosRecientesContainer');
     if (recientes.length === 0) {
@@ -198,8 +209,8 @@ async function loadDashboard() {
         <div class="alumno-reciente-item">
           <div class="avatar">${getInitials(a.nombre)}</div>
           <div class="alumno-reciente-info">
-            <h4>${a.nombre}</h4>
-            <p>${a.sede || '-'} &middot; ${a.nivel || '-'}</p>
+            <h4>${sanitize(a.nombre)}</h4>
+            <p>${sanitize(a.curso || '-')} &middot; ${sanitize(a.plan || '-')}</p>
           </div>
         </div>
       `).join('');
@@ -217,7 +228,7 @@ let allAlumnos = [];
 
 async function loadAlumnos() {
   try {
-    allAlumnos = await FirestoreService.getAlumnos();
+    allAlumnos = await ApiService.getAlumnos();
     renderAlumnos(allAlumnos);
   } catch (e) {
     console.error('Error cargando alumnos:', e);
@@ -231,30 +242,41 @@ function renderAlumnos(alumnos) {
     tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No se encontraron alumnos</td></tr>';
     return;
   }
-  tbody.innerHTML = alumnos.map(a => `
+  tbody.innerHTML = alumnos.map(a => {
+    const estadoBadge = (a.estado || '').toLowerCase() === 'pagado'
+      ? `<span class="badge badge-green">Pagado</span>`
+      : (a.estado ? `<span class="badge badge-red">${sanitize(a.estado)}</span>` : '<span class="badge">-</span>');
+    const cursos = a.cursosInscritos && a.cursosInscritos.length
+      ? a.cursosInscritos.map(c => `<span class="badge badge-gold">${sanitize(c)}</span>`).join(' ')
+      : sanitize(a.curso || '-');
+    return `
     <tr>
-      <td><strong>${a.nombre}</strong></td>
-      <td>${a.email}</td>
-      <td>${a.sede || '-'}</td>
-      <td>${a.nivel || '-'}</td>
+      <td><strong>${sanitize(a.nombre)}</strong></td>
+      <td>${sanitize(a.telefono || '-')}</td>
+      <td>${cursos}</td>
+      <td>${sanitize(a.plan || '-')}</td>
+      <td>${estadoBadge}</td>
       <td>${a.clasesAsistidas || 0}/${a.clasesContratadas || 0}</td>
-      <td>${a.activo ? '<span class="badge badge-green">Activo</span>' : '<span class="badge badge-red">Inactivo</span>'}</td>
       <td>
         <div class="table-actions">
+          <button class="btn-icon" onclick="verDetalleAlumno('${a.id}')" title="Ver detalle">&#128065;</button>
           <button class="btn-icon" onclick="editAlumno('${a.id}')" title="Editar">&#9998;</button>
-          <button class="btn-icon" onclick="confirmDelete('${a.id}', 'alumno', '${a.nombre}')" title="Eliminar">&#10006;</button>
+          <button class="btn-icon" onclick="confirmDelete('${a.id}', 'alumno', '${sanitize(a.nombre)}')" title="Eliminar">&#10006;</button>
         </div>
       </td>
-    </tr>
-  `).join('');
+    </tr>`;
+  }).join('');
 }
 
 function filterAlumnos() {
   const nombre = document.getElementById('filterAlumnoNombre').value.toLowerCase();
-  const sede = document.getElementById('filterAlumnoSede').value;
+  const curso = document.getElementById('filterAlumnoCurso').value.toLowerCase();
+  const estado = document.getElementById('filterAlumnoEstado').value.toLowerCase();
   let filtered = allAlumnos;
   if (nombre) filtered = filtered.filter(a => a.nombre.toLowerCase().includes(nombre));
-  if (sede) filtered = filtered.filter(a => a.sede === sede);
+  if (curso) filtered = filtered.filter(a => (a.curso || '').toLowerCase().includes(curso)
+    || (a.cursosInscritos || []).some(c => c.toLowerCase().includes(curso)));
+  if (estado) filtered = filtered.filter(a => (a.estado || '').toLowerCase() === estado);
   renderAlumnos(filtered);
 }
 
@@ -262,23 +284,21 @@ function openAlumnoModal(data = null) {
   document.getElementById('modalAlumnoTitle').textContent = data ? 'Editar Alumno' : 'Nuevo Alumno';
   document.getElementById('alumnoId').value = data ? data.id : '';
   document.getElementById('alumnoNombre').value = data ? data.nombre : '';
-  document.getElementById('alumnoEmail').value = data ? data.email : '';
-  document.getElementById('alumnoSede').value = data ? data.sede : '';
-  document.getElementById('alumnoNivel').value = data ? data.nivel : '';
   document.getElementById('alumnoTelefono').value = data ? data.telefono || '' : '';
+  document.getElementById('alumnoGenero').value = data ? data.genero || '' : '';
+  document.getElementById('alumnoCurso').value = data ? data.curso || '' : '';
+  document.getElementById('alumnoPlan').value = data ? data.plan || '' : '';
+  document.getElementById('alumnoEstado').value = data ? data.estado || '' : '';
   document.getElementById('alumnoClasesContratadas').value = data ? data.clasesContratadas || 0 : 0;
+  document.getElementById('alumnoFechaIngreso').value = data ? data.fechaIngreso || '' : '';
+  document.getElementById('alumnoObservacion').value = data ? data.observacion || '' : '';
   document.getElementById('alumnoActivo').checked = data ? data.activo !== false : true;
-
-  // Show/hide password field
-  const pwGroup = document.getElementById('passwordGroup');
-  if (pwGroup) pwGroup.style.display = data ? 'none' : 'block';
-
   openModal('modalAlumno');
 }
 
 async function editAlumno(id) {
   try {
-    const alumno = await FirestoreService.getUser(id);
+    const alumno = await ApiService.getUser(id);
     if (alumno) openAlumnoModal(alumno);
   } catch (e) {
     showToast('Error al cargar datos del alumno', 'error');
@@ -289,32 +309,25 @@ async function handleAlumnoSubmit(e) {
   e.preventDefault();
   const id = document.getElementById('alumnoId').value;
   const data = {
-    nombre: document.getElementById('alumnoNombre').value,
-    email: document.getElementById('alumnoEmail').value,
-    sede: document.getElementById('alumnoSede').value,
-    nivel: document.getElementById('alumnoNivel').value,
-    telefono: document.getElementById('alumnoTelefono').value,
+    nombre: document.getElementById('alumnoNombre').value.trim(),
+    telefono: document.getElementById('alumnoTelefono').value.trim(),
+    genero: document.getElementById('alumnoGenero').value,
+    curso: document.getElementById('alumnoCurso').value.trim(),
+    plan: document.getElementById('alumnoPlan').value,
+    estado: document.getElementById('alumnoEstado').value,
     clasesContratadas: parseInt(document.getElementById('alumnoClasesContratadas').value) || 0,
+    fechaIngreso: document.getElementById('alumnoFechaIngreso').value,
+    observacion: document.getElementById('alumnoObservacion').value.trim(),
     activo: document.getElementById('alumnoActivo').checked,
-    role: 'alumno'
+    role: 'alumno',
   };
-
-  // Add password for new alumnos
-  const pwInput = document.getElementById('alumnoPassword');
-  if (!id && pwInput && pwInput.value) {
-    data.password = pwInput.value;
-  }
 
   try {
     if (id) {
-      await FirestoreService.updateUser(id, data);
+      await ApiService.updateUser(id, data);
       showToast('Alumno actualizado correctamente', 'success');
     } else {
-      if (!data.password) {
-        showToast('Debes asignar una contrasena al nuevo alumno', 'error');
-        return;
-      }
-      await FirestoreService.createUser(null, data);
+      await ApiService.createUser(null, data);
       showToast('Alumno creado correctamente', 'success');
     }
     closeModal('modalAlumno');
@@ -606,10 +619,10 @@ document.getElementById('btnConfirmDelete').addEventListener('click', async () =
   if (!pendingDeleteId || !pendingDeleteType) return;
   try {
     switch (pendingDeleteType) {
-      case 'alumno': await FirestoreService.deleteUser(pendingDeleteId); loadAlumnos(); break;
-      case 'clase': await FirestoreService.deleteClase(pendingDeleteId); loadClases(); break;
-      case 'evento': await FirestoreService.deleteEvento(pendingDeleteId); loadEventos(); break;
-      case 'banner': await FirestoreService.deleteBanner(pendingDeleteId); loadBanners(); break;
+      case 'alumno': await ApiService.deleteUser(pendingDeleteId); loadAlumnos(); break;
+      case 'clase': await ApiService.deleteClase(pendingDeleteId); loadClases(); break;
+      case 'evento': await ApiService.deleteEvento(pendingDeleteId); loadEventos(); break;
+      case 'banner': await ApiService.deleteBanner(pendingDeleteId); loadBanners(); break;
     }
     showToast('Registro eliminado correctamente', 'success');
   } catch (e) {
@@ -682,9 +695,7 @@ function setupEvaluacionesAdmin() {
 
 async function loadEvaluaciones() {
   try {
-    const res = await ApiService._fetch('/api/evaluaciones');
-    if (!res.ok) throw new Error('Error cargando evaluaciones');
-    evalAdminCache = await res.json();
+    evalAdminCache = await ApiService._fetch('/api/evaluaciones');
     renderAdminDashboard(evalAdminCache);
   } catch (err) {
     console.error('Error cargando evaluaciones:', err);
@@ -837,13 +848,10 @@ async function guardarAdminObservacion() {
     btn.disabled = true;
     btn.textContent = 'Guardando...';
 
-    const res = await ApiService._fetch('/api/observaciones', {
+    await ApiService._fetch('/api/observaciones', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-
-    if (!res.ok) throw new Error();
 
     showToast('Observacion guardada correctamente', 'success');
     document.getElementById('formAdminObservacion').reset();
@@ -931,6 +939,85 @@ function exportarAdminCSV() {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
   showToast('CSV descargado', 'success');
+}
+
+// ============================================
+// DETALLE ALUMNO
+// ============================================
+async function verDetalleAlumno(id) {
+  try {
+    const a = await ApiService.getUser(id);
+    document.getElementById('detalleAlumnoNombre').textContent = a.nombre;
+    document.getElementById('detalleAlumnoEditarBtn').dataset.alumnoId = id;
+
+    const linkBase = window.location.origin + '/app.html?token=';
+    const link = a.linkToken ? linkBase + encodeURIComponent(a.linkToken) : null;
+    const cursos = a.cursosInscritos && a.cursosInscritos.length
+      ? a.cursosInscritos.join(', ')
+      : (a.curso || '-');
+
+    document.getElementById('detalleAlumnoContent').innerHTML = `
+      <div class="detalle-alumno-grid">
+        <div class="detalle-row">
+          <span class="detail-label">Telefono</span>
+          <span class="detail-value">${sanitize(a.telefono || '-')}</span>
+        </div>
+        <div class="detalle-row">
+          <span class="detail-label">Genero</span>
+          <span class="detail-value">${sanitize(a.genero || '-')}</span>
+        </div>
+        <div class="detalle-row">
+          <span class="detail-label">Curso(s)</span>
+          <span class="detail-value">${sanitize(cursos)}</span>
+        </div>
+        <div class="detalle-row">
+          <span class="detail-label">Plan</span>
+          <span class="detail-value">${sanitize(a.plan || '-')}</span>
+        </div>
+        <div class="detalle-row">
+          <span class="detail-label">Estado pago</span>
+          <span class="detail-value">${sanitize(a.estado || '-')}</span>
+        </div>
+        <div class="detalle-row">
+          <span class="detail-label">Clases</span>
+          <span class="detail-value">${a.clasesAsistidas || 0} / ${a.clasesContratadas || 0}</span>
+        </div>
+        <div class="detalle-row">
+          <span class="detail-label">Desde</span>
+          <span class="detail-value">${sanitize(a.fechaIngreso || '-')}</span>
+        </div>
+        ${a.observacion ? `<div class="detalle-row detalle-row-full">
+          <span class="detail-label">Observacion</span>
+          <span class="detail-value">${sanitize(a.observacion)}</span>
+        </div>` : ''}
+        <div class="detalle-row detalle-row-full detalle-acceso">
+          <span class="detail-label">PIN acceso</span>
+          <span class="detail-value detalle-pin">${sanitize(a.pin || '-')}
+            ${a.pin ? `<button class="btn-copy" onclick="copyToClipboard('${sanitize(a.pin)}', this)">Copiar</button>` : ''}
+          </span>
+        </div>
+        ${link ? `<div class="detalle-row detalle-row-full detalle-acceso">
+          <span class="detail-label">Link acceso</span>
+          <span class="detail-value detalle-link">
+            <span class="detalle-link-text">${link.substring(0, 48)}...</span>
+            <button class="btn-copy" onclick="copyToClipboard('${link}', this)">Copiar link</button>
+          </span>
+        </div>` : ''}
+      </div>
+    `;
+    openModal('modalDetalleAlumno');
+  } catch (e) {
+    showToast('Error al cargar detalle del alumno', 'error');
+  }
+}
+
+function copyToClipboard(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copiado!';
+    btn.disabled = true;
+    setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 1800);
+  }).catch(() => showToast('No se pudo copiar', 'error'));
 }
 
 // ============================================

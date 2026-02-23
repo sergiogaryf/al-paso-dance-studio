@@ -1,0 +1,271 @@
+/* ============================================
+   AL PASO DANCE STUDIO - Panel Profesor
+   ============================================ */
+
+/* ---- PILLS DE CURSO ---- */
+.curso-pills {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.curso-pill {
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 1px solid var(--borde);
+  background: rgba(26, 26, 26, 0.8);
+  color: var(--blanco-suave);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.curso-pill:hover,
+.curso-pill.active {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: var(--blanco);
+}
+
+/* ---- LISTA ALUMNOS ---- */
+.prof-alumnos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.prof-alumno-card {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 1rem;
+  background: rgba(18, 18, 18, 0.7);
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  transition: border-color 0.2s;
+}
+
+.prof-alumno-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.prof-alumno-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.prof-alumno-nombre {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--blanco);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.prof-alumno-sub {
+  font-size: 0.78rem;
+  color: var(--blanco-suave);
+  margin-top: 0.2rem;
+}
+
+.prof-alumno-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.btn-asistencia {
+  padding: 0.4rem 0.8rem;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--borde);
+  color: var(--blanco-suave);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-asistencia:hover {
+  background: rgba(39, 174, 96, 0.15);
+  border-color: rgba(39, 174, 96, 0.5);
+  color: #2ecc71;
+}
+
+.btn-asistencia.asistido {
+  background: rgba(39, 174, 96, 0.12);
+  border-color: rgba(39, 174, 96, 0.4);
+  color: #2ecc71;
+}
+
+.btn-whatsapp {
+  padding: 0.4rem 0.7rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  background: rgba(37, 211, 102, 0.08);
+  border: 1px solid rgba(37, 211, 102, 0.2);
+  color: #25d366;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.btn-whatsapp:hover {
+  background: rgba(37, 211, 102, 0.18);
+  border-color: rgba(37, 211, 102, 0.4);
+}
+
+/* ---- EVALUACIONES ---- */
+.prof-eval-promedios {
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.prof-eval-barra-grupo {
+  margin-bottom: 0.9rem;
+}
+
+.prof-eval-barra-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: var(--blanco-suave);
+  margin-bottom: 0.35rem;
+}
+
+.prof-eval-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.prof-eval-item {
+  padding: 0.9rem 1rem;
+  background: rgba(18, 18, 18, 0.7);
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+}
+
+.prof-eval-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.prof-eval-nombre {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--blanco);
+}
+
+.prof-eval-score {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--blanco);
+  font-family: 'Inter', sans-serif;
+}
+
+.prof-eval-meta {
+  font-size: 0.75rem;
+  color: var(--blanco-suave);
+  margin-bottom: 0.4rem;
+}
+
+.prof-eval-comentario {
+  font-size: 0.82rem;
+  color: var(--blanco-suave);
+  font-style: italic;
+  border-left: 2px solid var(--borde);
+  padding-left: 0.6rem;
+  margin-top: 0.4rem;
+}
+
+/* ---- CLASES HOY ---- */
+.prof-clase-hoy-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--borde);
+}
+
+.prof-clase-hoy-item:last-child {
+  border-bottom: none;
+}
+
+.prof-clase-nombre {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--blanco);
+}
+
+.prof-clase-hora {
+  font-size: 0.78rem;
+  color: var(--blanco-suave);
+}
+
+.prof-clase-badge {
+  font-size: 0.7rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--blanco-suave);
+  border: 1px solid var(--borde);
+}
+
+/* ---- PENDIENTES ---- */
+.prof-pendiente-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(231,76,60,0.15);
+  font-size: 0.85rem;
+  color: var(--blanco);
+}
+
+.prof-pendiente-item:last-child {
+  border-bottom: none;
+}
+
+/* ---- MODAL ASISTENCIA ---- */
+.prof-asistencia-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 200;
+  padding: 0 1rem 2rem;
+}
+
+.prof-asistencia-modal.hidden {
+  display: none;
+}
+
+.prof-asistencia-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 1.5rem;
+  border-radius: 20px;
+  animation: cardAppear 0.25s ease-out;
+}
+
+@keyframes cardAppear {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
