@@ -1434,20 +1434,35 @@ footer span { color: var(--blanco); }
   margin-right: auto;
 }
 
-/* ---- GALERÍA MARQUEE (scroll horizontal automático) ---- */
+/* Sección galería: reduce padding inferior para que la tira quede cercana */
+.section-galeria {
+  padding-bottom: 1.5rem;
+}
+
+/* Link Instagram en subtítulo */
+.ig-link {
+  color: rgba(168, 85, 247, 0.9);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.ig-link:hover { color: #f97316; }
+
+/* ---- GALERÍA MARQUEE — tira horizontal continua ---- */
 .galeria-marquee {
   overflow: hidden;
   width: 100%;
-  padding: 0 0 3rem;
-  mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+  padding-bottom: 3rem;
+  /* vignette en los bordes laterales */
+  mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%);
 }
 
 .galeria-track {
   display: flex;
-  gap: 1rem;
+  gap: 6px;
   width: max-content;
-  animation: scrollGaleria 28s linear infinite;
+  animation: scrollGaleria 32s linear infinite;
 }
 
 .galeria-track:hover {
@@ -1455,19 +1470,29 @@ footer span { color: var(--blanco); }
 }
 
 .galeria-slide {
-  width: 220px;
-  height: 300px;
-  border-radius: 16px;
+  width: 248px;
+  height: 370px;
+  border-radius: 10px;
   overflow: hidden;
-  border: 1px solid var(--borde);
+  border: none;
   flex-shrink: 0;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  box-shadow: 0 0 12px rgba(168, 85, 247, 0.08), 0 4px 15px rgba(0,0,0,0.2);
+  position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .galeria-slide:hover {
-  border-color: rgba(168, 85, 247, 0.4);
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.3), 0 0 50px rgba(168, 85, 247, 0.1);
+  transform: scale(1.02);
+  box-shadow: 0 0 24px rgba(168, 85, 247, 0.35), 0 8px 30px rgba(0,0,0,0.4);
+  z-index: 2;
+}
+
+/* overlay oscuro sutil para consistencia de tono */
+.galeria-slide::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.08) 0%, rgba(15,4,18,0.3) 100%);
+  pointer-events: none;
 }
 
 .galeria-slide img {
@@ -1475,6 +1500,11 @@ footer span { color: var(--blanco); }
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.4s;
+}
+
+.galeria-slide:hover img {
+  transform: scale(1.05);
 }
 
 @keyframes scrollGaleria {
