@@ -3,6 +3,20 @@
  * Reemplaza a FirestoreService manteniendo la misma interfaz
  */
 
+// ---- MODO DESARROLLO LOCAL (solo localhost) ----
+const _LOCAL_DEV = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+const _LOCAL_TOKEN = 'local-dev-alpaso-2026';
+const _LOCAL_USER  = {
+  id: 'local-dev',
+  nombre: 'Sergio Gary',
+  email: 'sergiogaryf@gmail.com',
+  role: 'admin',
+  activo: true,
+  cursosInscritos: [],
+  clasesContratadas: 10,
+  clasesAsistidas: 0,
+};
+
 const ApiService = {
   _token: null,
 
@@ -46,6 +60,10 @@ const ApiService = {
   // =========================================================================
 
   async login(email, password) {
+    if (_LOCAL_DEV && email === 'sergiogaryf@gmail.com' && password === '1234') {
+      this._setToken(_LOCAL_TOKEN);
+      return _LOCAL_USER;
+    }
     const data = await this._fetch('/api/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
@@ -75,6 +93,9 @@ const ApiService = {
   },
 
   async getCurrentUser() {
+    if (_LOCAL_DEV && this._getToken() === _LOCAL_TOKEN) {
+      return _LOCAL_USER;
+    }
     return this._fetch('/api/me');
   },
 
