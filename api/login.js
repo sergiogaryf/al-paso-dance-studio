@@ -68,7 +68,7 @@ module.exports = async function handler(req, res) {
     if (alumno.Activo === false) {
       return res.status(403).json({ error: 'Tu cuenta esta deshabilitada. Contacta al administrador.' });
     }
-    const jwt = signToken({ id: alumno.id, email: alumno.Email, nombre: alumno.Nombre, role: alumno.Role || 'alumno' });
+    const jwt = signToken({ id: alumno.id, email: alumno.Email, nombre: alumno.Nombre, role: (alumno.Role || 'alumno').toLowerCase() });
     return res.status(200).json({ token: jwt, user: buildUser(alumno) });
   } catch (error) {
     console.error('Error en login:', error);

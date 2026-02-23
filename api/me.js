@@ -20,7 +20,7 @@ module.exports = async function handler(req, res) {
       id: alumno.id,
       nombre: alumno.Nombre,
       email: alumno.Email || '',
-      role: alumno.Role || 'alumno',
+      role: (alumno.Role || 'alumno').toLowerCase(),
       sede: alumno.Sede || 'Costa de Montemar, Concon',
       nivel: alumno.Nivel || '',
       telefono: alumno.Telefono || '',
@@ -32,6 +32,7 @@ module.exports = async function handler(req, res) {
       clasesContratadas: alumno.ClasesContratadas || 0,
       clasesAsistidas: alumno.ClasesAsistidas || 0,
       activo: alumno.Activo !== false,
+      fotoUrl: alumno.FotoUrl || '',
     });
   } catch (error) {
     console.error('Error en /api/me:', error);

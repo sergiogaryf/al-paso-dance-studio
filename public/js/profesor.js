@@ -20,6 +20,7 @@ let profEvaluaciones = [];
     setupTabs();
     setupLogout();
     setupObsForm();
+    setupProfFoto();
 
     await Promise.all([
       loadAllAlumnos(),
@@ -441,8 +442,14 @@ function mostrarObsMsg(msg, exito) {
 // ============================================
 function loadPerfil() {
   if (!profUser) return;
-  const iniciales = getInitials(profUser.nombre);
-  document.getElementById('profAvatar').textContent = iniciales;
+  const avatarEl = document.getElementById('profAvatar');
+  if (profUser.fotoUrl) {
+    avatarEl.innerHTML = `<img src="${profUser.fotoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
+    avatarEl.style.padding = '0';
+    avatarEl.style.overflow = 'hidden';
+  } else {
+    avatarEl.textContent = getInitials(profUser.nombre);
+  }
   document.getElementById('profPerfilNombre').textContent = profUser.nombre || '-';
   document.getElementById('profPerfilTel').textContent = profUser.telefono || '-';
   document.getElementById('profPerfilEmail').textContent = profUser.email || '-';
@@ -510,6 +517,71 @@ function formatFecha(dateStr) {
     const d = new Date(dateStr + 'T00:00:00');
     return d.toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
   } catch { return dateStr; }
+}
+
+// ============================================
+// FOTO PERFIL PROFESOR
+// ============================================
+function setupProfFoto() {
+  const btn = document.getElementById('profFotoBtn');
+  const input = document.getElementById('profFotoInput');
+  if (!btn || !input) return;
+
+  btn.addEventListener('click', () => input.click());
+
+  input.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const origContent = btn.innerHTML;
+    btn.textContent = '...';
+    btn.disabled = true;
+
+    try {
+      const base64 = await comprimirFoto(file);
+      await ApiService.updateUser(profUser.id, { fotoUrl: base64 });
+      profUser.fotoUrl = base64;
+
+      const avatarEl = document.getElementById('profAvatar');
+      avatarEl.innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
+      avatarEl.style.padding = '0';
+      avatarEl.style.overflow = 'hidden';
+
+      showMiniToast('Foto actualizada');
+    } catch (err) {
+      console.error('Error subiendo foto:', err);
+      showMiniToast('Error al subir foto', true);
+    } finally {
+      btn.innerHTML = origContent;
+      btn.disabled = false;
+      input.value = '';
+    }
+  });
+}
+
+function comprimirFoto(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const size = 200;
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        const minDim = Math.min(img.width, img.height);
+        const sx = (img.width - minDim) / 2;
+        const sy = (img.height - minDim) / 2;
+        ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
 function showMiniToast(msg, error = false) {
