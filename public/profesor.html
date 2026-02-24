@@ -7,9 +7,6 @@
   <meta name="theme-color" content="#140A18">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Al Paso Profesor">
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="img/icons/icon-192x192.png">
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
   <link rel="stylesheet" href="css/shared.css">
   <link rel="stylesheet" href="css/app.css">
@@ -17,13 +14,13 @@
 </head>
 <body class="app-page">
 
-  <!-- Loading Overlay -->
+  <!-- Loading -->
   <div id="profLoading" class="loading-overlay">
     <div class="spinner"></div>
     <p class="text-muted" style="font-size:0.85rem">Cargando panel...</p>
   </div>
 
-  <!-- MAIN CONTENT -->
+  <!-- Contenido principal -->
   <main id="profContent" class="app-content hidden">
 
     <!-- ====== TAB: INICIO ====== -->
@@ -37,7 +34,7 @@
 
       <h1 class="greeting">Hola, <span id="profNombre">...</span>!</h1>
 
-      <!-- Stats mini -->
+      <!-- Stats -->
       <div class="inicio-plan-racha">
         <div class="glass-card card-stat-mini">
           <div class="card-stat-mini-icon">&#128101;</div>
@@ -45,29 +42,27 @@
           <div class="card-stat-mini-label">Alumnos</div>
         </div>
         <div class="glass-card card-stat-mini">
-          <div class="card-stat-mini-icon">&#9998;</div>
-          <div class="card-stat-mini-val" id="profStatEvalHoy">0</div>
-          <div class="card-stat-mini-label">Eval. hoy</div>
-        </div>
-        <div class="glass-card card-stat-mini">
           <div class="card-stat-mini-icon">&#127891;</div>
           <div class="card-stat-mini-val" id="profStatCursos">0</div>
           <div class="card-stat-mini-label">Cursos</div>
+        </div>
+        <div class="glass-card card-stat-mini">
+          <div class="card-stat-mini-icon">&#9998;</div>
+          <div class="card-stat-mini-val" id="profStatEvals">0</div>
+          <div class="card-stat-mini-label">Evaluaciones</div>
         </div>
       </div>
 
       <!-- Clases de hoy -->
       <div class="glass-card" style="margin-bottom:1rem">
         <div class="card-label">Clases de hoy</div>
-        <div id="profClasesHoy">
-          <p class="text-muted" style="font-size:0.9rem">Cargando...</p>
-        </div>
+        <div id="profClasesHoy"><p class="text-muted" style="font-size:0.9rem">Cargando...</p></div>
       </div>
 
-      <!-- Alumnos pendientes de pago -->
-      <div class="glass-card" id="profPendientesCard" style="display:none;margin-bottom:1rem">
-        <div class="card-label" style="color:#e74c3c">&#x26A0; Pendientes de pago</div>
-        <div id="profPendientesList"></div>
+      <!-- Alumnos del dia -->
+      <div class="glass-card" style="margin-bottom:1rem">
+        <div class="card-label">Alumnos de hoy</div>
+        <div id="profAlumnosHoy"><p class="text-muted" style="font-size:0.9rem">Cargando...</p></div>
       </div>
     </section>
 
@@ -81,33 +76,11 @@
     <!-- ====== TAB: EVALUACIONES ====== -->
     <section id="tab-evaluaciones" class="tab-section">
       <h2 class="section-title">Evaluaciones</h2>
-      <div id="profEvalPills" class="curso-pills"></div>
-
-      <!-- Promedios -->
-      <div class="glass-card prof-eval-promedios" id="profEvalPromedios" style="display:none">
-        <div class="prof-eval-barra-grupo">
-          <div class="prof-eval-barra-label"><span>Disfrute</span><span class="text-gold" id="profPromDisfrute">-</span></div>
-          <div class="eval-admin-barra-track"><div class="eval-admin-barra-fill" id="profBarraDisfrute" style="width:0%"></div></div>
-        </div>
-        <div class="prof-eval-barra-grupo">
-          <div class="prof-eval-barra-label"><span>Comprension</span><span class="text-gold" id="profPromComprension">-</span></div>
-          <div class="eval-admin-barra-track"><div class="eval-admin-barra-fill" id="profBarraComprension" style="width:0%"></div></div>
-        </div>
-        <div class="prof-eval-barra-grupo">
-          <div class="prof-eval-barra-label"><span>Comodidad en pareja</span><span class="text-gold" id="profPromComodidad">-</span></div>
-          <div class="eval-admin-barra-track"><div class="eval-admin-barra-fill" id="profBarraComodidad" style="width:0%"></div></div>
-        </div>
-        <div class="prof-eval-barra-grupo">
-          <div class="prof-eval-barra-label"><span>Confianza</span><span class="text-gold" id="profPromConfianza">-</span></div>
-          <div class="eval-admin-barra-track"><div class="eval-admin-barra-fill" id="profBarraConfianza" style="width:0%"></div></div>
-        </div>
-      </div>
-
-      <!-- Lista evaluaciones -->
-      <div id="profEvalLista" class="prof-eval-lista"></div>
+      <p class="text-muted" style="font-size:0.82rem;margin-bottom:1.2rem">Promedio general por curso</p>
+      <div id="profEvalDashboard"></div>
     </section>
 
-    <!-- ====== TAB: OBSERVACIONES ====== -->
+    <!-- ====== TAB: OBSERVACION ====== -->
     <section id="tab-observaciones" class="tab-section">
       <h2 class="section-title">Observacion de clase</h2>
       <div class="glass-card eval-app-form">
@@ -167,7 +140,7 @@
       <div class="perfil-header">
         <div class="perfil-avatar-wrapper">
           <div class="avatar avatar-xl" id="profAvatar">--</div>
-          <label class="foto-upload-btn" id="profFotoBtn" for="profFotoInput" title="Editar foto">&#9998;</label>
+          <label class="foto-upload-btn" id="profFotoBtn" for="profFotoInput" title="Cambiar foto">&#9998;</label>
           <input type="file" id="profFotoInput" accept="image/*" style="position:absolute;width:0;height:0;opacity:0;overflow:hidden">
         </div>
         <h2 class="perfil-name" id="profPerfilNombre">-</h2>
@@ -176,7 +149,7 @@
 
       <div class="glass-card perfil-cursos-card">
         <div class="perfil-info-label" style="margin-bottom:0.6rem">Mis cursos</div>
-        <div id="profPerfilCursos" class="perfil-cursos-lista">-</div>
+        <div id="profPerfilCursos">-</div>
       </div>
 
       <div class="perfil-info-grid">
@@ -206,7 +179,7 @@
       <span class="tab-label">Alumnos</span>
     </button>
     <button class="tab-item" data-tab="tab-evaluaciones">
-      <span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></span>
+      <span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
       <span class="tab-label">Eval.</span>
     </button>
     <button class="tab-item" data-tab="tab-observaciones">
@@ -219,8 +192,6 @@
     </button>
   </nav>
 
-
-  <!-- Scripts -->
   <script src="js/api-service.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/profesor.js"></script>

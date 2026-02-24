@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Administracion - Al Paso Dance Studio</title>
+  <meta name="theme-color" content="#140A18">
+  <link rel="icon" type="image/svg+xml" href="../img/favicon.svg">
+  <link rel="stylesheet" href="../css/shared.css">
+  <link rel="stylesheet" href="../css/login.css">
+</head>
+<body class="login-page">
+
+  <div class="login-bg"></div>
+
+  <main class="login-container">
+    <div class="login-vista active">
+      <div class="login-card glass-card">
+
+        <div class="login-logo">
+          <img src="../img/Logo.png" alt="Al Paso Dance Studio">
+        </div>
+
+        <h1 class="login-title">Administracion</h1>
+        <p class="login-subtitle" style="font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;opacity:0.6">Acceso restringido</p>
+
+        <form id="adminLoginForm" autocomplete="on" style="margin-top:1.5rem">
+          <div class="form-group">
+            <label for="adminEmail">Correo electronico</label>
+            <input type="email" id="adminEmail" class="form-input" placeholder="admin@correo.com" autocomplete="email" required>
+          </div>
+          <div class="form-group">
+            <label for="adminPassword">Contrasena</label>
+            <input type="password" id="adminPassword" class="form-input" placeholder="Tu contrasena" autocomplete="current-password" required>
+          </div>
+
+          <div id="adminError" class="error-message hidden"></div>
+
+          <button type="submit" id="adminLoginBtn" class="btn-primary login-btn" style="margin-top:0.5rem">
+            <span class="btn-text">Ingresar</span>
+            <span class="btn-loader hidden">
+              <span class="spinner-small"></span>
+              Verificando...
+            </span>
+          </button>
+        </form>
+
+        <a href="../index.html" class="back-link" style="margin-top:1.5rem">
+          <span class="back-arrow">&larr;</span> Volver al sitio
+        </a>
+
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/api-service.js"></script>
+  <script>
+    const form     = document.getElementById('adminLoginForm');
+    const btnLogin = document.getElementById('adminLoginBtn');
+    const errDiv   = document.getElementById('adminError');
+
+    function showErr(msg) {
+      errDiv.textContent = msg;
+      errDiv.classList.remove('hidden');
+    }
+    function setLoading(on) {
+      btnLogin.disabled = on;
+      btnLogin.querySelector('.btn-text').classList.toggle('hidden', on);
+      btnLogin.querySelector('.btn-loader').classList.toggle('hidden', !on);
+    }
+
+    // Si ya hay sesion de admin activa, redirigir directo
+    if (ApiService.isLoggedIn()) {
+      ApiService.getCurrentUser()
+        .then(u => {
+          if ((u.role || '').toLowerCase() === 'admin') {
+            window.location.href = '/admin.html';
+          }
+        })
+        .catch(() => {});
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errDiv.classList.add('hidden');
+      const email    = document.getElementById('adminEmail').value.trim();
+      const password = document.getElementById('adminPassword').value;
+      if (!email || !password) return;
+
+      setLoading(true);
+      try {
+        const user = await ApiService.login(email, password);
+        if ((user.role || '').toLowerCase() !== 'admin') {
+          ApiService.logout();
+          showErr('No tienes permisos de administrador.');
+          setLoading(false);
+          return;
+        }
+        window.location.href = '/admin.html';
+      } catch (err) {
+        showErr(err.message || 'Credenciales incorrectas.');
+        setLoading(false);
+      }
+    });
+
+    [document.getElementById('adminEmail'), document.getElementById('adminPassword')]
+      .forEach(el => el.addEventListener('input', () => errDiv.classList.add('hidden')));
+  </script>
+</body>
+</html>

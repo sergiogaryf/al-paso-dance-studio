@@ -2,12 +2,12 @@
    AL PASO DANCE STUDIO - Panel Profesor JS
    ============================================ */
 
-// ---- AUTH CHECK ----
-let profUser = null;
+let profUser     = null;
 let profMisCursos = [];
-let profAlumnos = [];
-let profEvaluaciones = [];
+let profAlumnos  = [];
+let profEvals    = [];
 
+// ---- INIT ----
 (async function () {
   try {
     profUser = await checkProfesorAuth();
@@ -20,14 +20,11 @@ let profEvaluaciones = [];
     setupTabs();
     setupLogout();
     setupObsForm();
-    setupProfFoto();
+    setupFoto();
 
-    await Promise.all([
-      loadAllAlumnos(),
-      loadAllEvaluaciones(),
-    ]);
+    await Promise.all([loadAlumnos(), loadEvaluaciones()]);
 
-    loadInicio();
+    renderInicio();
   } catch (e) {
     console.error('Error init profesor:', e);
   }
@@ -42,81 +39,60 @@ function setupTabs() {
       btn.classList.add('active');
       const tabId = btn.dataset.tab;
       document.getElementById(tabId).classList.add('active');
-      if (tabId === 'tab-alumnos') renderAlumnosTab();
-      if (tabId === 'tab-evaluaciones') renderEvaluacionesTab();
+      if (tabId === 'tab-alumnos')      renderAlumnosTab();
+      if (tabId === 'tab-evaluaciones') renderEvalTab();
     });
   });
 }
 
-// ---- LOGOUT ----
 function setupLogout() {
   document.getElementById('profLogoutBtn').addEventListener('click', () => ApiService.logout());
 }
 
-// ============================================
-// DATOS
-// ============================================
-async function loadAllAlumnos() {
+// ---- DATOS ----
+async function loadAlumnos() {
   try {
     const todos = await ApiService.getAlumnos();
-    // Filtrar solo los alumnos que tienen al menos un curso del profesor
     if (profMisCursos.length > 0) {
       const misCursosLower = profMisCursos.map(c => c.toLowerCase());
       profAlumnos = todos.filter(a => {
-        const cursosAlumno = (a.cursosInscritos || []).map(c => c.toLowerCase());
-        if (!cursosAlumno.length && a.curso) {
-          cursosAlumno.push(...a.curso.toLowerCase().split(',').map(c => c.trim()));
-        }
-        return misCursosLower.some(mc => cursosAlumno.some(ca => ca.includes(mc) || mc.includes(ca)));
+        const cursosA = getCursosAlumno(a);
+        return misCursosLower.some(mc => cursosA.some(ca => ca.includes(mc) || mc.includes(ca)));
       });
     } else {
-      profAlumnos = todos;
+      profAlumnos = todos.filter(a => (a.role || 'alumno') === 'alumno');
     }
   } catch (e) {
-    console.error('Error cargando alumnos:', e);
     profAlumnos = [];
   }
 }
 
-async function loadAllEvaluaciones() {
+async function loadEvaluaciones() {
   try {
-    profEvaluaciones = await ApiService._fetch('/api/evaluaciones');
-    // Filtrar por mis cursos
+    profEvals = await ApiService._fetch('/api/evaluaciones');
     if (profMisCursos.length > 0) {
       const misCursosLower = profMisCursos.map(c => c.toLowerCase());
-      profEvaluaciones = profEvaluaciones.filter(e =>
+      profEvals = profEvals.filter(e =>
         misCursosLower.some(mc => (e.Curso || '').toLowerCase().includes(mc))
       );
     }
   } catch (e) {
-    console.error('Error cargando evaluaciones:', e);
-    profEvaluaciones = [];
+    profEvals = [];
   }
 }
 
 // ============================================
 // TAB INICIO
 // ============================================
-function loadInicio() {
-  // Nombre
+function renderInicio() {
   document.getElementById('profNombre').textContent = (profUser.nombre || '').split(' ')[0];
-
-  // Stats
   document.getElementById('profStatAlumnos').textContent = profAlumnos.length;
   document.getElementById('profStatCursos').textContent = profMisCursos.length;
+  document.getElementById('profStatEvals').textContent = profEvals.length;
 
-  const hoy = new Date().toISOString().slice(0, 10);
-  const evalHoy = profEvaluaciones.filter(e => (e.FechaEvaluacion || '').slice(0, 10) === hoy).length;
-  document.getElementById('profStatEvalHoy').textContent = evalHoy;
-
-  // Clases de hoy
   renderClasesHoy();
-
-  // Pendientes de pago
-  renderPendientes();
-
-  // Perfil
-  loadPerfil();
+  renderAlumnosHoy();
+  renderPerfil();
 }
 
 async function renderClasesHoy() {
@@ -125,15 +101,13 @@ async function renderClasesHoy() {
     const clases = await ApiService.getClasesActivas();
     const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
     const hoy = diasSemana[new Date().getDay()];
-
-    // Filtrar clases de hoy que pertenezcan a mis cursos
     const misCursosLower = profMisCursos.map(c => c.toLowerCase());
+
     const clasesHoy = clases.filter(c => {
-      const mismaFecha = c.dia === hoy;
-      if (!mismaFecha) return false;
+      if ((c.dia || '').toLowerCase() !== hoy.toLowerCase()) return false;
       if (profMisCursos.length === 0) return true;
-      const nombreClase = (c.nombre || '').toLowerCase();
-      return misCursosLower.some(mc => nombreClase.includes(mc.split(' ')[0].toLowerCase()));
+      const nombre = (c.nombre || '').toLowerCase();
+      return misCursosLower.some(mc => nombre.includes(mc.split(' ')[0]));
     });
 
     if (clasesHoy.length === 0) {
@@ -143,7 +117,7 @@ async function renderClasesHoy() {
 
     container.innerHTML = clasesHoy.map(c => {
       const numAlumnos = profAlumnos.filter(a => {
-        const cursosA = (a.cursosInscritos || []).map(n => n.toLowerCase());
+        const cursosA = getCursosAlumno(a);
         const nombreClase = (c.nombre || '').toLowerCase();
         return cursosA.some(ca => nombreClase.includes(ca.split(' ')[0]));
       }).length;
@@ -160,25 +134,45 @@ async function renderClasesHoy() {
   }
 }
 
-function renderPendientes() {
-  const pendientes = profAlumnos.filter(a => (a.estado || '').toLowerCase() === 'pendiente');
-  const card = document.getElementById('profPendientesCard');
-  const lista = document.getElementById('profPendientesList');
+async function renderAlumnosHoy() {
+  const container = document.getElementById('profAlumnosHoy');
+  try {
+    const clases = await ApiService.getClasesActivas();
+    const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
+    const hoy = diasSemana[new Date().getDay()];
+    const misCursosLower = profMisCursos.map(c => c.toLowerCase());
 
-  if (pendientes.length === 0) {
-    card.style.display = 'none';
-    return;
+    const cursosHoy = clases
+      .filter(c => {
+        if ((c.dia || '').toLowerCase() !== hoy.toLowerCase()) return false;
+        if (profMisCursos.length === 0) return true;
+        const nombre = (c.nombre || '').toLowerCase();
+        return misCursosLower.some(mc => nombre.includes(mc.split(' ')[0]));
+      })
+      .map(c => (c.nombre || '').toLowerCase());
+
+    const alumnosHoy = profAlumnos.filter(a => {
+      const cursosA = getCursosAlumno(a);
+      return cursosHoy.some(ch => cursosA.some(ca => ch.includes(ca.split(' ')[0]) || ca.includes(ch.split(' ')[0])));
+    });
+
+    if (alumnosHoy.length === 0) {
+      container.innerHTML = '<p class="text-muted" style="font-size:0.9rem">Sin alumnos para hoy.</p>';
+      return;
+    }
+
+    container.innerHTML = alumnosHoy.map(a => `
+      <div style="display:flex;align-items:center;gap:0.7rem;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+        <div class="avatar" style="width:32px;height:32px;font-size:0.7rem;flex-shrink:0">${getInitials(a.nombre)}</div>
+        <div>
+          <div style="font-size:0.88rem;font-weight:600;color:var(--blanco)">${esc(a.nombre)}</div>
+          <div style="font-size:0.75rem;color:var(--blanco-suave)">${esc(a.curso || '')}</div>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) {
+    container.innerHTML = '<p class="text-muted" style="font-size:0.9rem">No se pudo cargar.</p>';
   }
-
-  card.style.display = 'block';
-  lista.innerHTML = pendientes.map(a => `
-    <div class="prof-pendiente-item">
-      <span>${esc(a.nombre)}</span>
-      ${a.telefono
-        ? `<a href="https://wa.me/${formatWA(a.telefono)}" class="btn-whatsapp" target="_blank">&#128172;</a>`
-        : ''}
-    </div>
-  `).join('');
 }
 
 // ============================================
@@ -189,17 +183,17 @@ let cursoActivoAlumnos = null;
 function renderAlumnosTab() {
   renderCursoPills('profCursosPills', cursoActivoAlumnos, (c) => {
     cursoActivoAlumnos = c;
-    renderAlumnosLista();
+    renderAlumnosList();
   });
-  renderAlumnosLista();
+  renderAlumnosList();
 }
 
-function renderAlumnosLista() {
+function renderAlumnosList() {
   const container = document.getElementById('profAlumnosList');
   let lista = profAlumnos;
   if (cursoActivoAlumnos) {
     lista = lista.filter(a => {
-      const cursosA = (a.cursosInscritos || []).map(c => c.toLowerCase());
+      const cursosA = getCursosAlumno(a);
       return cursosA.some(c => c.includes(cursoActivoAlumnos.toLowerCase()));
     });
   }
@@ -210,9 +204,9 @@ function renderAlumnosLista() {
   }
 
   container.innerHTML = lista.map(a => {
-    const planBadge = a.plan ? `<span class="badge badge-gold" style="font-size:0.65rem">${esc(a.plan)}</span>` : '';
+    const planBadge   = a.plan ? `<span class="badge badge-gold" style="font-size:0.62rem">${esc(a.plan)}</span>` : '';
     const estadoBadge = (a.estado || '').toLowerCase() === 'pendiente'
-      ? `<span class="badge badge-red" style="font-size:0.65rem">Pendiente</span>` : '';
+      ? `<span class="badge badge-red" style="font-size:0.62rem">Pendiente</span>` : '';
     return `
     <div class="prof-alumno-card">
       <div class="avatar" style="flex-shrink:0">${getInitials(a.nombre)}</div>
@@ -227,86 +221,72 @@ function renderAlumnosLista() {
   }).join('');
 }
 
-
 // ============================================
-// TAB EVALUACIONES
+// TAB EVALUACIONES — Promedio general por curso
 // ============================================
-let cursoActivoEval = null;
+function renderEvalTab() {
+  const container = document.getElementById('profEvalDashboard');
 
-function renderEvaluacionesTab() {
-  renderCursoPills('profEvalPills', cursoActivoEval, (c) => {
-    cursoActivoEval = c;
-    renderEvaluacionesDatos();
-  });
-  renderEvaluacionesDatos();
-}
-
-function renderEvaluacionesDatos() {
-  let lista = profEvaluaciones;
-  if (cursoActivoEval) {
-    lista = lista.filter(e => (e.Curso || '').toLowerCase().includes(cursoActivoEval.toLowerCase()));
-  }
-
-  const promediosCard = document.getElementById('profEvalPromedios');
-
-  if (lista.length === 0) {
-    promediosCard.style.display = 'none';
-    document.getElementById('profEvalLista').innerHTML =
-      '<p class="text-muted" style="text-align:center;padding:1.5rem 0">No hay evaluaciones aun.</p>';
+  if (profEvals.length === 0) {
+    container.innerHTML = '<p class="text-muted" style="text-align:center;padding:2rem 0">No hay evaluaciones aun.</p>';
     return;
   }
 
-  promediosCard.style.display = 'block';
-
-  const prom = campo => lista.length
-    ? (lista.reduce((a, e) => a + (parseFloat(e[campo]) || 0), 0) / lista.length).toFixed(1)
-    : '0';
-
-  const metricas = [
-    ['Disfrute', 'profPromDisfrute', 'profBarraDisfrute'],
-    ['Comprension', 'profPromComprension', 'profBarraComprension'],
-    ['ComodidadPareja', 'profPromComodidad', 'profBarraComodidad'],
-    ['Confianza', 'profPromConfianza', 'profBarraConfianza'],
-  ];
-
-  metricas.forEach(([campo, idVal, idBarra]) => {
-    const v = prom(campo);
-    document.getElementById(idVal).textContent = v;
-    document.getElementById(idBarra).style.width = (parseFloat(v) / 10 * 100) + '%';
+  // Agrupar por curso
+  const porCurso = {};
+  profEvals.forEach(e => {
+    const curso = e.Curso || 'Sin curso';
+    if (!porCurso[curso]) porCurso[curso] = [];
+    porCurso[curso].push(e);
   });
 
-  // Lista de ultimas evaluaciones
-  const ultimas = [...lista]
-    .sort((a, b) => (b.FechaHoraISO || '').localeCompare(a.FechaHoraISO || ''))
-    .slice(0, 20);
+  const prom = (arr, campo) => arr.length
+    ? (arr.reduce((s, e) => s + (parseFloat(e[campo]) || 0), 0) / arr.length).toFixed(1)
+    : '-';
 
-  document.getElementById('profEvalLista').innerHTML = ultimas.map(e => {
-    const promedio = (
-      (parseFloat(e.Disfrute || 0) + parseFloat(e.Comprension || 0) +
-       parseFloat(e.ComodidadPareja || 0) + parseFloat(e.Confianza || 0)) / 4
-    ).toFixed(1);
-    return `<div class="prof-eval-item">
-      <div class="prof-eval-item-header">
-        <span class="prof-eval-nombre">${esc(e.NombreAlumno || '?')}</span>
-        <span class="prof-eval-score">${promedio}</span>
+  container.innerHTML = Object.entries(porCurso).map(([curso, evals]) => {
+    const d = prom(evals, 'Disfrute');
+    const c = prom(evals, 'Comprension');
+    const p = prom(evals, 'ComodidadPareja');
+    const f = prom(evals, 'Confianza');
+    const general = evals.length
+      ? ((parseFloat(d)+parseFloat(c)+parseFloat(p)+parseFloat(f))/4).toFixed(1)
+      : '-';
+
+    return `
+    <div class="glass-card" style="margin-bottom:1rem;padding:1.2rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.9rem">
+        <span style="font-size:0.9rem;font-weight:700;color:var(--blanco)">${esc(curso)}</span>
+        <span style="font-size:1.3rem;font-weight:800;color:var(--naranja-claro);font-family:'Inter',sans-serif">${general}<span style="font-size:0.7rem;color:var(--blanco-suave)">/10</span></span>
       </div>
-      <div class="prof-eval-meta">
-        ${esc(e.Curso || '')} · Clase ${e.NumeroClase || '?'}
-        · ${formatFecha(e.FechaEvaluacion)}
-        ${e.BaileNuevo ? ' · <span style="color:#2ecc71">Nuevo compañero ✓</span>' : ''}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem">
+        ${metricaFila('Disfrute', d)}
+        ${metricaFila('Comprension', c)}
+        ${metricaFila('Comodidad', p)}
+        ${metricaFila('Confianza', f)}
       </div>
-      ${e.Comentario
-        ? `<div class="prof-eval-comentario">"${esc(e.Comentario)}"</div>`
-        : ''}
+      <div style="margin-top:0.7rem;font-size:0.72rem;color:var(--blanco-suave);text-align:right">${evals.length} evaluacion${evals.length !== 1 ? 'es' : ''}</div>
     </div>`;
   }).join('');
 }
 
+function metricaFila(label, valor) {
+  const pct = valor !== '-' ? (parseFloat(valor) / 10 * 100) : 0;
+  return `
+  <div>
+    <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--blanco-suave);margin-bottom:0.2rem">
+      <span>${label}</span><span class="text-gold">${valor}</span>
+    </div>
+    <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px">
+      <div style="height:100%;width:${pct}%;background:var(--gradiente-brand-90);border-radius:2px"></div>
+    </div>
+  </div>`;
+}
+
 // ============================================
-// TAB OBSERVACIONES
+// TAB OBSERVACION
 // ============================================
 function setupObsForm() {
-  // Poblar select de cursos
   const select = document.getElementById('obsProCurso');
   profMisCursos.forEach(c => {
     const opt = document.createElement('option');
@@ -315,10 +295,8 @@ function setupObsForm() {
     select.appendChild(opt);
   });
 
-  // Fecha default
   document.getElementById('obsProFecha').value = new Date().toISOString().slice(0, 10);
 
-  // Botones clase
   document.querySelectorAll('#tab-observaciones .eval-app-clase-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('#tab-observaciones .eval-app-clase-btn').forEach(b => b.classList.remove('active'));
@@ -326,32 +304,26 @@ function setupObsForm() {
     });
   });
 
-  // Submit
   document.getElementById('btnEnviarObsPro').addEventListener('click', enviarObservacion);
 }
 
 async function enviarObservacion() {
-  const curso = document.getElementById('obsProCurso').value;
+  const curso    = document.getElementById('obsProCurso').value;
   const claseBtn = document.querySelector('#tab-observaciones .eval-app-clase-btn.active');
-  const errDiv = document.getElementById('obsProError');
-  const okDiv = document.getElementById('obsProExito');
 
-  errDiv.classList.add('hidden');
-  okDiv.classList.add('hidden');
-
-  if (!curso) { mostrarObsMsg('Selecciona un curso', false); return; }
+  if (!curso)    { mostrarObsMsg('Selecciona un curso', false); return; }
   if (!claseBtn) { mostrarObsMsg('Selecciona el numero de clase', false); return; }
 
   const payload = {
-    Curso: curso,
-    NumeroClase: parseInt(claseBtn.dataset.clase),
-    Fecha: document.getElementById('obsProFecha').value,
-    ObjetivoDelDia: document.getElementById('obsProObjetivo').value.trim(),
-    PasosTrabajados: document.getElementById('obsProPasos').value.trim(),
-    LogrosDelDia: document.getElementById('obsProLogros').value.trim(),
+    Curso:                  curso,
+    NumeroClase:            parseInt(claseBtn.dataset.clase),
+    Fecha:                  document.getElementById('obsProFecha').value,
+    ObjetivoDelDia:         document.getElementById('obsProObjetivo').value.trim(),
+    PasosTrabajados:        document.getElementById('obsProPasos').value.trim(),
+    LogrosDelDia:           document.getElementById('obsProLogros').value.trim(),
     DificultadesDetectadas: document.getElementById('obsProDificultades').value.trim(),
-    AjustesProximaClase: document.getElementById('obsProAjustes').value.trim(),
-    Notas: document.getElementById('obsProNotas').value.trim(),
+    AjustesProximaClase:    document.getElementById('obsProAjustes').value.trim(),
+    Notas:                  document.getElementById('obsProNotas').value.trim(),
   };
 
   const btn = document.getElementById('btnEnviarObsPro');
@@ -361,13 +333,8 @@ async function enviarObservacion() {
   try {
     await ApiService._fetch('/api/observaciones', { method: 'POST', body: JSON.stringify(payload) });
     mostrarObsMsg('Observacion guardada correctamente', true);
-    // Limpiar form
-    document.getElementById('obsProObjetivo').value = '';
-    document.getElementById('obsProPasos').value = '';
-    document.getElementById('obsProLogros').value = '';
-    document.getElementById('obsProDificultades').value = '';
-    document.getElementById('obsProAjustes').value = '';
-    document.getElementById('obsProNotas').value = '';
+    ['obsProObjetivo','obsProPasos','obsProLogros','obsProDificultades','obsProAjustes','obsProNotas']
+      .forEach(id => { document.getElementById(id).value = ''; });
     document.querySelectorAll('#tab-observaciones .eval-app-clase-btn').forEach(b => b.classList.remove('active'));
   } catch (e) {
     mostrarObsMsg(e.message || 'Error al guardar', false);
@@ -378,7 +345,7 @@ async function enviarObservacion() {
 }
 
 function mostrarObsMsg(msg, exito) {
-  const el = document.getElementById(exito ? 'obsProExito' : 'obsProError');
+  const el   = document.getElementById(exito ? 'obsProExito' : 'obsProError');
   const otro = document.getElementById(exito ? 'obsProError' : 'obsProExito');
   el.textContent = msg;
   el.classList.remove('hidden');
@@ -389,52 +356,109 @@ function mostrarObsMsg(msg, exito) {
 // ============================================
 // TAB PERFIL
 // ============================================
-function loadPerfil() {
+function renderPerfil() {
   if (!profUser) return;
   const avatarEl = document.getElementById('profAvatar');
   if (profUser.fotoUrl) {
-    avatarEl.innerHTML = `<img src="${profUser.fotoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
-    avatarEl.style.padding = '0';
-    avatarEl.style.overflow = 'hidden';
+    avatarEl.innerHTML = `<img src="${profUser.fotoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    avatarEl.style.cssText += 'padding:0;overflow:hidden';
   } else {
     avatarEl.textContent = getInitials(profUser.nombre);
   }
   document.getElementById('profPerfilNombre').textContent = profUser.nombre || '-';
-  document.getElementById('profPerfilTel').textContent = profUser.telefono || '-';
+  document.getElementById('profPerfilTel').textContent   = profUser.telefono || '-';
   document.getElementById('profPerfilEmail').textContent = profUser.email || '-';
 
   const cursosEl = document.getElementById('profPerfilCursos');
-  if (profMisCursos.length > 0) {
-    cursosEl.innerHTML = profMisCursos.map(c =>
-      `<span class="badge badge-gold" style="display:inline-block;margin:0.2rem 0.2rem 0.2rem 0">${esc(c)}</span>`
-    ).join('');
-  } else {
-    cursosEl.textContent = '-';
-  }
+  cursosEl.innerHTML = profMisCursos.length
+    ? profMisCursos.map(c => `<span class="badge badge-gold" style="display:inline-block;margin:0.2rem">${esc(c)}</span>`).join('')
+    : '-';
 
-  // Poblar select obs
+  // Rellenar select observacion si no tiene opciones aun
   const select = document.getElementById('obsProCurso');
   if (select.options.length <= 1 && profMisCursos.length > 0) {
     profMisCursos.forEach(c => {
       const opt = document.createElement('option');
-      opt.value = c;
-      opt.textContent = c;
+      opt.value = c; opt.textContent = c;
       select.appendChild(opt);
     });
   }
 }
 
 // ============================================
+// FOTO PERFIL
+// ============================================
+function setupFoto() {
+  const input = document.getElementById('profFotoInput');
+  const btn   = document.getElementById('profFotoBtn');
+  if (!input || !btn) return;
+
+  let uploading = false;
+  input.addEventListener('change', async (e) => {
+    if (uploading) return;
+    const file = e.target.files[0];
+    if (!file) return;
+    uploading = true;
+    const orig = btn.innerHTML;
+    btn.textContent = '...';
+    try {
+      const base64 = await comprimirFoto(file);
+      await ApiService.updateUser(profUser.id, { fotoUrl: base64 });
+      profUser.fotoUrl = base64;
+      const avatarEl = document.getElementById('profAvatar');
+      avatarEl.innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+      avatarEl.style.cssText += 'padding:0;overflow:hidden';
+      showToast('Foto actualizada');
+    } catch {
+      showToast('Error al subir foto', true);
+    } finally {
+      btn.innerHTML = orig;
+      uploading = false;
+      input.value = '';
+    }
+  });
+}
+
+function comprimirFoto(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const size = 200;
+        canvas.width = size; canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        const min = Math.min(img.width, img.height);
+        ctx.drawImage(img, (img.width-min)/2, (img.height-min)/2, min, min, 0, 0, size, size);
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// ============================================
 // HELPERS
 // ============================================
+function getCursosAlumno(a) {
+  const lista = (a.cursosInscritos || []).map(c => c.toLowerCase());
+  if (!lista.length && a.curso) {
+    lista.push(...a.curso.toLowerCase().split(',').map(c => c.trim()).filter(Boolean));
+  }
+  return lista;
+}
+
 function renderCursoPills(containerId, activo, onSelect) {
   const container = document.getElementById(containerId);
   const pills = [null, ...profMisCursos];
   container.innerHTML = pills.map(c => `
     <button class="curso-pill${activo === c ? ' active' : ''}" data-curso="${c || ''}">
       ${c || 'Todos'}
-    </button>
-  `).join('');
+    </button>`).join('');
   container.querySelectorAll('.curso-pill').forEach(pill => {
     pill.addEventListener('click', () => {
       const c = pill.dataset.curso || null;
@@ -456,92 +480,14 @@ function esc(str) {
   return d.innerHTML;
 }
 
-function formatWA(tel) {
-  return tel.replace(/\D/g, '');
-}
-
-function formatFecha(dateStr) {
-  if (!dateStr) return '-';
-  try {
-    const d = new Date(dateStr + 'T00:00:00');
-    return d.toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
-  } catch { return dateStr; }
-}
-
-// ============================================
-// FOTO PERFIL PROFESOR
-// ============================================
-function setupProfFoto() {
-  const btn = document.getElementById('profFotoBtn');
-  const input = document.getElementById('profFotoInput');
-  if (!btn || !input) return;
-
-  let uploading = false;
-  input.addEventListener('change', async (e) => {
-    if (uploading) return;
-    const file = e.target.files[0];
-    if (!file) return;
-
-    uploading = true;
-    const origContent = btn.innerHTML;
-    btn.textContent = '...';
-
-    try {
-      const base64 = await comprimirFoto(file);
-      await ApiService.updateUser(profUser.id, { fotoUrl: base64 });
-      profUser.fotoUrl = base64;
-
-      const avatarEl = document.getElementById('profAvatar');
-      avatarEl.innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
-      avatarEl.style.padding = '0';
-      avatarEl.style.overflow = 'hidden';
-
-      showMiniToast('Foto actualizada');
-    } catch (err) {
-      console.error('Error subiendo foto:', err);
-      showMiniToast('Error al subir foto', true);
-    } finally {
-      btn.innerHTML = origContent;
-      uploading = false;
-      input.value = '';
-    }
-  });
-}
-
-function comprimirFoto(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const size = 200;
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext('2d');
-        const minDim = Math.min(img.width, img.height);
-        const sx = (img.width - minDim) / 2;
-        const sy = (img.height - minDim) / 2;
-        ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
-        resolve(canvas.toDataURL('image/jpeg', 0.7));
-      };
-      img.onerror = reject;
-      img.src = e.target.result;
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-function showMiniToast(msg, error = false) {
-  const toast = document.createElement('div');
-  toast.style.cssText = `
-    position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+function showToast(msg, error = false) {
+  const t = document.createElement('div');
+  t.style.cssText = `position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
     background:${error ? '#e74c3c' : '#2ecc71'};color:#fff;
     padding:0.6rem 1.2rem;border-radius:12px;font-size:0.85rem;
     z-index:999;font-family:'Inter',sans-serif;font-weight:500;
     box-shadow:0 4px 15px rgba(0,0,0,0.3)`;
-  toast.textContent = msg;
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 2500);
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
 }

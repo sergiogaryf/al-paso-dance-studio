@@ -33,13 +33,14 @@ function irAVista(id) {
 }
 function redirigirSegunRol(role) {
   const r = (role || '').toLowerCase();
-  if (r === 'admin' || r === 'profesor') window.location.href = 'admin.html';
+  if (r === 'admin') window.location.href = '/admin.html';
+  else if (r === 'profesor') window.location.href = 'profesor.html';
   else window.location.href = 'app.html';
 }
 
 async function checkProfesorAuth() {
   const user = await checkAuth();
-  if (!['admin', 'profesor'].includes(user.role || user.rol)) {
+  if ((user.role || user.rol) !== 'profesor') {
     window.location.href = 'app.html';
     throw new Error('No es profesor');
   }
@@ -61,12 +62,21 @@ async function checkAuth() {
 }
 
 async function checkAdminAuth() {
-  const user = await checkAuth();
-  if ((user.role || user.rol) !== 'admin') {
-    window.location.href = 'app.html';
-    throw new Error('No es admin');
+  if (!ApiService.isLoggedIn()) {
+    window.location.href = '/admin';
+    throw new Error('No autenticado');
   }
-  return user;
+  try {
+    const user = await ApiService.getCurrentUser();
+    if ((user.role || user.rol) !== 'admin') {
+      window.location.href = '/admin';
+      throw new Error('No es admin');
+    }
+    return user;
+  } catch (e) {
+    window.location.href = '/admin';
+    throw e;
+  }
 }
 
 function logout() { ApiService.logout(); }
