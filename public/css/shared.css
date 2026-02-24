@@ -54,19 +54,19 @@ ul { list-style: none; }
 
 /* ---- GLASS CARD ---- */
 .glass-card {
-  background: linear-gradient(135deg, rgba(107,32,96,0.22) 0%, rgba(31,18,40,0.90) 100%);
+  background: linear-gradient(145deg, rgba(67,4,64,0.55) 0%, rgba(20,10,24,0.95) 100%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(107, 32, 96, 0.25);
+  border: 1px solid rgba(107, 32, 96, 0.3);
   border-radius: 16px;
   padding: 1.5rem;
-  box-shadow: 0 0 14px rgba(107,32,96,0.12), 0 4px 20px rgba(0,0,0,0.25);
+  box-shadow: 0 0 18px rgba(107,32,96,0.15), 0 4px 20px rgba(0,0,0,0.3);
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .glass-card:hover {
-  border-color: rgba(196, 110, 60, 0.4);
-  box-shadow: 0 0 24px rgba(107,32,96,0.25), 0 4px 24px rgba(196,110,60,0.12);
+  border-color: rgba(196, 110, 60, 0.45);
+  box-shadow: 0 0 28px rgba(107,32,96,0.25), 0 4px 24px rgba(196,110,60,0.12);
 }
 
 /* ---- BOTONES ---- */
