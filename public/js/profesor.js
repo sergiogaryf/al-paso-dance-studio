@@ -185,7 +185,6 @@ function renderPendientes() {
 // TAB ALUMNOS
 // ============================================
 let cursoActivoAlumnos = null;
-let asistenciaHoy = {}; // id → true si ya marcamos en esta sesion
 
 function renderAlumnosTab() {
   renderCursoPills('profCursosPills', cursoActivoAlumnos, (c) => {
@@ -211,7 +210,6 @@ function renderAlumnosLista() {
   }
 
   container.innerHTML = lista.map(a => {
-    const yaAsistio = !!asistenciaHoy[a.id];
     const planBadge = a.plan ? `<span class="badge badge-gold" style="font-size:0.65rem">${esc(a.plan)}</span>` : '';
     const estadoBadge = (a.estado || '').toLowerCase() === 'pendiente'
       ? `<span class="badge badge-red" style="font-size:0.65rem">Pendiente</span>` : '';
@@ -229,55 +227,11 @@ function renderAlumnosLista() {
         ${a.telefono
           ? `<a href="https://wa.me/${formatWA(a.telefono)}" class="btn-whatsapp" target="_blank">&#128172;</a>`
           : ''}
-        <button class="btn-asistencia${yaAsistio ? ' asistido' : ''}"
-          onclick="abrirAsistModal('${a.id}', '${esc(a.nombre)}', ${a.clasesAsistidas || 0}, ${a.clasesContratadas || 0})"
-          ${yaAsistio ? 'disabled' : ''}>
-          ${yaAsistio ? '&#x2714;' : '&#x2714; Asistio'}
-        </button>
       </div>
     </div>`;
   }).join('');
 }
 
-// ---- MODAL ASISTENCIA ----
-let asistModalAlumnoId = null;
-
-function abrirAsistModal(id, nombre, asistidas, contratadas) {
-  asistModalAlumnoId = id;
-  document.getElementById('profAsistNombre').textContent = nombre;
-  document.getElementById('profAsistInfo').textContent = `Clases: ${asistidas}/${contratadas}`;
-  document.getElementById('profAsistModal').classList.remove('hidden');
-}
-
-document.getElementById('btnCerrarAsist').addEventListener('click', () => {
-  document.getElementById('profAsistModal').classList.add('hidden');
-  asistModalAlumnoId = null;
-});
-
-document.getElementById('btnMarcarAsistencia').addEventListener('click', async () => {
-  if (!asistModalAlumnoId) return;
-  const btn = document.getElementById('btnMarcarAsistencia');
-  btn.disabled = true;
-  btn.textContent = 'Guardando...';
-
-  try {
-    const alumno = profAlumnos.find(a => a.id === asistModalAlumnoId);
-    if (!alumno) throw new Error('Alumno no encontrado');
-    const nuevasCantidad = (alumno.clasesAsistidas || 0) + 1;
-    await ApiService.updateUser(asistModalAlumnoId, { clasesAsistidas: nuevasCantidad });
-    alumno.clasesAsistidas = nuevasCantidad;
-    asistenciaHoy[asistModalAlumnoId] = true;
-    document.getElementById('profAsistModal').classList.add('hidden');
-    asistModalAlumnoId = null;
-    renderAlumnosLista();
-    showMiniToast('Asistencia registrada');
-  } catch (e) {
-    showMiniToast('Error al registrar asistencia', true);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '&#x2714; Asistio hoy';
-  }
-});
 
 // ============================================
 // TAB EVALUACIONES
