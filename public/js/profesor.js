@@ -223,11 +223,6 @@ function renderAlumnosLista() {
           &nbsp;${planBadge}${estadoBadge}
         </div>
       </div>
-      <div class="prof-alumno-actions">
-        ${a.telefono
-          ? `<a href="https://wa.me/${formatWA(a.telefono)}" class="btn-whatsapp" target="_blank">&#128172;</a>`
-          : ''}
-      </div>
     </div>`;
   }).join('');
 }
