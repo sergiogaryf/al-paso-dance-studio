@@ -87,7 +87,7 @@ function buildUser(a) {
     id: a.id,
     nombre: a.Nombre,
     email: a.Email || '',
-    role: a.Role || 'alumno',
+    role: (a.Role || 'alumno').toLowerCase(),
     sede: a.Sede || 'Costa de Montemar, Concon',
     nivel: a.Nivel || '',
     telefono: a.Telefono || '',

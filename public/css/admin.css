@@ -774,6 +774,36 @@
   }
 }
 
+/* ---- ADMIN AVATAR FOTO ---- */
+.admin-avatar-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.admin-foto-btn {
+  position: absolute;
+  bottom: -3px;
+  right: -5px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  color: #430440;
+  font-size: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  line-height: 1;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  transition: background 0.2s;
+  user-select: none;
+}
+
+.admin-foto-btn:hover {
+  background: #f0e0f0;
+}
+
 /* ---- DETALLE ALUMNO ---- */
 .detalle-alumno-grid {
   display: flex;

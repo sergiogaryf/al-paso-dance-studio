@@ -98,7 +98,11 @@
         <p class="top-bar-date" id="currentDate"></p>
       </div>
       <div class="top-bar-right">
-        <div class="avatar">FA</div>
+        <div class="admin-avatar-wrapper">
+          <div class="avatar" id="adminAvatar">FA</div>
+          <label class="admin-foto-btn" id="adminFotoBtn" for="adminFotoInput" title="Cambiar foto">&#9998;</label>
+          <input type="file" id="adminFotoInput" accept="image/*" style="position:absolute;width:0;height:0;opacity:0;overflow:hidden">
+        </div>
       </div>
     </header>
 
@@ -175,8 +179,8 @@
         <input type="text" class="form-input filter-input" id="filterAlumnoNombre" placeholder="Buscar por nombre...">
         <select class="form-input filter-select" id="filterAlumnoCurso">
           <option value="">Todos los cursos</option>
-          <option value="Bachata Basico">Bachata Basico</option>
-          <option value="Casino Basico">Casino Basico</option>
+          <option value="Bachata Básico">Bachata Básico</option>
+          <option value="Casino Básico">Casino Básico</option>
           <option value="Bachata Intermedio">Bachata Intermedio</option>
           <option value="Casino Intermedio">Casino Intermedio</option>
           <option value="Mambo Open">Mambo Open</option>
@@ -254,8 +258,8 @@
         <div class="form-group" style="max-width:300px;margin-bottom:1.2rem">
           <select id="evalAdminFiltroCurso" class="form-input">
             <option value="">Todos los cursos</option>
-            <option value="Bachata Basico">Bachata Basico</option>
-            <option value="Casino Basico">Casino Basico</option>
+            <option value="Bachata Básico">Bachata Básico</option>
+            <option value="Casino Básico">Casino Básico</option>
             <option value="Bachata Intermedio">Bachata Intermedio</option>
             <option value="Casino Intermedio">Casino Intermedio</option>
             <option value="Mambo Open">Mambo Open</option>
@@ -324,8 +328,8 @@
                 <label for="obsAdminCurso">Curso</label>
                 <select id="obsAdminCurso" class="form-input" required>
                   <option value="">Seleccionar</option>
-                  <option value="Bachata Basico">Bachata Basico</option>
-                  <option value="Casino Basico">Casino Basico</option>
+                  <option value="Bachata Básico">Bachata Básico</option>
+                  <option value="Casino Básico">Casino Básico</option>
                   <option value="Bachata Intermedio">Bachata Intermedio</option>
                   <option value="Casino Intermedio">Casino Intermedio</option>
                   <option value="Mambo Open">Mambo Open</option>
@@ -491,7 +495,7 @@
         </div>
         <div class="form-group">
           <label for="alumnoCurso">Curso(s)</label>
-          <input type="text" id="alumnoCurso" class="form-input" placeholder="Ej: Bachata Basico, Casino Basico">
+          <input type="text" id="alumnoCurso" class="form-input" placeholder="Ej: Bachata Básico, Casino Básico">
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -567,7 +571,7 @@
             <label for="claseNivel">Nivel</label>
             <select id="claseNivel" class="form-input" required>
               <option value="">Seleccionar</option>
-              <option value="Basico">Basico</option>
+              <option value="Básico">Básico</option>
               <option value="Intermedio">Intermedio</option>
             </select>
           </div>

@@ -2,6 +2,8 @@
    ESTACION SALSERA - Panel Admin JS
    ============================================ */
 
+let adminUser = null;
+
 // ---- AUTH CHECK ----
 (async function () {
   try {
@@ -9,12 +11,20 @@
       window.location.href = 'login.html';
       return;
     }
-    const userData = await ApiService.getCurrentUser();
-    if (!userData || !['admin', 'profesor'].includes(userData.role)) {
+    adminUser = await ApiService.getCurrentUser();
+    if (!adminUser || !['admin', 'profesor'].includes(adminUser.role)) {
       window.location.href = 'app.html';
       return;
     }
-    document.getElementById('greetingText').textContent = `Hola, ${userData.nombre || 'Admin'}`;
+    document.getElementById('greetingText').textContent = `Hola, ${adminUser.nombre || 'Admin'}`;
+    const avatarEl = document.getElementById('adminAvatar');
+    if (adminUser.fotoUrl) {
+      avatarEl.innerHTML = `<img src="${adminUser.fotoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
+      avatarEl.style.padding = '0';
+      avatarEl.style.overflow = 'hidden';
+    } else {
+      avatarEl.textContent = getInitials(adminUser.nombre);
+    }
     document.getElementById('loadingOverlay').style.display = 'none';
   } catch (e) {
     console.error('Error verificando admin:', e);
@@ -33,6 +43,7 @@ function initAdmin() {
   setupLogout();
   setupSidebar();
   setupEvaluacionesAdmin();
+  setupAdminFoto();
   loadDashboard();
 }
 
@@ -780,7 +791,7 @@ async function guardarAdminObservacion() {
 }
 
 function renderAdminHistorial() {
-  const cursos = ['Bachata Basico', 'Casino Basico', 'Bachata Intermedio', 'Casino Intermedio', 'Mambo Open'];
+  const cursos = ['Bachata Básico', 'Casino Básico', 'Bachata Intermedio', 'Casino Intermedio', 'Mambo Open'];
   const tbody = document.getElementById('tbodyAdminResumen');
   tbody.innerHTML = cursos.map(c => {
     const evCurso = evalAdminCache.filter(e => e.Curso === c);
@@ -952,4 +963,65 @@ function sanitize(str) {
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
+}
+
+// ============================================
+// FOTO PERFIL ADMIN
+// ============================================
+function setupAdminFoto() {
+  const btn = document.getElementById('adminFotoBtn');
+  const input = document.getElementById('adminFotoInput');
+  if (!btn || !input) return;
+
+  let uploading = false;
+  input.addEventListener('change', async (e) => {
+    if (uploading) return;
+    const file = e.target.files[0];
+    if (!file) return;
+    uploading = true;
+    const origContent = btn.innerHTML;
+    btn.textContent = '...';
+    try {
+      const base64 = await comprimirFotoAdmin(file);
+      await ApiService.updateUser(adminUser.id, { fotoUrl: base64 });
+      adminUser.fotoUrl = base64;
+      const avatarEl = document.getElementById('adminAvatar');
+      avatarEl.innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
+      avatarEl.style.padding = '0';
+      avatarEl.style.overflow = 'hidden';
+      showToast('Foto actualizada', 'success');
+    } catch (err) {
+      console.error('Error subiendo foto:', err);
+      showToast('Error al subir foto', 'error');
+    } finally {
+      btn.innerHTML = origContent;
+      uploading = false;
+      input.value = '';
+    }
+  });
+}
+
+function comprimirFotoAdmin(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const size = 200;
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        const minDim = Math.min(img.width, img.height);
+        const sx = (img.width - minDim) / 2;
+        const sy = (img.height - minDim) / 2;
+        ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
