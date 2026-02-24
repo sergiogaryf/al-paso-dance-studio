@@ -11,14 +11,17 @@ module.exports = async function handler(req, res) {
     return res.status(403).json({ error: 'Acceso denegado' });
   }
 
-  const { alumnoId } = req.body || {};
+  const { alumnoId, accion } = req.body || {};
   if (!alumnoId) {
     return res.status(400).json({ error: 'alumnoId es requerido' });
   }
 
   try {
     const alumno = await findById(tables.alumnos, alumnoId);
-    const nuevasCantidad = (alumno.ClasesAsistidas || 0) + 1;
+    const actual = alumno.ClasesAsistidas || 0;
+    const nuevasCantidad = accion === 'desmarcar'
+      ? Math.max(0, actual - 1)
+      : actual + 1;
     await updateRecord(tables.alumnos, alumnoId, { ClasesAsistidas: nuevasCantidad });
     return res.status(200).json({ ok: true, clasesAsistidas: nuevasCantidad });
   } catch (error) {

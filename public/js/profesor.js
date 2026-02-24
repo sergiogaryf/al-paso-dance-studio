@@ -6,7 +6,26 @@ let profUser      = null;
 let profMisCursos = [];
 let profAlumnos   = [];
 let profEvals     = [];
-let asistenciaHoy = {}; // alumnoId → true si ya marcamos en esta sesion
+let asistenciaHoy = {}; // alumnoId → true si está marcado hoy
+
+// ---- ASISTENCIA DIARIA (localStorage) ----
+function getAsistenciaHoy() {
+  const hoy = new Date().toISOString().slice(0, 10);
+  try {
+    const stored = JSON.parse(localStorage.getItem('prof_asistencia') || '{}');
+    return stored.fecha === hoy ? (stored.data || {}) : {};
+  } catch { return {}; }
+}
+function guardarAsistencia(alumnoId, valor) {
+  const hoy = new Date().toISOString().slice(0, 10);
+  try {
+    const stored = JSON.parse(localStorage.getItem('prof_asistencia') || '{}');
+    const data = stored.fecha === hoy ? (stored.data || {}) : {};
+    if (valor) data[alumnoId] = true;
+    else delete data[alumnoId];
+    localStorage.setItem('prof_asistencia', JSON.stringify({ fecha: hoy, data }));
+  } catch {}
+}
 
 // ---- INIT ----
 (async function () {
@@ -22,6 +41,8 @@ let asistenciaHoy = {}; // alumnoId → true si ya marcamos en esta sesion
     setupLogout();
     setupObsForm();
     setupFoto();
+
+    asistenciaHoy = getAsistenciaHoy();
 
     await Promise.all([loadAlumnos(), loadEvaluaciones()]);
 
@@ -189,16 +210,16 @@ function renderAlumnosCurso() {
         <button
           class="btn-asistencia${yaAsistio ? ' asistido' : ''}"
           id="btn-asist-${a.id}"
-          onclick="marcarAsistencia('${a.id}')"
-          ${yaAsistio ? 'disabled' : ''}>
-          ${yaAsistio ? '&#x2714; Asistio' : '&#x2714; Asistio'}
+          onclick="marcarAsistencia('${a.id}')">
+          ${yaAsistio ? '&#x2714; Presente' : 'Marcar'}
         </button>
       </div>`;
     }).join('')}`;
 }
 
 async function marcarAsistencia(alumnoId) {
-  if (asistenciaHoy[alumnoId]) return;
+  const yaAsistio = !!asistenciaHoy[alumnoId];
+  const accion = yaAsistio ? 'desmarcar' : 'marcar';
 
   const btn = document.getElementById(`btn-asist-${alumnoId}`);
   if (btn) { btn.disabled = true; btn.textContent = '...'; }
@@ -206,29 +227,36 @@ async function marcarAsistencia(alumnoId) {
   try {
     const res = await ApiService._fetch('/api/asistencia', {
       method: 'POST',
-      body: JSON.stringify({ alumnoId }),
+      body: JSON.stringify({ alumnoId, accion }),
     });
 
-    // Actualizar datos locales
     const alumno = profAlumnos.find(a => a.id === alumnoId);
     if (alumno) alumno.clasesAsistidas = res.clasesAsistidas;
 
-    asistenciaHoy[alumnoId] = true;
+    asistenciaHoy[alumnoId] = !yaAsistio;
+    guardarAsistencia(alumnoId, !yaAsistio);
 
-    // Actualizar UI sin rerenderizar todo
     if (btn) {
-      btn.classList.add('asistido');
-      btn.disabled = true;
-      btn.innerHTML = '&#x2714; Asistio';
+      btn.disabled = false;
+      if (asistenciaHoy[alumnoId]) {
+        btn.classList.add('asistido');
+        btn.innerHTML = '&#x2714; Presente';
+      } else {
+        btn.classList.remove('asistido');
+        btn.innerHTML = 'Marcar';
+      }
     }
     const clasesTxt = document.getElementById(`clases-${alumnoId}`);
     if (clasesTxt && alumno) {
       clasesTxt.textContent = `${alumno.clasesAsistidas}/${alumno.clasesContratadas || 0} clases`;
     }
 
-    showToast('Asistencia registrada');
+    showToast(yaAsistio ? 'Asistencia desmarcada' : 'Asistencia registrada');
   } catch (e) {
-    if (btn) { btn.disabled = false; btn.innerHTML = '&#x2714; Asistio'; }
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = yaAsistio ? '&#x2714; Presente' : 'Marcar';
+    }
     showToast('Error al registrar asistencia', true);
   }
 }
