@@ -118,6 +118,6 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Metodo no permitido' });
   } catch (error) {
     console.error('Error en evaluaciones:', error);
-    return res.status(500).json({ error: 'Error interno del servidor' });
+    return res.status(500).json({ error: 'Error interno del servidor', detalle: error.message });
   }
 };
