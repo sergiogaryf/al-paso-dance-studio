@@ -20,10 +20,10 @@
   width: 100%;
   height: 100%;
   background:
-    radial-gradient(ellipse at 20% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(107, 45, 107, 0.05) 0%, transparent 40%),
-    radial-gradient(ellipse at 50% 80%, rgba(74, 14, 78, 0.04) 0%, transparent 50%),
-    #140A18;
+    radial-gradient(ellipse at 15% 20%, rgba(107, 32, 96, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 75%, rgba(196, 110, 60, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 100%, rgba(107, 32, 96, 0.12) 0%, transparent 55%),
+    linear-gradient(145deg, #1A0522 0%, #140A18 50%, #1C0C10 100%);
   z-index: 0;
 }
 
@@ -49,24 +49,24 @@
 
 /* ---- CARD ---- */
 .login-card {
-  background: rgba(18, 18, 18, 0.88);
+  background: linear-gradient(145deg, rgba(67,4,64,0.55) 0%, rgba(20,10,24,0.96) 100%);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(107, 32, 96, 0.3);
   border-radius: 24px;
   padding: 2.5rem 2rem;
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.5),
-    0 0 80px rgba(255, 255, 255, 0.02),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    0 0 60px rgba(107, 32, 96, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .login-card:hover {
-  border-color: rgba(67, 4, 64, 0.25);
+  border-color: rgba(196, 110, 60, 0.35);
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.5),
-    0 0 80px rgba(255, 255, 255, 0.03),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    0 0 70px rgba(107,32,96,0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 @keyframes cardAppear {
@@ -146,8 +146,8 @@
   align-items: center;
   gap: 0.6rem;
   padding: 1.5rem 0.8rem;
-  background: rgba(26, 26, 26, 0.6);
-  border: 1px solid var(--borde);
+  background: rgba(67, 4, 64, 0.55);
+  border: 1px solid rgba(107, 32, 96, 0.3);
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -156,10 +156,10 @@
 }
 
 .login-role-card:hover {
-  border-color: rgba(67, 4, 64, 0.25);
-  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(196, 110, 60, 0.5);
+  background: rgba(107, 32, 96, 0.5);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.04);
+  box-shadow: 0 8px 24px rgba(107,32,96,0.3), 0 2px 8px rgba(196,110,60,0.15);
 }
 
 .login-role-icon {
@@ -433,14 +433,14 @@
 }
 
 .pin-box:focus {
-  border-color: rgba(168, 85, 247, 0.7);
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15), 0 0 20px rgba(168, 85, 247, 0.1);
+  border-color: rgba(196, 110, 60, 0.8);
+  box-shadow: 0 0 0 3px rgba(107,32,96,0.2), 0 0 20px rgba(196,110,60,0.15);
   transform: scale(1.06);
 }
 
 .pin-box.filled {
-  border-color: rgba(168, 85, 247, 0.5);
-  background: rgba(168, 85, 247, 0.06);
+  border-color: rgba(107, 32, 96, 0.6);
+  background: rgba(107, 32, 96, 0.08);
 }
 
 .pin-box.pin-error {
@@ -489,8 +489,8 @@
 }
 
 .pin-nombre-btn:hover {
-  border-color: rgba(168, 85, 247, 0.5);
-  background: rgba(168, 85, 247, 0.06);
+  border-color: rgba(196, 110, 60, 0.5);
+  background: rgba(107, 32, 96, 0.08);
   transform: translateX(4px);
 }
 

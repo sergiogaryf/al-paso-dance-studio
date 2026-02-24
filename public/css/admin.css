@@ -27,8 +27,9 @@
 
 .sidebar-header {
   padding: 1.8rem 1.5rem;
-  border-bottom: 1px solid var(--borde);
+  border-bottom: 1px solid rgba(107,32,96,0.3);
   text-align: center;
+  background: linear-gradient(180deg, rgba(107,32,96,0.08) 0%, transparent 100%);
 }
 
 .sidebar-logo {
@@ -80,9 +81,9 @@
 }
 
 .nav-item.active {
-  background: rgba(255,255,255,0.04);
+  background: rgba(107, 32, 96, 0.12);
   color: var(--blanco);
-  border-left-color: var(--blanco);
+  border-left-color: var(--naranja);
 }
 
 .nav-icon {
@@ -164,7 +165,7 @@
   align-items: center;
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--borde);
+  border-bottom: 1px solid rgba(107,32,96,0.25);
 }
 
 .top-bar-greeting {

@@ -70,7 +70,10 @@
 }
 
 .greeting span {
-  color: var(--blanco);
+  background: var(--gradiente-brand);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* ---- CARD CLASES RESTANTES ---- */
@@ -111,9 +114,10 @@
 
 .progress-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--blanco), var(--blanco-suave));
+  background: var(--gradiente-brand-90);
   border-radius: 4px;
   transition: width 0.8s ease;
+  box-shadow: 0 0 8px rgba(196,110,60,0.3);
 }
 
 .progress-bar-info {
@@ -536,7 +540,7 @@
   background: rgba(17, 17, 17, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--borde);
+  border-top: 1px solid rgba(107, 32, 96, 0.35);
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -560,7 +564,7 @@
 }
 
 .tab-item.active {
-  color: var(--blanco);
+  color: var(--naranja-claro);
 }
 
 .tab-icon {
