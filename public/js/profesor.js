@@ -2,10 +2,11 @@
    AL PASO DANCE STUDIO - Panel Profesor JS
    ============================================ */
 
-let profUser     = null;
+let profUser      = null;
 let profMisCursos = [];
-let profAlumnos  = [];
-let profEvals    = [];
+let profAlumnos   = [];
+let profEvals     = [];
+let asistenciaHoy = {}; // alumnoId → true si ya marcamos en esta sesion
 
 // ---- INIT ----
 (async function () {
@@ -24,7 +25,8 @@ let profEvals    = [];
 
     await Promise.all([loadAlumnos(), loadEvaluaciones()]);
 
-    renderInicio();
+    renderAlumnosTab();
+    renderPerfil();
   } catch (e) {
     console.error('Error init profesor:', e);
   }
@@ -40,6 +42,7 @@ function setupTabs() {
       const tabId = btn.dataset.tab;
       document.getElementById(tabId).classList.add('active');
       if (tabId === 'tab-alumnos')      renderAlumnosTab();
+      if (tabId === 'tab-cursos')       renderCursosTab();
       if (tabId === 'tab-evaluaciones') renderEvalTab();
     });
   });
@@ -53,14 +56,16 @@ function setupLogout() {
 async function loadAlumnos() {
   try {
     const todos = await ApiService.getAlumnos();
+    // Solo alumnos (no admin/profesor) y filtrar por cursos del profesor
+    const soloAlumnos = todos.filter(a => (a.role || 'alumno') === 'alumno');
     if (profMisCursos.length > 0) {
       const misCursosLower = profMisCursos.map(c => c.toLowerCase());
-      profAlumnos = todos.filter(a => {
+      profAlumnos = soloAlumnos.filter(a => {
         const cursosA = getCursosAlumno(a);
         return misCursosLower.some(mc => cursosA.some(ca => ca.includes(mc) || mc.includes(ca)));
       });
     } else {
-      profAlumnos = todos.filter(a => (a.role || 'alumno') === 'alumno');
+      profAlumnos = soloAlumnos;
     }
   } catch (e) {
     profAlumnos = [];
@@ -82,139 +87,37 @@ async function loadEvaluaciones() {
 }
 
 // ============================================
-// TAB INICIO
+// TAB: ALUMNOS — nombre, curso, clases
 // ============================================
-function renderInicio() {
-  document.getElementById('profNombre').textContent = (profUser.nombre || '').split(' ')[0];
-  document.getElementById('profStatAlumnos').textContent = profAlumnos.length;
-  document.getElementById('profStatCursos').textContent = profMisCursos.length;
-  document.getElementById('profStatEvals').textContent = profEvals.length;
-
-  renderClasesHoy();
-  renderAlumnosHoy();
-  renderPerfil();
-}
-
-async function renderClasesHoy() {
-  const container = document.getElementById('profClasesHoy');
-  try {
-    const clases = await ApiService.getClasesActivas();
-    const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
-    const hoy = diasSemana[new Date().getDay()];
-    const misCursosLower = profMisCursos.map(c => c.toLowerCase());
-
-    const clasesHoy = clases.filter(c => {
-      if ((c.dia || '').toLowerCase() !== hoy.toLowerCase()) return false;
-      if (profMisCursos.length === 0) return true;
-      const nombre = (c.nombre || '').toLowerCase();
-      return misCursosLower.some(mc => nombre.includes(mc.split(' ')[0]));
-    });
-
-    if (clasesHoy.length === 0) {
-      container.innerHTML = '<p class="text-muted" style="font-size:0.9rem">No hay clases programadas para hoy.</p>';
-      return;
-    }
-
-    container.innerHTML = clasesHoy.map(c => {
-      const numAlumnos = profAlumnos.filter(a => {
-        const cursosA = getCursosAlumno(a);
-        const nombreClase = (c.nombre || '').toLowerCase();
-        return cursosA.some(ca => nombreClase.includes(ca.split(' ')[0]));
-      }).length;
-      return `<div class="prof-clase-hoy-item">
-        <div>
-          <div class="prof-clase-nombre">${esc(c.nombre)}</div>
-          <div class="prof-clase-hora">${c.hora || ''} &middot; ${numAlumnos} alumnos</div>
-        </div>
-        <span class="prof-clase-badge">${esc(c.nivel || c.disciplina || '')}</span>
-      </div>`;
-    }).join('');
-  } catch (e) {
-    container.innerHTML = '<p class="text-muted" style="font-size:0.9rem">No se pudo cargar.</p>';
-  }
-}
-
-async function renderAlumnosHoy() {
-  const container = document.getElementById('profAlumnosHoy');
-  try {
-    const clases = await ApiService.getClasesActivas();
-    const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
-    const hoy = diasSemana[new Date().getDay()];
-    const misCursosLower = profMisCursos.map(c => c.toLowerCase());
-
-    const cursosHoy = clases
-      .filter(c => {
-        if ((c.dia || '').toLowerCase() !== hoy.toLowerCase()) return false;
-        if (profMisCursos.length === 0) return true;
-        const nombre = (c.nombre || '').toLowerCase();
-        return misCursosLower.some(mc => nombre.includes(mc.split(' ')[0]));
-      })
-      .map(c => (c.nombre || '').toLowerCase());
-
-    const alumnosHoy = profAlumnos.filter(a => {
-      const cursosA = getCursosAlumno(a);
-      return cursosHoy.some(ch => cursosA.some(ca => ch.includes(ca.split(' ')[0]) || ca.includes(ch.split(' ')[0])));
-    });
-
-    if (alumnosHoy.length === 0) {
-      container.innerHTML = '<p class="text-muted" style="font-size:0.9rem">Sin alumnos para hoy.</p>';
-      return;
-    }
-
-    container.innerHTML = alumnosHoy.map(a => `
-      <div style="display:flex;align-items:center;gap:0.7rem;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.05)">
-        <div class="avatar" style="width:32px;height:32px;font-size:0.7rem;flex-shrink:0">${getInitials(a.nombre)}</div>
-        <div>
-          <div style="font-size:0.88rem;font-weight:600;color:var(--blanco)">${esc(a.nombre)}</div>
-          <div style="font-size:0.75rem;color:var(--blanco-suave)">${esc(a.curso || '')}</div>
-        </div>
-      </div>
-    `).join('');
-  } catch (e) {
-    container.innerHTML = '<p class="text-muted" style="font-size:0.9rem">No se pudo cargar.</p>';
-  }
-}
-
-// ============================================
-// TAB ALUMNOS
-// ============================================
-let cursoActivoAlumnos = null;
-
 function renderAlumnosTab() {
-  renderCursoPills('profCursosPills', cursoActivoAlumnos, (c) => {
-    cursoActivoAlumnos = c;
-    renderAlumnosList();
-  });
-  renderAlumnosList();
-}
-
-function renderAlumnosList() {
   const container = document.getElementById('profAlumnosList');
-  let lista = profAlumnos;
-  if (cursoActivoAlumnos) {
-    lista = lista.filter(a => {
-      const cursosA = getCursosAlumno(a);
-      return cursosA.some(c => c.includes(cursoActivoAlumnos.toLowerCase()));
-    });
-  }
 
-  if (lista.length === 0) {
-    container.innerHTML = '<p class="text-muted">No hay alumnos en este curso.</p>';
+  if (profAlumnos.length === 0) {
+    container.innerHTML = '<p class="text-muted" style="text-align:center;padding:2rem 0">No hay alumnos asignados.</p>';
     return;
   }
 
+  // Ordenar por nombre
+  const lista = [...profAlumnos].sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''));
+
   container.innerHTML = lista.map(a => {
-    const planBadge   = a.plan ? `<span class="badge badge-gold" style="font-size:0.62rem">${esc(a.plan)}</span>` : '';
-    const estadoBadge = (a.estado || '').toLowerCase() === 'pendiente'
-      ? `<span class="badge badge-red" style="font-size:0.62rem">Pendiente</span>` : '';
+    const cursoPrincipal = getCursosAlumno(a)[0] || a.curso || '-';
+    const asistidas   = a.clasesAsistidas || 0;
+    const contratadas = a.clasesContratadas || 0;
+    const pct = contratadas > 0 ? Math.round(asistidas / contratadas * 100) : 0;
+
     return `
     <div class="prof-alumno-card">
       <div class="avatar" style="flex-shrink:0">${getInitials(a.nombre)}</div>
-      <div class="prof-alumno-info">
+      <div class="prof-alumno-info" style="flex:1;min-width:0">
         <div class="prof-alumno-nombre">${esc(a.nombre)}</div>
-        <div class="prof-alumno-sub">
-          ${a.clasesAsistidas || 0}/${a.clasesContratadas || 0} clases
-          &nbsp;${planBadge}${estadoBadge}
+        <div class="prof-alumno-sub">${esc(cursoPrincipal)}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:0.9rem;font-weight:700;color:var(--blanco);font-family:'Inter',sans-serif">${asistidas}<span style="color:var(--blanco-suave);font-weight:400">/${contratadas}</span></div>
+        <div style="font-size:0.7rem;color:var(--blanco-suave)">clases</div>
+        <div style="margin-top:4px;height:3px;width:56px;background:rgba(255,255,255,0.08);border-radius:2px">
+          <div style="height:100%;width:${pct}%;background:var(--gradiente-brand-90);border-radius:2px"></div>
         </div>
       </div>
     </div>`;
@@ -222,7 +125,116 @@ function renderAlumnosList() {
 }
 
 // ============================================
-// TAB EVALUACIONES — Promedio general por curso
+// TAB: CURSOS — alumnos por curso + asistencia
+// ============================================
+let cursoSeleccionado = null;
+
+function renderCursosTab() {
+  if (cursoSeleccionado === null && profMisCursos.length > 0) {
+    cursoSeleccionado = profMisCursos[0];
+  }
+  renderCursosPills();
+  renderAlumnosCurso();
+}
+
+function renderCursosPills() {
+  const container = document.getElementById('profCursosPills');
+  container.innerHTML = profMisCursos.map(c => `
+    <button class="curso-pill${cursoSeleccionado === c ? ' active' : ''}" data-curso="${esc(c)}">
+      ${esc(c)}
+    </button>`).join('');
+
+  container.querySelectorAll('.curso-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      cursoSeleccionado = pill.dataset.curso;
+      renderCursosPills();
+      renderAlumnosCurso();
+    });
+  });
+}
+
+function renderAlumnosCurso() {
+  const container = document.getElementById('profCursosContenido');
+
+  if (!cursoSeleccionado) {
+    container.innerHTML = '<p class="text-muted">Sin cursos asignados.</p>';
+    return;
+  }
+
+  const cursoLower = cursoSeleccionado.toLowerCase();
+  const alumnosCurso = profAlumnos
+    .filter(a => getCursosAlumno(a).some(c => c.includes(cursoLower)))
+    .sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''));
+
+  if (alumnosCurso.length === 0) {
+    container.innerHTML = '<p class="text-muted" style="padding:1rem 0">No hay alumnos en este curso.</p>';
+    return;
+  }
+
+  container.innerHTML = `
+    <div style="margin-bottom:0.6rem;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:0.75rem;color:var(--blanco-suave);font-family:'Inter',sans-serif;text-transform:uppercase;letter-spacing:1px">${alumnosCurso.length} alumnos</span>
+    </div>
+    ${alumnosCurso.map(a => {
+      const yaAsistio  = !!asistenciaHoy[a.id];
+      const asistidas  = a.clasesAsistidas || 0;
+      const contratadas = a.clasesContratadas || 0;
+      return `
+      <div class="prof-alumno-card" id="card-${a.id}">
+        <div class="avatar" style="flex-shrink:0">${getInitials(a.nombre)}</div>
+        <div class="prof-alumno-info" style="flex:1;min-width:0">
+          <div class="prof-alumno-nombre">${esc(a.nombre)}</div>
+          <div class="prof-alumno-sub" id="clases-${a.id}">${asistidas}/${contratadas} clases</div>
+        </div>
+        <button
+          class="btn-asistencia${yaAsistio ? ' asistido' : ''}"
+          id="btn-asist-${a.id}"
+          onclick="marcarAsistencia('${a.id}')"
+          ${yaAsistio ? 'disabled' : ''}>
+          ${yaAsistio ? '&#x2714; Asistio' : '&#x2714; Asistio'}
+        </button>
+      </div>`;
+    }).join('')}`;
+}
+
+async function marcarAsistencia(alumnoId) {
+  if (asistenciaHoy[alumnoId]) return;
+
+  const btn = document.getElementById(`btn-asist-${alumnoId}`);
+  if (btn) { btn.disabled = true; btn.textContent = '...'; }
+
+  try {
+    const res = await ApiService._fetch('/api/asistencia', {
+      method: 'POST',
+      body: JSON.stringify({ alumnoId }),
+    });
+
+    // Actualizar datos locales
+    const alumno = profAlumnos.find(a => a.id === alumnoId);
+    if (alumno) alumno.clasesAsistidas = res.clasesAsistidas;
+
+    asistenciaHoy[alumnoId] = true;
+
+    // Actualizar UI sin rerenderizar todo
+    if (btn) {
+      btn.classList.add('asistido');
+      btn.disabled = true;
+      btn.innerHTML = '&#x2714; Asistio';
+    }
+    const clasesTxt = document.getElementById(`clases-${alumnoId}`);
+    if (clasesTxt && alumno) {
+      clasesTxt.textContent = `${alumno.clasesAsistidas}/${alumno.clasesContratadas || 0} clases`;
+    }
+
+    showToast('Asistencia registrada');
+  } catch (e) {
+    if (btn) { btn.disabled = false; btn.innerHTML = '&#x2714; Asistio'; }
+    showToast('Error al registrar asistencia', true);
+  }
+}
+
+// ============================================
+// TAB: EVALUACIONES — promedio general por curso
 // ============================================
 function renderEvalTab() {
   const container = document.getElementById('profEvalDashboard');
@@ -232,7 +244,6 @@ function renderEvalTab() {
     return;
   }
 
-  // Agrupar por curso
   const porCurso = {};
   profEvals.forEach(e => {
     const curso = e.Curso || 'Sin curso';
@@ -284,14 +295,13 @@ function metricaFila(label, valor) {
 }
 
 // ============================================
-// TAB OBSERVACION
+// TAB: OBSERVACION
 // ============================================
 function setupObsForm() {
   const select = document.getElementById('obsProCurso');
   profMisCursos.forEach(c => {
     const opt = document.createElement('option');
-    opt.value = c;
-    opt.textContent = c;
+    opt.value = c; opt.textContent = c;
     select.appendChild(opt);
   });
 
@@ -327,8 +337,7 @@ async function enviarObservacion() {
   };
 
   const btn = document.getElementById('btnEnviarObsPro');
-  btn.disabled = true;
-  btn.textContent = 'Guardando...';
+  btn.disabled = true; btn.textContent = 'Guardando...';
 
   try {
     await ApiService._fetch('/api/observaciones', { method: 'POST', body: JSON.stringify(payload) });
@@ -339,8 +348,7 @@ async function enviarObservacion() {
   } catch (e) {
     mostrarObsMsg(e.message || 'Error al guardar', false);
   } finally {
-    btn.disabled = false;
-    btn.textContent = 'Guardar observacion';
+    btn.disabled = false; btn.textContent = 'Guardar observacion';
   }
 }
 
@@ -354,7 +362,7 @@ function mostrarObsMsg(msg, exito) {
 }
 
 // ============================================
-// TAB PERFIL
+// TAB: PERFIL
 // ============================================
 function renderPerfil() {
   if (!profUser) return;
@@ -373,16 +381,6 @@ function renderPerfil() {
   cursosEl.innerHTML = profMisCursos.length
     ? profMisCursos.map(c => `<span class="badge badge-gold" style="display:inline-block;margin:0.2rem">${esc(c)}</span>`).join('')
     : '-';
-
-  // Rellenar select observacion si no tiene opciones aun
-  const select = document.getElementById('obsProCurso');
-  if (select.options.length <= 1 && profMisCursos.length > 0) {
-    profMisCursos.forEach(c => {
-      const opt = document.createElement('option');
-      opt.value = c; opt.textContent = c;
-      select.appendChild(opt);
-    });
-  }
 }
 
 // ============================================
@@ -392,7 +390,6 @@ function setupFoto() {
   const input = document.getElementById('profFotoInput');
   const btn   = document.getElementById('profFotoBtn');
   if (!input || !btn) return;
-
   let uploading = false;
   input.addEventListener('change', async (e) => {
     if (uploading) return;
@@ -405,16 +402,14 @@ function setupFoto() {
       const base64 = await comprimirFoto(file);
       await ApiService.updateUser(profUser.id, { fotoUrl: base64 });
       profUser.fotoUrl = base64;
-      const avatarEl = document.getElementById('profAvatar');
-      avatarEl.innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-      avatarEl.style.cssText += 'padding:0;overflow:hidden';
+      const av = document.getElementById('profAvatar');
+      av.innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+      av.style.cssText += 'padding:0;overflow:hidden';
       showToast('Foto actualizada');
     } catch {
       showToast('Error al subir foto', true);
     } finally {
-      btn.innerHTML = orig;
-      uploading = false;
-      input.value = '';
+      btn.innerHTML = orig; uploading = false; input.value = '';
     }
   });
 }
@@ -426,11 +421,10 @@ function comprimirFoto(file) {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const size = 200;
-        canvas.width = size; canvas.height = size;
+        canvas.width = canvas.height = 200;
         const ctx = canvas.getContext('2d');
         const min = Math.min(img.width, img.height);
-        ctx.drawImage(img, (img.width-min)/2, (img.height-min)/2, min, min, 0, 0, size, size);
+        ctx.drawImage(img, (img.width-min)/2, (img.height-min)/2, min, min, 0, 0, 200, 200);
         resolve(canvas.toDataURL('image/jpeg', 0.7));
       };
       img.onerror = reject;
@@ -450,22 +444,6 @@ function getCursosAlumno(a) {
     lista.push(...a.curso.toLowerCase().split(',').map(c => c.trim()).filter(Boolean));
   }
   return lista;
-}
-
-function renderCursoPills(containerId, activo, onSelect) {
-  const container = document.getElementById(containerId);
-  const pills = [null, ...profMisCursos];
-  container.innerHTML = pills.map(c => `
-    <button class="curso-pill${activo === c ? ' active' : ''}" data-curso="${c || ''}">
-      ${c || 'Todos'}
-    </button>`).join('');
-  container.querySelectorAll('.curso-pill').forEach(pill => {
-    pill.addEventListener('click', () => {
-      const c = pill.dataset.curso || null;
-      onSelect(c);
-      renderCursoPills(containerId, c, onSelect);
-    });
-  });
 }
 
 function getInitials(nombre) {
