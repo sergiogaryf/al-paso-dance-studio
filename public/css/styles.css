@@ -30,7 +30,10 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: 'DM Sans', sans-serif;
-  background: linear-gradient(145deg, #1A0522 0%, #140A18 35%, #1C0C10 65%, #201008 100%);
+  background:
+    radial-gradient(ellipse at 10% 10%, rgba(107,32,96,0.35) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 60%, rgba(196,110,60,0.18) 0%, transparent 50%),
+    linear-gradient(145deg, #2A0838 0%, #1A0522 30%, #200818 60%, #241010 100%);
   background-attachment: fixed;
   color: var(--blanco);
   line-height: 1.7;
@@ -347,7 +350,7 @@ ul { list-style: none; }
 .instructor-card {
   display: grid;
   grid-template-columns: 336px 1fr;
-  background: linear-gradient(135deg, rgba(107,32,96,0.3) 0%, rgba(31,18,40,0.92) 100%);
+  background: linear-gradient(135deg, rgba(107,32,96,0.55) 0%, rgba(31,18,40,0.95) 100%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(107,32,96,0.3);
@@ -849,7 +852,7 @@ footer span { color: var(--blanco); }
 }
 
 .curso-card {
-  background: linear-gradient(135deg, rgba(107,32,96,0.3) 0%, rgba(31,18,40,0.92) 100%);
+  background: linear-gradient(135deg, rgba(107,32,96,0.55) 0%, rgba(31,18,40,0.95) 100%);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(107,32,96,0.3);
   border-radius: 20px;
@@ -1224,7 +1227,7 @@ footer span { color: var(--blanco); }
 }
 
 .precio-card {
-  background: linear-gradient(135deg, rgba(107,32,96,0.3) 0%, rgba(31,18,40,0.92) 100%);
+  background: linear-gradient(135deg, rgba(107,32,96,0.55) 0%, rgba(31,18,40,0.95) 100%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(107,32,96,0.3);
