@@ -62,7 +62,7 @@ module.exports = async function handler(req, res) {
       // Verificar bloqueo diario (1 evaluacion por dia por alumno+curso)
       const existentes = await findAll(
         tables.evaluaciones,
-        `AND({NombreAlumno} = '${nombreSanitizado}', {Curso} = '${cursoSanitizado}', {FechaEvaluacion} = '${hoy}')`
+        `AND({NombreAlumno} = '${nombreSanitizado}', {Curso} = '${cursoSanitizado}', {Fecha} = '${hoy}')`
       );
 
       if (existentes.length > 0) {
@@ -102,7 +102,7 @@ module.exports = async function handler(req, res) {
         Confianza: parseInt(confianza) || 5,
         BaileNuevo: !!baileNuevo,
         Comentario: comentario || '',
-        FechaEvaluacion: hoy,
+        Fecha: hoy,
         FechaHoraISO: new Date().toISOString(),
       };
 
@@ -118,6 +118,6 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Metodo no permitido' });
   } catch (error) {
     console.error('Error en evaluaciones:', error);
-    return res.status(500).json({ error: 'Error interno del servidor', detalle: error.message });
+    return res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
