@@ -337,8 +337,8 @@ function setupObsForm() {
 
   document.querySelectorAll('#tab-observaciones .eval-app-clase-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('#tab-observaciones .eval-app-clase-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      document.querySelectorAll('#tab-observaciones .eval-app-clase-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
     });
   });
 
@@ -347,7 +347,7 @@ function setupObsForm() {
 
 async function enviarObservacion() {
   const curso    = document.getElementById('obsProCurso').value;
-  const claseBtn = document.querySelector('#tab-observaciones .eval-app-clase-btn.active');
+  const claseBtn = document.querySelector('#tab-observaciones .eval-app-clase-btn.selected');
 
   if (!curso)    { mostrarObsMsg('Selecciona un curso', false); return; }
   if (!claseBtn) { mostrarObsMsg('Selecciona el numero de clase', false); return; }
@@ -372,7 +372,7 @@ async function enviarObservacion() {
     mostrarObsMsg('Observacion guardada correctamente', true);
     ['obsProObjetivo','obsProPasos','obsProLogros','obsProDificultades','obsProAjustes','obsProNotas']
       .forEach(id => { document.getElementById(id).value = ''; });
-    document.querySelectorAll('#tab-observaciones .eval-app-clase-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#tab-observaciones .eval-app-clase-btn').forEach(b => b.classList.remove('selected'));
   } catch (e) {
     mostrarObsMsg(e.message || 'Error al guardar', false);
   } finally {
