@@ -530,7 +530,7 @@
   font-weight: 300;
 }
 
-/* ---- TAB BAR ---- */
+/* ---- TAB BAR (scrollable, 8 tabs) ---- */
 .tab-bar {
   position: fixed;
   bottom: 0;
@@ -543,10 +543,18 @@
   border-top: 1px solid rgba(107, 32, 96, 0.35);
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: flex-start;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  gap: 0;
   z-index: 100;
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: 4px;
+  padding-right: 4px;
 }
+.tab-bar::-webkit-scrollbar { display: none; }
 
 .tab-item {
   display: flex;
@@ -557,10 +565,11 @@
   border: none;
   color: var(--blanco-suave);
   cursor: pointer;
-  padding: 0.3rem 0.4rem;
+  padding: 0.3rem 0.6rem;
   transition: color 0.3s;
   -webkit-tap-highlight-color: transparent;
-  min-width: 0;
+  min-width: 56px;
+  flex-shrink: 0;
 }
 
 .tab-item.active {
@@ -940,4 +949,403 @@
 
 .perfil-avatar-wrapper .avatar.avatar-xl {
   overflow: hidden;
+}
+
+/* ============================================
+   NUEVAS FUNCIONALIDADES
+   ============================================ */
+
+/* ---- PLAYLIST CARD ---- */
+.card-playlist {
+  padding: 0.9rem 1rem;
+  margin-bottom: 1rem;
+}
+.playlist-content {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.playlist-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+.playlist-text {
+  flex: 1;
+  min-width: 0;
+}
+.playlist-nombre {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--blanco, #fff);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.playlist-plataforma {
+  font-size: 0.72rem;
+  color: var(--blanco-suave, #ccc);
+  margin-top: 0.1rem;
+}
+.btn-playlist {
+  flex-shrink: 0;
+  padding: 0.45rem 1rem;
+  background: var(--morado, #430440);
+  color: #fff;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.btn-playlist:hover {
+  background: var(--morado-claro, #6B2060);
+  box-shadow: 0 0 12px rgba(168,85,247,0.4);
+}
+
+/* ---- CALENDARIO: CUMPLEAÑOS ---- */
+.cal-dia-app.tiene-cumple {
+  background: rgba(255, 180, 50, 0.12);
+  border-radius: 6px;
+}
+.cal-cumple-emoji {
+  font-size: 0.7rem;
+  line-height: 1;
+  text-align: center;
+}
+.cal-dot-cumple {
+  background: #FFB432;
+  box-shadow: 0 0 4px #FFB432;
+}
+
+/* Lista de cumpleañeros del mes */
+.cumpleaneros-mes {
+  margin: 0.8rem 0;
+}
+.cumple-lista-titulo {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #FFB432;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.3px;
+}
+.cumple-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.45rem 0.7rem;
+  background: rgba(255,180,50,0.08);
+  border-radius: 8px;
+  margin-bottom: 0.35rem;
+  border-left: 3px solid #FFB432;
+}
+.cumple-dia {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #FFB432;
+  min-width: 26px;
+  text-align: center;
+}
+.cumple-nombre {
+  font-size: 0.88rem;
+  color: var(--blanco, #fff);
+}
+
+/* Compañero con cumpleaños hoy */
+.companero-cumple .avatar {
+  border: 2px solid #FFB432;
+  box-shadow: 0 0 10px rgba(255,180,50,0.4);
+}
+
+/* ---- VIDEOS DE CLASES ---- */
+.videos-curso-pills {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.videos-pill {
+  padding: 0.4rem 0.85rem;
+  border-radius: 20px;
+  border: 1.5px solid rgba(107,32,96,0.5);
+  background: rgba(31,18,40,0.6);
+  color: var(--blanco-suave, #ccc);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.videos-pill.mi-curso {
+  border-color: rgba(212,175,55,0.5);
+  color: #D4AF37;
+}
+.videos-pill.active {
+  background: var(--morado, #430440);
+  border-color: var(--morado-claro, #6B2060);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(168,85,247,0.3);
+}
+
+/* Grid de videos (story format: 2 columnas) */
+.videos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+.video-card {
+  display: block;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--fondo-card, #1F1228);
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid rgba(107,32,96,0.3);
+}
+.video-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(168,85,247,0.25);
+}
+.video-card-thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9/16;
+  background: #0F0412 center/cover no-repeat;
+}
+.video-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.video-card:hover .video-card-overlay,
+.video-card:active .video-card-overlay {
+  opacity: 1;
+}
+.video-play-btn {
+  width: 42px;
+  height: 42px;
+  background: rgba(67,4,64,0.85);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: #fff;
+}
+.video-clase-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: rgba(67,4,64,0.9);
+  color: #D4AF37;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.video-card-info {
+  padding: 0.6rem 0.65rem;
+}
+.video-card-titulo {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--blanco, #fff);
+  line-height: 1.3;
+}
+.video-card-desc {
+  font-size: 0.68rem;
+  color: var(--blanco-suave, #ccc);
+  margin-top: 0.25rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ---- GALERIA DE FIESTAS ---- */
+.galeria-filtros {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.galeria-filtro-btn {
+  padding: 0.35rem 0.9rem;
+  border-radius: 20px;
+  border: 1.5px solid rgba(107,32,96,0.5);
+  background: rgba(31,18,40,0.6);
+  color: var(--blanco-suave, #ccc);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.galeria-filtro-btn.active {
+  background: var(--morado, #430440);
+  border-color: var(--morado-claro, #6B2060);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(168,85,247,0.3);
+}
+
+.galeria-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+.galeria-item {
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--fondo-card, #1F1228);
+  border: 1px solid rgba(107,32,96,0.3);
+  position: relative;
+}
+.galeria-img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  display: block;
+}
+.galeria-img-placeholder {
+  width: 100%;
+  aspect-ratio: 4/3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  background: rgba(67,4,64,0.3);
+}
+.galeria-play-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 38px;
+  height: 38px;
+  background: rgba(67,4,64,0.85);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1rem;
+  pointer-events: none;
+}
+.galeria-item-footer {
+  padding: 0.45rem 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.galeria-item-titulo {
+  flex: 1;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--blanco, #fff);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.btn-galeria-dl {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  background: var(--morado, #430440);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #D4AF37;
+  font-size: 0.75rem;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.btn-galeria-dl:hover {
+  background: var(--morado-claro, #6B2060);
+}
+
+/* ---- FEEDBACK DEL PROFESOR ---- */
+.perfil-feedback-card {
+  margin-bottom: 1rem;
+}
+.feedback-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.feedback-item {
+  padding: 0.9rem 1rem;
+}
+.feedback-mes {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #D4AF37;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.65rem;
+}
+.feedback-bloque {
+  margin-bottom: 0.6rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: 8px;
+}
+.feedback-bloque-titulo {
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.feedback-bloque p {
+  font-size: 0.83rem;
+  color: var(--blanco, #fff);
+  line-height: 1.5;
+  margin: 0;
+}
+.feedback-positivo {
+  background: rgba(0,200,100,0.08);
+  border-left: 3px solid #00C864;
+}
+.feedback-positivo .feedback-bloque-titulo {
+  color: #00C864;
+}
+.feedback-mejoras {
+  background: rgba(67,4,64,0.25);
+  border-left: 3px solid var(--morado-claro, #6B2060);
+}
+.feedback-mejoras .feedback-bloque-titulo {
+  color: var(--morado-claro, #6B2060);
+}
+.feedback-amejorar {
+  background: rgba(212,175,55,0.08);
+  border-left: 3px solid #D4AF37;
+}
+.feedback-amejorar .feedback-bloque-titulo {
+  color: #D4AF37;
+}
+
+/* ---- FOTO UPLOAD BTN (cambio: ahora es button no label) ---- */
+.foto-upload-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--dorado, #D4AF37);
+  border: 2px solid var(--fondo-oscuro, #140A18);
+  color: #fff;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: transform 0.2s;
 }

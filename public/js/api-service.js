@@ -135,6 +135,14 @@ const ApiService = {
   },
 
   async updateUser(id, data) {
+    // Si solo se actualiza fotoUrl (perfil propio), usar /api/me para evitar requerir admin
+    const esSoloFoto = Object.keys(data).length === 1 && data.fotoUrl !== undefined;
+    if (esSoloFoto) {
+      return this._fetch('/api/me', {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      });
+    }
     return this._fetch('/api/alumnos', {
       method: 'PUT',
       body: JSON.stringify({ id, ...data }),

@@ -65,6 +65,7 @@ function setupTabs() {
       if (tabId === 'tab-alumnos')      renderAlumnosTab();
       if (tabId === 'tab-cursos')       renderCursosTab();
       if (tabId === 'tab-evaluaciones') renderEvalTab();
+      if (tabId === 'tab-feedback')     setupFeedbackTab();
     });
   });
 }
@@ -414,32 +415,145 @@ function renderPerfil() {
 // ============================================
 // FOTO PERFIL
 // ============================================
+// ── CLOUDINARY CONFIG (profesor) ──────────────────────────────────────────
+const PROF_CLOUDINARY_CLOUD_NAME    = 'debpk4syz';
+const PROF_CLOUDINARY_UPLOAD_PRESET = 'al-paso-fotos';
+
 function setupFoto() {
-  const input = document.getElementById('profFotoInput');
-  const btn   = document.getElementById('profFotoBtn');
-  if (!input || !btn) return;
-  let uploading = false;
-  input.addEventListener('change', async (e) => {
-    if (uploading) return;
-    const file = e.target.files[0];
-    if (!file) return;
-    uploading = true;
-    const orig = btn.innerHTML;
-    btn.textContent = '...';
-    try {
-      const base64 = await comprimirFoto(file);
-      await ApiService.updateUser(profUser.id, { fotoUrl: base64 });
-      profUser.fotoUrl = base64;
-      const av = document.getElementById('profAvatar');
-      av.innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-      av.style.cssText += 'padding:0;overflow:hidden';
-      showToast('Foto actualizada');
-    } catch {
-      showToast('Error al subir foto', true);
-    } finally {
-      btn.innerHTML = orig; uploading = false; input.value = '';
+  const btn = document.getElementById('profFotoBtn');
+  if (!btn) return;
+
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    if (typeof cloudinary !== 'undefined') {
+      const widget = cloudinary.createUploadWidget(
+        {
+          cloudName:            PROF_CLOUDINARY_CLOUD_NAME,
+          uploadPreset:         PROF_CLOUDINARY_UPLOAD_PRESET,
+          sources:              ['local', 'camera'],
+          multiple:             false,
+          cropping:             true,
+          croppingAspectRatio:  1,
+          maxFileSize:          5000000,
+          folder:               'al-paso-perfiles',
+          clientAllowedFormats: ['jpg', 'jpeg', 'png', 'webp'],
+        },
+        async (error, result) => {
+          if (error) { console.error('Cloudinary error:', error); return; }
+          if (result.event === 'success') {
+            const url = result.info.secure_url;
+            try {
+              await ApiService.updateUser(profUser.id, { fotoUrl: url });
+              profUser.fotoUrl = url;
+              const av = document.getElementById('profAvatar');
+              av.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+              av.style.cssText += 'padding:0;overflow:hidden';
+              showToast('Foto actualizada');
+              widget.close();
+            } catch {
+              showToast('Error al guardar foto', true);
+            }
+          }
+        }
+      );
+      widget.open();
+    } else {
+      // Fallback file input
+      const input = document.createElement('input');
+      input.type = 'file'; input.accept = 'image/*';
+      input.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const orig = btn.textContent; btn.textContent = '...';
+        try {
+          const base64 = await comprimirFoto(file);
+          await ApiService.updateUser(profUser.id, { fotoUrl: base64 });
+          profUser.fotoUrl = base64;
+          const av = document.getElementById('profAvatar');
+          av.innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+          av.style.cssText += 'padding:0;overflow:hidden';
+          showToast('Foto actualizada');
+        } catch { showToast('Error al subir foto', true); }
+        finally { btn.textContent = orig; }
+      };
+      input.click();
     }
   });
+}
+
+// ── FEEDBACK MENSUAL (profesor) ────────────────────────────────────────────
+let feedbackTabInit = false;
+
+function setupFeedbackTab() {
+  if (feedbackTabInit) return;
+  feedbackTabInit = true;
+
+  // Poblar select de alumnos
+  const select = document.getElementById('fbAlumnoSelect');
+  if (!select) return;
+
+  profAlumnos.forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a.id;
+    opt.textContent = a.nombre + (a.cursosInscritos && a.cursosInscritos.length ? ' — ' + a.cursosInscritos[0] : '');
+    select.appendChild(opt);
+  });
+
+  // Mes actual como default
+  const now = new Date();
+  const mesSelect = document.getElementById('fbMesSelect');
+  if (mesSelect) mesSelect.value = String(now.getMonth() + 1);
+
+  // Boton guardar
+  const btn = document.getElementById('btnGuardarFeedback');
+  if (btn) btn.addEventListener('click', guardarFeedback);
+}
+
+async function guardarFeedback() {
+  const msg       = document.getElementById('fbMsg');
+  const btn       = document.getElementById('btnGuardarFeedback');
+  const alumnoId  = document.getElementById('fbAlumnoSelect').value;
+  const mes       = document.getElementById('fbMesSelect').value;
+  const anio      = document.getElementById('fbAnioInput').value;
+  const positivo  = document.getElementById('fbPositivo').value.trim();
+  const mejoras   = document.getElementById('fbMejoras').value.trim();
+  const aMejorar  = document.getElementById('fbAMejorar').value.trim();
+
+  msg.className = 'eval-app-msg hidden';
+
+  if (!alumnoId || !mes || !anio) {
+    msg.textContent = 'Selecciona un alumno y el mes/año.';
+    msg.className = 'eval-app-msg eval-app-msg-error';
+    return;
+  }
+
+  const alumno = profAlumnos.find(a => a.id === alumnoId);
+  btn.disabled = true;
+  btn.textContent = 'Guardando...';
+
+  try {
+    await ApiService._fetch('/api/feedback', {
+      method: 'POST',
+      body: JSON.stringify({
+        alumnoId,
+        alumnoNombre: alumno ? alumno.nombre : '',
+        mes,
+        anio,
+        positivo,
+        mejoras,
+        aMejorar,
+      }),
+    });
+    msg.textContent = 'Feedback guardado correctamente.';
+    msg.className = 'eval-app-msg eval-app-msg-success';
+  } catch (e) {
+    msg.textContent = e.message || 'Error al guardar. Intenta de nuevo.';
+    msg.className = 'eval-app-msg eval-app-msg-error';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Guardar Feedback';
+  }
 }
 
 function comprimirFoto(file) {

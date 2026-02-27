@@ -24,12 +24,23 @@ module.exports = async function handler(req, res) {
 
     const result = alumnos
       .filter(a => a.id !== user.id)
-      .map(a => ({
-        id: a.id,
-        nombre: a.Nombre || '',
-        genero: a.Genero || '',
-        fotoUrl: a.FotoUrl || '',
-      }));
+      .map(a => {
+        // Extraer solo dia y mes del cumpleaños (sin el año, por privacidad)
+        let cumpleDia = null, cumpleMes = null;
+        if (a.FechaNacimiento) {
+          const partes = String(a.FechaNacimiento).split('-');
+          cumpleDia = parseInt(partes[2], 10) || null;
+          cumpleMes = parseInt(partes[1], 10) || null;
+        }
+        return {
+          id:         a.id,
+          nombre:     a.Nombre   || '',
+          genero:     a.Genero   || '',
+          fotoUrl:    a.FotoUrl  || '',
+          cumpleDia,
+          cumpleMes,
+        };
+      });
 
     return res.status(200).json(result);
   } catch (error) {

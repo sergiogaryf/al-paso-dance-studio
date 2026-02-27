@@ -10,6 +10,9 @@ const tables = {
   banners: base('Banners'),
   evaluaciones: base('Evaluaciones'),
   observaciones: base('ObservacionesProfesor'),
+  videos: base('Videos'),
+  galeria: base('Galeria'),
+  feedbackMensual: base('FeedbackMensual'),
 };
 
 function recordToObj(record) {
