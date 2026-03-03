@@ -44,9 +44,16 @@ const ApiService = {
     }
     const res = await fetch(url, { ...options, headers });
     if (res.status === 401) {
-      this._setToken(null);
-      window.location.href = 'login.html';
-      throw new Error('No autorizado');
+      if (this._getToken()) {
+        // Sesion expirada: borrar token y redirigir a login
+        this._setToken(null);
+        window.location.href = 'login.html';
+        throw new Error('No autorizado');
+      } else {
+        // En flujo de login (sin token): propagar el error para que la UI lo muestre
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'No autorizado');
+      }
     }
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
