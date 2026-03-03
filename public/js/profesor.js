@@ -49,6 +49,7 @@ function guardarAsistencia(alumnoId, curso, valor) {
     setupFoto();
 
     asistenciaHoy = getAsistenciaHoy();
+    programarRenovacionMedianoche();
 
     await Promise.all([loadAlumnos(), loadEvaluaciones()]);
 
@@ -222,7 +223,7 @@ function renderAlumnosCurso() {
           class="btn-asistencia${yaAsistio ? ' asistido' : ''}"
           id="btn-asist-${a.id}"
           onclick="marcarAsistencia('${a.id}', '${esc(cursoSeleccionado || '')}')">
-          ${yaAsistio ? '&#x2714; Clase #' + asistidas : 'Clase #' + proxClase}
+          ${yaAsistio ? '&#x2714; #' + asistidas + ' &#x2715;' : 'Clase #' + proxClase}
         </button>
       </div>`;
     }).join('')}`;
@@ -255,7 +256,7 @@ async function marcarAsistencia(alumnoId, curso) {
       btn.disabled = false;
       if (asistenciaHoy[clave]) {
         btn.classList.add('asistido');
-        btn.innerHTML = '&#x2714; Clase #' + (res.clasesAsistidas || '');
+        btn.innerHTML = '&#x2714; #' + (res.clasesAsistidas || '') + ' &#x2715;';
       } else {
         btn.classList.remove('asistido');
         btn.innerHTML = 'Clase #' + ((alumno ? alumno.clasesAsistidas : 0) + 1);
@@ -281,7 +282,7 @@ async function marcarAsistencia(alumnoId, curso) {
       btn.disabled = false;
       const alumno = profAlumnos.find(a => a.id === alumnoId);
       const asistidas = alumno ? alumno.clasesAsistidas : 0;
-      btn.innerHTML = yaAsistio ? '&#x2714; Clase #' + asistidas : 'Clase #' + (asistidas + 1);
+      btn.innerHTML = yaAsistio ? '&#x2714; #' + asistidas + ' &#x2715;' : 'Clase #' + (asistidas + 1);
     }
     const msg = e.message && e.message.includes('409')
       ? 'Ya registrado hoy para este curso'
@@ -596,6 +597,30 @@ async function guardarFeedback() {
     btn.disabled = false;
     btn.textContent = 'Guardar Feedback';
   }
+}
+
+// ============================================
+// RENOVACION AUTOMATICA A MEDIANOCHE
+// ============================================
+function programarRenovacionMedianoche() {
+  const ahora   = new Date();
+  const manana  = new Date(ahora);
+  manana.setDate(manana.getDate() + 1);
+  manana.setHours(0, 0, 5, 0); // 00:00:05 del día siguiente
+  const msHasta = manana - ahora;
+
+  setTimeout(() => {
+    // Nuevo día: reiniciar estados de asistencia
+    asistenciaHoy = {};
+    // Si el tab de cursos está visible, re-renderizarlo
+    const tabCursos = document.getElementById('tab-cursos');
+    if (tabCursos && tabCursos.classList.contains('active')) {
+      renderAlumnosCurso();
+    }
+    showToast('Nuevo día — botones de asistencia renovados');
+    // Programar el siguiente día
+    programarRenovacionMedianoche();
+  }, msHasta);
 }
 
 function comprimirFoto(file) {
