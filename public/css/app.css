@@ -133,31 +133,62 @@
 .proxima-clase-info {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.8rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.proxima-clase-info:last-child {
+  border-bottom: none;
+  margin-bottom: 0 !important;
+}
+.proxima-clase-next {
+  padding: 0.5rem 0.6rem;
+  margin: 0 -0.6rem;
+  background: rgba(212,175,55,0.08);
+  border-radius: 10px;
+  border-bottom: none !important;
 }
 
 .proxima-dia {
   font-family: 'Inter', sans-serif;
-  font-size: 0.7rem;
-  color: var(--blanco);
+  font-size: 0.68rem;
+  color: var(--blanco-suave);
   text-transform: uppercase;
   letter-spacing: 1px;
-  min-width: 70px;
+  min-width: 36px;
   text-align: center;
-  padding: 0.5rem;
+  padding: 0.4rem 0.3rem;
   border-right: 1px solid var(--borde);
+}
+.proxima-dia-next {
+  color: var(--dorado);
+  font-weight: 700;
 }
 
 .proxima-detalle h4 {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: var(--blanco);
   font-weight: 600;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.1rem;
 }
 
 .proxima-detalle p {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--blanco-suave);
+}
+
+.proxima-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--dorado);
+  background: rgba(212,175,55,0.15);
+  border: 1px solid rgba(212,175,55,0.3);
+  border-radius: 20px;
+  padding: 0.15rem 0.5rem;
+  white-space: nowrap;
+  margin-left: auto;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* ---- CARD SEDE ---- */

@@ -192,46 +192,49 @@ async function loadProximaClase() {
       return;
     }
 
+    // Ordenar por día de la semana
     const diasOrden = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
     const hoyIdx    = (new Date().getDay() + 6) % 7;
+    const now       = new Date();
 
-    let nextClase = null;
-    let minDist   = 8;
-
-    for (const c of userClases) {
+    // Calcular distancia en días a cada clase
+    const clasesConDist = userClases.map(c => {
       const claseIdx = diasOrden.indexOf(c.dia);
-      if (claseIdx === -1) continue;
+      if (claseIdx === -1) return { ...c, dist: 99 };
       let dist = claseIdx - hoyIdx;
       if (dist < 0) dist += 7;
       if (dist === 0) {
-        const now  = new Date();
         const [h, m] = (c.hora || '00:00').split(':').map(Number);
-        if (h > now.getHours() || (h === now.getHours() && m > now.getMinutes())) {
-          if (dist < minDist) { minDist = dist; nextClase = c; }
-        } else {
-          dist = 7;
-          if (dist < minDist) { minDist = dist; nextClase = c; }
-        }
-      } else {
-        if (dist < minDist) { minDist = dist; nextClase = c; }
+        const yaTermino = h < now.getHours() || (h === now.getHours() && m <= now.getMinutes());
+        if (yaTermino) dist = 7;
       }
-    }
+      return { ...c, dist };
+    });
 
-    if (nextClase) {
-      container.innerHTML = `
-        <div class="proxima-clase-info">
-          <div class="proxima-dia">${nextClase.dia}</div>
+    // Ordenar: primero por distancia, luego por hora
+    clasesConDist.sort((a, b) => {
+      if (a.dist !== b.dist) return a.dist - b.dist;
+      return (a.hora || '').localeCompare(b.hora || '');
+    });
+
+    const proxima = clasesConDist[0];
+
+    // Mostrar todas las clases; resaltar la próxima
+    container.innerHTML = clasesConDist.map(c => {
+      const esProxima = c === proxima;
+      return `
+        <div class="proxima-clase-info${esProxima ? ' proxima-clase-next' : ''}" style="margin-bottom:0.5rem">
+          <div class="proxima-dia${esProxima ? ' proxima-dia-next' : ''}">${c.dia.slice(0, 3)}</div>
           <div class="proxima-detalle">
-            <h4>${nextClase.nombre}</h4>
-            <p>${nextClase.hora} &middot; ${nextClase.sede}</p>
+            <h4 style="margin:0;font-size:0.9rem">${sanitize(c.nombre)}</h4>
+            <p style="margin:0;font-size:0.78rem;opacity:0.75">${c.hora} &middot; ${sanitize(c.sede || '')}</p>
           </div>
-        </div>
-      `;
-    } else {
-      container.innerHTML = '<p class="text-muted" style="font-size:0.9rem;">Sin clases proximas</p>';
-    }
+          ${esProxima ? '<span class="proxima-badge">Proxima</span>' : ''}
+        </div>`;
+    }).join('');
+
   } catch (e) {
-    console.error('Error cargando proxima clase:', e);
+    console.error('Error cargando clases:', e);
     container.innerHTML = '<p class="text-muted" style="font-size:0.9rem;">Error al cargar</p>';
   }
 }
