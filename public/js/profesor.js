@@ -428,7 +428,7 @@ async function marcarAsistencia(alumnoId, curso, accion) {
   } catch (e) {
     if (btnA) { btnA.disabled = false; const a = profAlumnos.find(x => x.id === alumnoId); btnA.innerHTML = 'Clase #' + ((a ? a.clasesAsistidas : 0) + 1); }
     if (btnF) { btnF.disabled = false; }
-    const msg = e.message && e.message.includes('409')
+    const msg = e.message && (e.message.includes('Ya registrado') || e.message.includes('409'))
       ? 'Ya registrado hoy para este curso'
       : 'Error al registrar';
     showToast(msg, true);
