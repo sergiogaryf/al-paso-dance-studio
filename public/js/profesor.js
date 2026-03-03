@@ -157,12 +157,26 @@ function renderAlumnosTab() {
 // TAB: CURSOS — alumnos por curso + asistencia
 // ============================================
 let cursoSeleccionado = null;
+let sesionesPorAlumno = {}; // { alumnoId: maxNumeroClaseEnCursoSeleccionado }
 
-function renderCursosTab() {
+async function renderCursosTab() {
   if (cursoSeleccionado === null && profMisCursos.length > 0) {
     cursoSeleccionado = profMisCursos[0];
   }
   renderCursosPills();
+  await cargarSesionesYRenderizar();
+}
+
+async function cargarSesionesYRenderizar() {
+  if (cursoSeleccionado) {
+    try {
+      sesionesPorAlumno = await ApiService._fetch(
+        `/api/asistencia?curso=${encodeURIComponent(cursoSeleccionado)}`
+      );
+    } catch (e) {
+      sesionesPorAlumno = {};
+    }
+  }
   renderAlumnosCurso();
 }
 
@@ -177,7 +191,7 @@ function renderCursosPills() {
     pill.addEventListener('click', () => {
       cursoSeleccionado = pill.dataset.curso;
       renderCursosPills();
-      renderAlumnosCurso();
+      cargarSesionesYRenderizar();
     });
   });
 }
@@ -209,7 +223,9 @@ function renderAlumnosCurso() {
       const estadoHoy   = asistenciaHoy[clave] || null; // 'asistio' | 'falto' | null
       const asistidas   = a.clasesAsistidas || 0;
       const contratadas = a.clasesContratadas || 0;
-      const proxClase   = asistidas + 1;
+      // proxClase = sesiones ya registradas en este curso (asistencias + faltas) + 1
+      const sesiones  = sesionesPorAlumno[a.id] || 0;
+      const proxClase = sesiones + (estadoHoy ? 0 : 1);
       const racha       = a.racha || 0;
       const cursoEsc    = esc(cursoSeleccionado || '');
 
@@ -266,6 +282,10 @@ async function marcarAsistencia(alumnoId, curso, accion) {
 
     guardarAsistencia(alumnoId, curso, res.tipo);
     asistenciaHoy[clave] = res.tipo;
+    // Actualizar sesiones locales para que el número de clase sea correcto
+    if (sesionesPorAlumno[alumnoId] === undefined || res.numeroClase > sesionesPorAlumno[alumnoId]) {
+      sesionesPorAlumno[alumnoId] = res.numeroClase || sesionesPorAlumno[alumnoId] || 0;
+    }
 
     // Re-renderizar los botones de esta card
     actualizarBotonesCard(alumnoId, curso, res.tipo, alumno, res);
@@ -318,8 +338,9 @@ function actualizarBotonesCard(alumnoId, curso, tipo, alumno, res) {
   const card = document.getElementById(`card-${alumnoId}`);
   if (!card) return;
 
-  const asistidas   = alumno ? alumno.clasesAsistidas : 0;
-  const proxClase   = asistidas + 1;
+  const asistidas = alumno ? alumno.clasesAsistidas : 0;
+  const sesiones  = sesionesPorAlumno[alumnoId] || 0;
+  const proxClase = sesiones + (tipo ? 0 : 1);
   const cursoEsc    = esc(curso || '');
 
   // Zona de botones (último elemento del card)

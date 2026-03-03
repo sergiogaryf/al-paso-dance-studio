@@ -21,9 +21,32 @@ module.exports = async function handler(req, res) {
     return res.status(403).json({ error: 'Acceso denegado' });
   }
 
-  // ── GET: estado de asistencia de un alumno en una fecha ─────────────────
+  // ── GET ──────────────────────────────────────────────────────────────────
   if (req.method === 'GET') {
-    const { alumnoId, fecha } = req.query;
+    const { alumnoId, fecha, curso } = req.query;
+
+    // ?curso=X → devuelve { alumnoId: sesionesEnCurso } para calcular proxClase
+    if (curso && !alumnoId) {
+      try {
+        const cursoS = curso.replace(/'/g, "\\'");
+        const registros = await findAll(
+          tables.asistencias,
+          `{Curso} = '${cursoS}'`
+        );
+        // Para cada alumno, el número de sesiones = max(NumeroClase) registrado
+        const sesiones = {};
+        registros.forEach(r => {
+          const aid = r.AlumnoId;
+          const num = r.NumeroClase || 0;
+          if (!sesiones[aid] || num > sesiones[aid]) sesiones[aid] = num;
+        });
+        return res.status(200).json(sesiones);
+      } catch (e) {
+        return res.status(500).json({ error: 'Error al consultar sesiones' });
+      }
+    }
+
+    // ?alumnoId=X&fecha=Y → estado de ese alumno en esa fecha
     if (!alumnoId || !fecha) {
       return res.status(400).json({ error: 'alumnoId y fecha son requeridos' });
     }
@@ -93,15 +116,21 @@ module.exports = async function handler(req, res) {
       return res.status(409).json({ error: 'Ya registrado hoy', tipo: tipoActual });
     }
 
-    const esFalta      = accion === 'falta';
-    const tipo         = esFalta ? 'falto' : 'asistio';
-    const numeroClase  = (alumno.ClasesAsistidas || 0) + (esFalta ? 0 : 1);
+    const esFalta = accion === 'falta';
+    const tipo    = esFalta ? 'falto' : 'asistio';
+
+    // Contar todas las sesiones previas de este alumno en este curso (asistencias + faltas)
+    const sesionesAnteriores = await findAll(
+      tables.asistencias,
+      `AND({AlumnoId} = '${alumnoId}', {Curso} = '${cursoS}')`
+    );
+    const numeroClase = sesionesAnteriores.length + 1;
 
     await createRecord(tables.asistencias, {
       AlumnoId:     alumnoId,
       AlumnoNombre: alumno.Nombre || '',
       Curso:        curso || '',
-      NumeroClase:  esFalta ? (alumno.ClasesAsistidas || 0) : numeroClase,
+      NumeroClase:  numeroClase,
       Fecha:        hoy,
       Tipo:         tipo,
     });
