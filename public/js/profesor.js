@@ -283,6 +283,29 @@ async function cargarSesionesYRenderizar() {
     } catch (e) {
       sesionesPorAlumno = {};
     }
+
+    // Reconciliar localStorage con Airtable:
+    // si un alumno aparece como marcado hoy pero no tiene sesión en Airtable
+    // (p.ej. se borraron datos manualmente), limpiar la entrada local.
+    try {
+      const hoy    = new Date().toISOString().slice(0, 10);
+      const stored = JSON.parse(localStorage.getItem('prof_asistencia') || '{}');
+      if (stored.fecha === hoy && stored.data) {
+        const sufijo = '_' + cursoSeleccionado;
+        let changed  = false;
+        Object.keys(stored.data).forEach(clave => {
+          if (clave.endsWith(sufijo)) {
+            const alumnoId = clave.slice(0, -sufijo.length);
+            if (!sesionesPorAlumno[alumnoId]) {
+              delete stored.data[clave];
+              delete asistenciaHoy[clave];
+              changed = true;
+            }
+          }
+        });
+        if (changed) localStorage.setItem('prof_asistencia', JSON.stringify(stored));
+      }
+    } catch (_) {}
   }
   renderAlumnosCurso();
 }
