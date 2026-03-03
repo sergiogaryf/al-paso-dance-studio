@@ -792,15 +792,33 @@ function setupFoto() {
     if (typeof cloudinary !== 'undefined') {
       const widget = cloudinary.createUploadWidget(
         {
-          cloudName:            PROF_CLOUDINARY_CLOUD_NAME,
-          uploadPreset:         PROF_CLOUDINARY_UPLOAD_PRESET,
-          sources:              ['local', 'camera'],
-          multiple:             false,
-          cropping:             true,
-          croppingAspectRatio:  1,
-          maxFileSize:          5000000,
-          folder:               'al-paso-perfiles',
-          clientAllowedFormats: ['jpg', 'jpeg', 'png', 'webp'],
+          cloudName:             PROF_CLOUDINARY_CLOUD_NAME,
+          uploadPreset:          PROF_CLOUDINARY_UPLOAD_PRESET,
+          sources:               ['local', 'camera'],
+          multiple:              false,
+          cropping:              true,
+          croppingAspectRatio:   1,
+          croppingShowDimensions: true,
+          maxFileSize:           5000000,
+          folder:                'al-paso-perfiles',
+          clientAllowedFormats:  ['jpg', 'jpeg', 'png', 'webp'],
+          styles: {
+            palette: {
+              window:          '#140A18',
+              windowBorder:    '#430440',
+              tabIcon:         '#D4AF37',
+              menuIcons:       '#D4AF37',
+              textDark:        '#FFFFFF',
+              textLight:       '#FFFFFF',
+              link:            '#D4AF37',
+              action:          '#430440',
+              inactiveTabIcon: '#8A8A8A',
+              error:           '#FF4444',
+              inProgress:      '#430440',
+              complete:        '#33AB2E',
+              sourceBg:        '#1F1228',
+            },
+          },
         },
         async (error, result) => {
           if (error) { console.error('Cloudinary error:', error); return; }
