@@ -506,6 +506,59 @@ function renderPerfil() {
   cursosEl.innerHTML = profMisCursos.length
     ? profMisCursos.map(c => `<span class="badge badge-gold" style="display:inline-block;margin:0.2rem">${esc(c)}</span>`).join('')
     : '-';
+
+  renderCalendarioProfesor();
+}
+
+function renderCalendarioProfesor() {
+  const grid = document.getElementById('profCalGrid');
+  if (!grid) return;
+
+  const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                 'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const HORARIO = {
+    0: { color: '#a855f7', titulo: 'Bachata Intermedio' },
+    1: { color: '#3b82f6', titulo: 'Casino Basico' },
+    2: { color: '#06b6d4', titulo: 'Casino Intermedio' },
+    3: { color: '#f59e0b', titulo: 'Mambo Open' },
+    4: { color: '#ec4899', titulo: 'Bachata Basico' },
+  };
+
+  const now        = new Date();
+  const year       = now.getFullYear();
+  const month      = now.getMonth();
+  const hoy        = now.getDate();
+  const primerDia  = (new Date(year, month, 1).getDay() + 6) % 7;
+  const diasEnMes  = new Date(year, month + 1, 0).getDate();
+
+  const tituloEl = document.getElementById('profCalTitulo');
+  if (tituloEl) tituloEl.textContent = MESES[month] + ' ' + year;
+
+  let html = '';
+  for (let v = 0; v < primerDia; v++) html += '<div></div>';
+
+  for (let d = 1; d <= diasEnMes; d++) {
+    const diaSemana = (new Date(year, month, d).getDay() + 6) % 7;
+    const clase     = HORARIO[diaSemana];
+    const esHoy     = d === hoy;
+
+    html += `<div style="
+      text-align:center;
+      padding:0.3rem 0;
+      border-radius:6px;
+      font-size:0.72rem;
+      font-family:'Inter',sans-serif;
+      font-weight:${esHoy ? '700' : '400'};
+      color:${esHoy ? '#fff' : clase ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.3)'};
+      background:${esHoy ? 'var(--morado)' : 'transparent'};
+      position:relative;
+    ">
+      ${d}
+      ${clase ? `<div style="width:5px;height:5px;border-radius:50%;background:${clase.color};margin:1px auto 0"></div>` : '<div style="height:6px"></div>'}
+    </div>`;
+  }
+
+  grid.innerHTML = html;
 }
 
 // ============================================

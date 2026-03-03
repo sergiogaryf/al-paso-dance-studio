@@ -195,6 +195,15 @@
           <div class="perfil-info-value" id="profPerfilEmail">-</div>
         </div>
       </div>
+      <!-- Calendario del mes -->
+      <div class="glass-card" style="margin-top:1rem;padding:1rem">
+        <div class="card-label" id="profCalTitulo">Calendario</div>
+        <div class="cal-dias-semana" style="display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:0.62rem;color:var(--blanco-suave);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.4rem">
+          <span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sa</span><span>Do</span>
+        </div>
+        <div id="profCalGrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px"></div>
+      </div>
+
       <button id="profLogoutBtn" class="btn-secondary logout-btn">Cerrar Sesion</button>
     </section>
 
