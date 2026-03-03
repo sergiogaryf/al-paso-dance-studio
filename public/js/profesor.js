@@ -341,7 +341,7 @@ function renderAlumnosCurso() {
              id="btn-asist-${a.id}"
              onclick="desmarcarAsistencia('${a.id}', '${cursoEsc}')">
              ${estadoHoy === 'asistio'
-               ? '&#x2714; #' + asistidas + ' &#x2715;'
+               ? '&#x2714; #' + proxClase + ' &#x2715;'
                : '&#x2718; Falt&#243; &#x2715;'}
            </button>`
         : `<div class="btns-asistencia-grupo">
@@ -432,6 +432,11 @@ async function desmarcarAsistencia(alumnoId, curso) {
     guardarAsistencia(alumnoId, curso, null);
     asistenciaHoy[clave] = null;
 
+    // Decrementar sesiones locales para que el número de clase vuelva al anterior
+    if (sesionesPorAlumno[alumnoId] !== undefined) {
+      sesionesPorAlumno[alumnoId] = Math.max(0, sesionesPorAlumno[alumnoId] - 1);
+    }
+
     actualizarBotonesCard(alumnoId, curso, null, alumno, res);
     showToast('Registro eliminado');
 
@@ -448,6 +453,8 @@ function actualizarBotonesCard(alumnoId, curso, tipo, alumno, res) {
   const asistidas = alumno ? alumno.clasesAsistidas : 0;
   const sesiones  = sesionesPorAlumno[alumnoId] || 0;
   const proxClase = sesiones + (tipo ? 0 : 1);
+  // Para el botón marcado se usa el número de clase del curso (sesiones), no el total
+  const claseNum  = sesiones;
   const cursoEsc    = esc(curso || '');
 
   // Zona de botones (último elemento del card)
@@ -460,7 +467,7 @@ function actualizarBotonesCard(alumnoId, curso, tipo, alumno, res) {
        id="btn-asist-${alumnoId}"
        onclick="desmarcarAsistencia('${alumnoId}', '${cursoEsc}')">
        ${tipo === 'asistio'
-         ? '&#x2714; #' + asistidas + ' &#x2715;'
+         ? '&#x2714; #' + claseNum + ' &#x2715;'
          : '&#x2718; Falt&#243; &#x2715;'}
      </button>`;
   } else {

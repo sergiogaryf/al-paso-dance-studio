@@ -139,11 +139,11 @@ module.exports = async function handler(req, res) {
     let nuevasClases = alumno.ClasesAsistidas || 0;
 
     if (esFalta) {
-      // Falta: reiniciar racha a 0
+      // Falta: reiniciar racha a 0, no tocar ClasesAsistidas
       nuevaRacha = 0;
     } else {
-      // Asistencia: incrementar clases y calcular racha
-      nuevasClases = numeroClase;
+      // Asistencia: incrementar total de clases asistidas y calcular racha
+      nuevasClases = nuevasClases + 1;
       nuevaRacha   = await calcularRacha(alumnoId, alumno, curso, hoy);
     }
 
