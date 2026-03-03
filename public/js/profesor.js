@@ -73,6 +73,7 @@ function setupTabs() {
       if (tabId === 'tab-cursos')       renderCursosTab();
       if (tabId === 'tab-evaluaciones') renderEvalTab();
       if (tabId === 'tab-feedback')     setupFeedbackTab();
+      if (tabId === 'tab-calendario')   renderCalendarioProfesor();
     });
   });
 }
@@ -527,8 +528,6 @@ function renderPerfil() {
   cursosEl.innerHTML = profMisCursos.length
     ? profMisCursos.map(c => `<span class="badge badge-gold" style="display:inline-block;margin:0.2rem">${esc(c)}</span>`).join('')
     : '-';
-
-  renderCalendarioProfesor();
 }
 
 async function renderCalendarioProfesor() {
@@ -555,31 +554,33 @@ async function renderCalendarioProfesor() {
   const tituloEl = document.getElementById('profCalTitulo');
   if (tituloEl) tituloEl.textContent = MESES[month] + ' ' + year;
 
-  // Cargar cumpleaños del mes
+  // Cargar cumpleaños
   let cumplesPorDia = {};
+  let todosCumples  = [];
   try {
-    const todos = await ApiService._fetch('/api/companeros?tipo=cumpleanos');
-    todos.filter(c => c.mes === month + 1).forEach(c => {
+    todosCumples = await ApiService._fetch('/api/companeros?tipo=cumpleanos');
+    todosCumples.filter(c => c.mes === month + 1).forEach(c => {
       if (!cumplesPorDia[c.dia]) cumplesPorDia[c.dia] = [];
       cumplesPorDia[c.dia].push(c.nombre);
     });
   } catch (e) { /* ignorar */ }
 
+  // Renderizar grid
   let html = '';
   for (let v = 0; v < primerDia; v++) html += '<div></div>';
 
   for (let d = 1; d <= diasEnMes; d++) {
-    const diaSemana  = (new Date(year, month, d).getDay() + 6) % 7;
-    const clase      = HORARIO[diaSemana];
-    const esHoy      = d === hoy;
-    const cumples    = cumplesPorDia[d] || [];
+    const diaSemana   = (new Date(year, month, d).getDay() + 6) % 7;
+    const clase       = HORARIO[diaSemana];
+    const esHoy       = d === hoy;
+    const cumples     = cumplesPorDia[d] || [];
     const tieneCumple = cumples.length > 0;
 
     html += `<div title="${tieneCumple ? '🎂 ' + cumples.join(', ') : ''}" style="
       text-align:center;padding:0.3rem 0;border-radius:6px;
       font-size:0.72rem;font-family:'Inter',sans-serif;
       font-weight:${esHoy ? '700' : '400'};
-      color:${esHoy ? '#fff' : clase || tieneCumple ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.3)'};
+      color:${esHoy ? '#fff' : (clase || tieneCumple) ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.3)'};
       background:${esHoy ? 'var(--morado)' : 'transparent'};
     ">
       ${d}
@@ -591,6 +592,51 @@ async function renderCalendarioProfesor() {
   }
 
   grid.innerHTML = html;
+
+  // Renderizar lista de cumpleaños próximos
+  const listaCumpleEl = document.getElementById('profCumpleanerosMes');
+  if (!listaCumpleEl) return;
+
+  // Ordenar por proximidad: primero los que faltan (dia >= hoy), luego los ya pasados
+  const delMes = todosCumples
+    .filter(c => c.mes === month + 1)
+    .sort((a, b) => {
+      const distA = a.dia >= hoy ? a.dia - hoy : diasEnMes - hoy + a.dia;
+      const distB = b.dia >= hoy ? b.dia - hoy : diasEnMes - hoy + b.dia;
+      return distA - distB;
+    });
+
+  if (delMes.length === 0) {
+    listaCumpleEl.innerHTML = `
+      <div class="glass-card" style="margin-top:1rem;padding:1rem;text-align:center">
+        <p class="text-muted" style="font-size:0.82rem;margin:0">Sin cumpleaños este mes</p>
+      </div>`;
+    return;
+  }
+
+  listaCumpleEl.innerHTML = `
+    <div class="glass-card" style="margin-top:1rem;padding:1rem">
+      <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--blanco-suave);margin-bottom:0.8rem">
+        Cumpleaños del mes
+      </div>
+      ${delMes.map(c => {
+        const esHoyBd = c.dia === hoy;
+        const yaFue   = c.dia < hoy;
+        return `
+        <div style="display:flex;align-items:center;gap:0.7rem;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+          <span style="font-size:1rem">${esHoyBd ? '🎉' : '🎂'}</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:0.88rem;font-weight:600;color:${esHoyBd ? 'var(--naranja-claro)' : yaFue ? 'rgba(255,255,255,0.4)' : 'var(--blanco)'};
+              white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+              ${esc(c.nombre)}
+            </div>
+            <div style="font-size:0.72rem;color:var(--blanco-suave)">
+              ${c.dia} de ${MESES[month]}${esHoyBd ? ' — ¡Hoy!' : ''}
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
 }
 
 // ============================================
