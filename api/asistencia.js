@@ -1,15 +1,15 @@
 /**
  * POST /api/asistencia  { alumnoId, accion, curso }
- *   accion = 'marcar' | 'desmarcar'
- *   Registra en tabla Asistencias + actualiza ClasesAsistidas y Racha en Alumnos
+ *   accion = 'marcar' | 'falta' | 'desmarcar'
+ *   Registra en tabla Asistencias (campo Tipo: 'asistio'|'falto')
+ *   + actualiza ClasesAsistidas y Racha en Alumnos
  *
  * GET /api/asistencia?alumnoId=X&fecha=YYYY-MM-DD
- *   Verifica si el alumno ya tiene asistencia registrada para esa fecha
+ *   Retorna { tipo: 'asistio'|'falto'|null } para esa fecha
  */
 const { tables, findAll, findById, createRecord, updateRecord, deleteRecord } = require('./_lib/airtable');
 const { verifyToken } = require('./_lib/auth');
 
-// Dias de la semana en español → índice JS (0=Domingo)
 const DIAS_IDX = {
   Domingo: 0, Lunes: 1, Martes: 2, Miercoles: 3,
   Jueves: 4, Viernes: 5, Sabado: 6,
@@ -21,7 +21,7 @@ module.exports = async function handler(req, res) {
     return res.status(403).json({ error: 'Acceso denegado' });
   }
 
-  // ── GET: verificar asistencia de un alumno en una fecha ─────────────────
+  // ── GET: estado de asistencia de un alumno en una fecha ─────────────────
   if (req.method === 'GET') {
     const { alumnoId, fecha } = req.query;
     if (!alumnoId || !fecha) {
@@ -32,13 +32,13 @@ module.exports = async function handler(req, res) {
         tables.asistencias,
         `AND({AlumnoId} = '${alumnoId}', {Fecha} = '${fecha}')`
       );
-      return res.status(200).json({ marcado: registros.length > 0, registros: registros.length });
+      const tipo = registros.length > 0 ? (registros[0].Tipo || 'asistio') : null;
+      return res.status(200).json({ tipo });
     } catch (e) {
       return res.status(500).json({ error: 'Error al consultar asistencia' });
     }
   }
 
-  // ── POST: marcar / desmarcar ─────────────────────────────────────────────
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Metodo no permitido' });
   }
@@ -46,62 +46,84 @@ module.exports = async function handler(req, res) {
   const { alumnoId, accion, curso } = req.body || {};
   if (!alumnoId) return res.status(400).json({ error: 'alumnoId es requerido' });
 
-  const hoy = new Date().toISOString().slice(0, 10);
+  const hoy    = new Date().toISOString().slice(0, 10);
+  const cursoS = (curso || '').replace(/'/g, "\\'");
 
   try {
     const alumno = await findById(tables.alumnos, alumnoId);
 
-    // ── DESMARCAR ─────────────────────────────────────────────────────────
+    // ── DESMARCAR (borra cualquier registro de hoy) ───────────────────────
     if (accion === 'desmarcar') {
       const filter = curso
-        ? `AND({AlumnoId} = '${alumnoId}', {Fecha} = '${hoy}', {Curso} = '${curso.replace(/'/g, "\\'")}')`
+        ? `AND({AlumnoId} = '${alumnoId}', {Fecha} = '${hoy}', {Curso} = '${cursoS}')`
         : `AND({AlumnoId} = '${alumnoId}', {Fecha} = '${hoy}')`;
 
       const registros = await findAll(tables.asistencias, filter);
+      const eraAsistio = registros.some(r => (r.Tipo || 'asistio') === 'asistio');
+
       for (const r of registros) await deleteRecord(tables.asistencias, r.id);
 
-      const nuevasClases = Math.max(0, (alumno.ClasesAsistidas || 0) - registros.length);
-      const nuevaRacha   = Math.max(0, (alumno.Racha || 0) - registros.length);
+      // Solo restar ClasesAsistidas si era un registro de asistencia (no falta)
+      const nuevasClases = eraAsistio
+        ? Math.max(0, (alumno.ClasesAsistidas || 0) - 1)
+        : (alumno.ClasesAsistidas || 0);
+      const nuevaRacha = Math.max(0, (alumno.Racha || 0) - (eraAsistio ? 1 : 0));
+
       await updateRecord(tables.alumnos, alumnoId, {
         ClasesAsistidas: nuevasClases,
         Racha: nuevaRacha,
       });
 
-      return res.status(200).json({ ok: true, clasesAsistidas: nuevasClases, racha: nuevaRacha });
+      return res.status(200).json({ ok: true, tipo: null, clasesAsistidas: nuevasClases, racha: nuevaRacha });
     }
 
-    // ── MARCAR ────────────────────────────────────────────────────────────
-    // Verificar si ya está marcado hoy para este alumno+curso
-    const filtroYaMarcado = curso
-      ? `AND({AlumnoId} = '${alumnoId}', {Fecha} = '${hoy}', {Curso} = '${curso.replace(/'/g, "\\'")}')`
+    // ── MARCAR ASISTENCIA o FALTA ─────────────────────────────────────────
+    if (accion !== 'marcar' && accion !== 'falta') {
+      return res.status(400).json({ error: 'accion invalida' });
+    }
+
+    // Verificar si ya hay un registro hoy para este alumno+curso
+    const filtroYa = curso
+      ? `AND({AlumnoId} = '${alumnoId}', {Fecha} = '${hoy}', {Curso} = '${cursoS}')`
       : `AND({AlumnoId} = '${alumnoId}', {Fecha} = '${hoy}')`;
 
-    const yaMarcados = await findAll(tables.asistencias, filtroYaMarcado);
-    if (yaMarcados.length > 0) {
-      return res.status(409).json({ error: 'Ya marcado hoy para este curso' });
+    const yaRegistrados = await findAll(tables.asistencias, filtroYa);
+    if (yaRegistrados.length > 0) {
+      const tipoActual = yaRegistrados[0].Tipo || 'asistio';
+      return res.status(409).json({ error: 'Ya registrado hoy', tipo: tipoActual });
     }
 
-    const numeroClase = (alumno.ClasesAsistidas || 0) + 1;
+    const esFalta      = accion === 'falta';
+    const tipo         = esFalta ? 'falto' : 'asistio';
+    const numeroClase  = (alumno.ClasesAsistidas || 0) + (esFalta ? 0 : 1);
 
-    // Crear registro de asistencia
     await createRecord(tables.asistencias, {
       AlumnoId:     alumnoId,
       AlumnoNombre: alumno.Nombre || '',
       Curso:        curso || '',
-      NumeroClase:  numeroClase,
+      NumeroClase:  esFalta ? (alumno.ClasesAsistidas || 0) : numeroClase,
       Fecha:        hoy,
+      Tipo:         tipo,
     });
 
-    // Calcular nueva racha
-    const nuevaRacha = await calcularRacha(alumnoId, alumno, curso, hoy);
+    let nuevaRacha = alumno.Racha || 0;
+    let nuevasClases = alumno.ClasesAsistidas || 0;
 
-    const nuevasClases = numeroClase;
+    if (esFalta) {
+      // Falta: reiniciar racha a 0
+      nuevaRacha = 0;
+    } else {
+      // Asistencia: incrementar clases y calcular racha
+      nuevasClases = numeroClase;
+      nuevaRacha   = await calcularRacha(alumnoId, alumno, curso, hoy);
+    }
+
     await updateRecord(tables.alumnos, alumnoId, {
       ClasesAsistidas: nuevasClases,
       Racha: nuevaRacha,
     });
 
-    return res.status(200).json({ ok: true, clasesAsistidas: nuevasClases, racha: nuevaRacha, numeroClase });
+    return res.status(200).json({ ok: true, tipo, clasesAsistidas: nuevasClases, racha: nuevaRacha, numeroClase });
 
   } catch (error) {
     console.error('Error en asistencia:', error);
@@ -109,35 +131,27 @@ module.exports = async function handler(req, res) {
   }
 };
 
-/**
- * Calcula la racha del alumno.
- * Busca el día de clase inmediatamente anterior a hoy en cualquiera de sus cursos.
- * Si ese día tiene asistencia registrada → racha sube; si no → racha se reinicia a 1.
- */
 async function calcularRacha(alumnoId, alumno, cursoHoy, hoy) {
   try {
-    // Obtener cursos del alumno
     let cursosAlumno = [];
-    if (alumno.Curso) {
-      cursosAlumno = alumno.Curso.split(',').map(s => s.trim()).filter(Boolean);
-    }
+    if (alumno.Curso) cursosAlumno = alumno.Curso.split(',').map(s => s.trim()).filter(Boolean);
     if (!cursosAlumno.length && cursoHoy) cursosAlumno = [cursoHoy];
     if (!cursosAlumno.length) return 1;
 
-    // Obtener clases activas de esos cursos para saber los días de la semana
     const todasClases = await findAll(tables.clases, '{Activo} = TRUE()');
-    const diasClase = []; // índices de día de la semana (0=Dom)
+    const diasClase = [];
     todasClases.forEach(c => {
       const nombreCurso = (c.Nombre || '').toLowerCase();
-      const coincide = cursosAlumno.some(cu => nombreCurso.includes(cu.toLowerCase()) || cu.toLowerCase().includes(nombreCurso));
+      const coincide = cursosAlumno.some(cu =>
+        nombreCurso.includes(cu.toLowerCase()) || cu.toLowerCase().includes(nombreCurso)
+      );
       if (coincide && c.Dia && DIAS_IDX[c.Dia] !== undefined) {
         diasClase.push(DIAS_IDX[c.Dia]);
       }
     });
 
-    if (diasClase.length === 0) return 1; // Sin horario definido → racha = 1
+    if (diasClase.length === 0) return 1;
 
-    // Encontrar el día de clase anterior a hoy (hasta 14 días atrás)
     const hoyDate = new Date(hoy + 'T12:00:00');
     let diaAnterior = null;
     for (let i = 1; i <= 14; i++) {
@@ -149,23 +163,16 @@ async function calcularRacha(alumnoId, alumno, cursoHoy, hoy) {
       }
     }
 
-    if (!diaAnterior) return 1; // No hay clase anterior en los últimos 14 días
+    if (!diaAnterior) return 1;
 
-    // Verificar si asistió ese día anterior
-    const asistenciaAnterior = await findAll(
+    const anterior = await findAll(
       tables.asistencias,
-      `AND({AlumnoId} = '${alumnoId}', {Fecha} = '${diaAnterior}')`
+      `AND({AlumnoId} = '${alumnoId}', {Fecha} = '${diaAnterior}', {Tipo} = 'asistio')`
     );
 
-    if (asistenciaAnterior.length > 0) {
-      // Asistió el día anterior → racha sigue
-      return (alumno.Racha || 0) + 1;
-    } else {
-      // Faltó el día anterior → racha se reinicia
-      return 1;
-    }
+    return anterior.length > 0 ? (alumno.Racha || 0) + 1 : 1;
   } catch (e) {
     console.error('Error calculando racha:', e);
-    return (alumno.Racha || 0) + 1; // En caso de error, no penalizar
+    return (alumno.Racha || 0) + 1;
   }
 }

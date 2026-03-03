@@ -98,11 +98,64 @@
   color: #2ecc71;
 }
 
-.btn-asistencia.asistido,
-.btn-asistencia:disabled {
+.btn-asistencia.asistido {
   background: rgba(39, 174, 96, 0.1);
   border-color: rgba(39, 174, 96, 0.35);
   color: #2ecc71;
-  cursor: default;
+  cursor: pointer;
+}
+.btn-asistencia.asistido:hover {
+  background: rgba(231, 76, 60, 0.12);
+  border-color: rgba(231, 76, 60, 0.4);
+  color: #e74c3c;
+}
+.btn-asistencia:disabled { cursor: default; }
+
+/* Grupo de dos botones (Clase / Faltó) */
+.btns-asistencia-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+/* Botón "Faltó" sin marcar */
+.btn-falta {
+  padding: 0.35rem 0.7rem;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  background: rgba(231, 76, 60, 0.07);
+  border: 1px solid rgba(231, 76, 60, 0.25);
+  color: rgba(231, 76, 60, 0.75);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-falta:hover {
+  background: rgba(231, 76, 60, 0.18);
+  border-color: rgba(231, 76, 60, 0.55);
+  color: #e74c3c;
+}
+
+/* Botón cuando la falta ya está marcada */
+.btn-falta-marcada {
+  padding: 0.4rem 0.85rem;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  background: rgba(231, 76, 60, 0.12);
+  border: 1px solid rgba(231, 76, 60, 0.4);
+  color: #e74c3c;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.btn-falta-marcada:hover {
+  background: rgba(231, 76, 60, 0.22);
+  border-color: #e74c3c;
 }
 

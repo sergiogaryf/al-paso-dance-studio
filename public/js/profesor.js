@@ -9,25 +9,25 @@ let profEvals     = [];
 let asistenciaHoy = {}; // alumnoId → true si está marcado hoy
 
 // ---- ASISTENCIA DIARIA (localStorage) ----
+// Guarda: { fecha, data: { clave: 'asistio'|'falto' } }
 function getAsistenciaHoy() {
   const hoy = new Date().toISOString().slice(0, 10);
   try {
     const stored = JSON.parse(localStorage.getItem('prof_asistencia') || '{}');
-    // Clave incluye fecha para que se renueve automáticamente al cambiar el día
     return stored.fecha === hoy ? (stored.data || {}) : {};
   } catch { return {}; }
 }
-// Clave: alumnoId + '_' + curso (para distinguir por curso si el alumno tiene varios)
 function claveAsistencia(alumnoId, curso) {
   return alumnoId + (curso ? '_' + curso : '');
 }
-function guardarAsistencia(alumnoId, curso, valor) {
+// tipo: 'asistio' | 'falto' | null (para borrar)
+function guardarAsistencia(alumnoId, curso, tipo) {
   const hoy = new Date().toISOString().slice(0, 10);
   try {
     const stored = JSON.parse(localStorage.getItem('prof_asistencia') || '{}');
     const data = stored.fecha === hoy ? (stored.data || {}) : {};
     const clave = claveAsistencia(alumnoId, curso);
-    if (valor) data[clave] = true;
+    if (tipo) data[clave] = tipo;
     else delete data[clave];
     localStorage.setItem('prof_asistencia', JSON.stringify({ fecha: hoy, data }));
   } catch {}
@@ -205,37 +205,52 @@ function renderAlumnosCurso() {
       <span style="font-size:0.75rem;color:var(--blanco-suave);font-family:'Inter',sans-serif;text-transform:uppercase;letter-spacing:1px">${alumnosCurso.length} alumnos</span>
     </div>
     ${alumnosCurso.map(a => {
-      const clave = claveAsistencia(a.id, cursoSeleccionado);
-      const yaAsistio   = !!asistenciaHoy[clave];
+      const clave       = claveAsistencia(a.id, cursoSeleccionado);
+      const estadoHoy   = asistenciaHoy[clave] || null; // 'asistio' | 'falto' | null
       const asistidas   = a.clasesAsistidas || 0;
       const contratadas = a.clasesContratadas || 0;
       const proxClase   = asistidas + 1;
       const racha       = a.racha || 0;
+      const cursoEsc    = esc(cursoSeleccionado || '');
+
+      const botonesHTML = estadoHoy
+        ? `<button class="btn-asistencia ${estadoHoy === 'asistio' ? 'asistido' : 'btn-falta-marcada'}"
+             id="btn-asist-${a.id}"
+             onclick="desmarcarAsistencia('${a.id}', '${cursoEsc}')">
+             ${estadoHoy === 'asistio'
+               ? '&#x2714; #' + asistidas + ' &#x2715;'
+               : '&#x2718; Falt&#243; &#x2715;'}
+           </button>`
+        : `<div class="btns-asistencia-grupo">
+             <button class="btn-asistencia" id="btn-asist-${a.id}"
+               onclick="marcarAsistencia('${a.id}', '${cursoEsc}', 'marcar')">
+               Clase #${proxClase}
+             </button>
+             <button class="btn-falta" id="btn-falta-${a.id}"
+               onclick="marcarAsistencia('${a.id}', '${cursoEsc}', 'falta')">
+               &#x2718; Falt&#243;
+             </button>
+           </div>`;
+
       return `
       <div class="prof-alumno-card" id="card-${a.id}">
         <div class="avatar" style="flex-shrink:0">${getInitials(a.nombre)}</div>
         <div class="prof-alumno-info" style="flex:1;min-width:0">
           <div class="prof-alumno-nombre">${esc(a.nombre)}</div>
           <div class="prof-alumno-sub" id="clases-${a.id}">${asistidas}/${contratadas} &middot; Clase #${proxClase}</div>
-          <div style="font-size:0.7rem;color:var(--naranja-claro)">&#128293; Racha: ${racha}</div>
+          <div style="font-size:0.7rem;color:var(--naranja-claro)" id="racha-${a.id}">&#128293; Racha: ${racha}</div>
         </div>
-        <button
-          class="btn-asistencia${yaAsistio ? ' asistido' : ''}"
-          id="btn-asist-${a.id}"
-          onclick="marcarAsistencia('${a.id}', '${esc(cursoSeleccionado || '')}')">
-          ${yaAsistio ? '&#x2714; #' + asistidas + ' &#x2715;' : 'Clase #' + proxClase}
-        </button>
+        ${botonesHTML}
       </div>`;
     }).join('')}`;
 }
 
-async function marcarAsistencia(alumnoId, curso) {
-  const clave     = claveAsistencia(alumnoId, curso);
-  const yaAsistio = !!asistenciaHoy[clave];
-  const accion    = yaAsistio ? 'desmarcar' : 'marcar';
-
-  const btn = document.getElementById(`btn-asist-${alumnoId}`);
-  if (btn) { btn.disabled = true; btn.textContent = '...'; }
+async function marcarAsistencia(alumnoId, curso, accion) {
+  const clave  = claveAsistencia(alumnoId, curso);
+  const btnA   = document.getElementById(`btn-asist-${alumnoId}`);
+  const btnF   = document.getElementById(`btn-falta-${alumnoId}`);
+  if (btnA) { btnA.disabled = true; btnA.textContent = '...'; }
+  if (btnF) { btnF.disabled = true; }
 
   try {
     const res = await ApiService._fetch('/api/asistencia', {
@@ -246,49 +261,101 @@ async function marcarAsistencia(alumnoId, curso) {
     const alumno = profAlumnos.find(a => a.id === alumnoId);
     if (alumno) {
       alumno.clasesAsistidas = res.clasesAsistidas;
-      alumno.racha = res.racha;
+      alumno.racha           = res.racha;
     }
 
-    asistenciaHoy[clave] = !yaAsistio;
-    guardarAsistencia(alumnoId, curso, !yaAsistio);
+    guardarAsistencia(alumnoId, curso, res.tipo);
+    asistenciaHoy[clave] = res.tipo;
 
-    if (btn) {
-      btn.disabled = false;
-      if (asistenciaHoy[clave]) {
-        btn.classList.add('asistido');
-        btn.innerHTML = '&#x2714; #' + (res.clasesAsistidas || '') + ' &#x2715;';
-      } else {
-        btn.classList.remove('asistido');
-        btn.innerHTML = 'Clase #' + ((alumno ? alumno.clasesAsistidas : 0) + 1);
-      }
-    }
+    // Re-renderizar los botones de esta card
+    actualizarBotonesCard(alumnoId, curso, res.tipo, alumno, res);
 
-    const clasesTxt = document.getElementById(`clases-${alumnoId}`);
-    if (clasesTxt && alumno) {
-      const proxClase = alumno.clasesAsistidas + 1;
-      clasesTxt.innerHTML = `${alumno.clasesAsistidas}/${alumno.clasesContratadas || 0} &middot; Clase #${proxClase}`;
-    }
+    const msg = accion === 'falta'
+      ? `Falta registrada — ${esc(curso)}`
+      : `Clase #${res.numeroClase || ''} — ${esc(curso)} registrada`;
+    showToast(msg, accion === 'falta');
 
-    // Actualizar racha visible
-    const card = document.getElementById(`card-${alumnoId}`);
-    if (card && alumno) {
-      const rachaEl = card.querySelector('[data-racha]');
-      if (rachaEl) rachaEl.textContent = '🔥 Racha: ' + (alumno.racha || 0);
-    }
-
-    showToast(yaAsistio ? 'Asistencia desmarcada' : `Clase #${res.numeroClase || ''} — ${curso || ''} registrada`);
   } catch (e) {
-    if (btn) {
-      btn.disabled = false;
-      const alumno = profAlumnos.find(a => a.id === alumnoId);
-      const asistidas = alumno ? alumno.clasesAsistidas : 0;
-      btn.innerHTML = yaAsistio ? '&#x2714; #' + asistidas + ' &#x2715;' : 'Clase #' + (asistidas + 1);
-    }
+    if (btnA) { btnA.disabled = false; const a = profAlumnos.find(x => x.id === alumnoId); btnA.innerHTML = 'Clase #' + ((a ? a.clasesAsistidas : 0) + 1); }
+    if (btnF) { btnF.disabled = false; }
     const msg = e.message && e.message.includes('409')
       ? 'Ya registrado hoy para este curso'
-      : 'Error al registrar asistencia';
+      : 'Error al registrar';
     showToast(msg, true);
   }
+}
+
+async function desmarcarAsistencia(alumnoId, curso) {
+  const btn = document.getElementById(`btn-asist-${alumnoId}`);
+  if (btn) { btn.disabled = true; btn.textContent = '...'; }
+
+  try {
+    const res = await ApiService._fetch('/api/asistencia', {
+      method: 'POST',
+      body: JSON.stringify({ alumnoId, accion: 'desmarcar', curso }),
+    });
+
+    const alumno = profAlumnos.find(a => a.id === alumnoId);
+    if (alumno) {
+      alumno.clasesAsistidas = res.clasesAsistidas;
+      alumno.racha           = res.racha;
+    }
+
+    const clave = claveAsistencia(alumnoId, curso);
+    guardarAsistencia(alumnoId, curso, null);
+    asistenciaHoy[clave] = null;
+
+    actualizarBotonesCard(alumnoId, curso, null, alumno, res);
+    showToast('Registro eliminado');
+
+  } catch (e) {
+    if (btn) { btn.disabled = false; btn.innerHTML = '&#x2715;'; }
+    showToast('Error al desmarcar', true);
+  }
+}
+
+function actualizarBotonesCard(alumnoId, curso, tipo, alumno, res) {
+  const card = document.getElementById(`card-${alumnoId}`);
+  if (!card) return;
+
+  const asistidas   = alumno ? alumno.clasesAsistidas : 0;
+  const proxClase   = asistidas + 1;
+  const cursoEsc    = esc(curso || '');
+
+  // Zona de botones (último elemento del card)
+  const zonaBtn = card.querySelector('.btns-asistencia-grupo') || card.querySelector('.btn-asistencia') || card.querySelector('.btn-falta-marcada');
+  if (!zonaBtn) return;
+
+  let nuevoHTML;
+  if (tipo) {
+    nuevoHTML = `<button class="btn-asistencia ${tipo === 'asistio' ? 'asistido' : 'btn-falta-marcada'}"
+       id="btn-asist-${alumnoId}"
+       onclick="desmarcarAsistencia('${alumnoId}', '${cursoEsc}')">
+       ${tipo === 'asistio'
+         ? '&#x2714; #' + asistidas + ' &#x2715;'
+         : '&#x2718; Falt&#243; &#x2715;'}
+     </button>`;
+  } else {
+    nuevoHTML = `<div class="btns-asistencia-grupo">
+       <button class="btn-asistencia" id="btn-asist-${alumnoId}"
+         onclick="marcarAsistencia('${alumnoId}', '${cursoEsc}', 'marcar')">
+         Clase #${proxClase}
+       </button>
+       <button class="btn-falta" id="btn-falta-${alumnoId}"
+         onclick="marcarAsistencia('${alumnoId}', '${cursoEsc}', 'falta')">
+         &#x2718; Falt&#243;
+       </button>
+     </div>`;
+  }
+
+  zonaBtn.outerHTML = nuevoHTML;
+
+  // Actualizar subtítulo y racha
+  const clasesTxt = document.getElementById(`clases-${alumnoId}`);
+  if (clasesTxt) clasesTxt.innerHTML = `${asistidas}/${alumno ? alumno.clasesContratadas || 0 : 0} &middot; Clase #${proxClase}`;
+
+  const rachaEl = document.getElementById(`racha-${alumnoId}`);
+  if (rachaEl) rachaEl.innerHTML = '&#128293; Racha: ' + (alumno ? alumno.racha || 0 : 0);
 }
 
 // ============================================
