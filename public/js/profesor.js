@@ -483,31 +483,45 @@ function setupFoto() {
 }
 
 // ── FEEDBACK MENSUAL (profesor) ────────────────────────────────────────────
-let feedbackTabInit = false;
+let feedbackBtnInit = false;
 
-function setupFeedbackTab() {
-  if (feedbackTabInit) return;
-  feedbackTabInit = true;
-
-  // Poblar select de alumnos
+async function setupFeedbackTab() {
   const select = document.getElementById('fbAlumnoSelect');
   if (!select) return;
 
-  profAlumnos.forEach(a => {
-    const opt = document.createElement('option');
-    opt.value = a.id;
-    opt.textContent = a.nombre + (a.cursosInscritos && a.cursosInscritos.length ? ' — ' + a.cursosInscritos[0] : '');
-    select.appendChild(opt);
-  });
+  // Registrar boton guardar solo una vez
+  if (!feedbackBtnInit) {
+    feedbackBtnInit = true;
+    const now = new Date();
+    const mesSelect = document.getElementById('fbMesSelect');
+    if (mesSelect) mesSelect.value = String(now.getMonth() + 1);
+    const btn = document.getElementById('btnGuardarFeedback');
+    if (btn) btn.addEventListener('click', guardarFeedback);
+  }
 
-  // Mes actual como default
-  const now = new Date();
-  const mesSelect = document.getElementById('fbMesSelect');
-  if (mesSelect) mesSelect.value = String(now.getMonth() + 1);
+  // Si profAlumnos está vacío, cargar todos los alumnos desde la API
+  let lista = profAlumnos;
+  if (lista.length === 0) {
+    try {
+      const todos = await ApiService.getAlumnos();
+      lista = todos.filter(a => (a.role || 'alumno') === 'alumno');
+      profAlumnos = lista;
+    } catch (e) {
+      lista = [];
+    }
+  }
 
-  // Boton guardar
-  const btn = document.getElementById('btnGuardarFeedback');
-  if (btn) btn.addEventListener('click', guardarFeedback);
+  // Limpiar y repoblar select
+  select.innerHTML = '<option value="">— Selecciona alumno —</option>';
+  lista
+    .slice()
+    .sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''))
+    .forEach(a => {
+      const opt = document.createElement('option');
+      opt.value = a.id;
+      opt.textContent = a.nombre + (a.cursosInscritos && a.cursosInscritos.length ? ' — ' + a.cursosInscritos[0] : '');
+      select.appendChild(opt);
+    });
 }
 
 async function guardarFeedback() {
