@@ -115,6 +115,7 @@ function buildUser(a) {
     fechaIngreso: a.FechaIngreso || '',
     clasesContratadas: a.ClasesContratadas || 0,
     clasesAsistidas: a.ClasesAsistidas || 0,
+    racha: a.Racha || 0,
     activo: a.Activo !== false,
   };
 }

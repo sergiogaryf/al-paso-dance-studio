@@ -29,6 +29,7 @@ module.exports = async function handler(req, res) {
         fechaIngreso: alumno.FechaIngreso || '',
         clasesContratadas: alumno.ClasesContratadas || 0,
         clasesAsistidas: alumno.ClasesAsistidas || 0,
+        racha: alumno.Racha || 0,
         activo: alumno.Activo !== false,
         fotoUrl: alumno.FotoUrl || '',
       });

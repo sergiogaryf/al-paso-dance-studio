@@ -13,6 +13,7 @@ const tables = {
   videos: base('Videos'),
   galeria: base('Galeria'),
   feedbackMensual: base('FeedbackMensual'),
+  asistencias: base('Asistencias'),
 };
 
 function recordToObj(record) {

@@ -165,7 +165,7 @@ async function loadInicio() {
   const meses = calcMeses(currentUser.fechaIngreso);
   document.getElementById('inicioPlan').textContent  = currentUser.plan || '-';
   document.getElementById('inicioMeses').textContent = meses;
-  document.getElementById('inicioRacha').textContent = asistidas;
+  document.getElementById('inicioRacha').textContent = currentUser.racha || asistidas;
 
   await loadProximaClase();
   loadEventosInicio();
@@ -863,7 +863,7 @@ function loadPerfil() {
   const meses    = calcMeses(currentUser.fechaIngreso);
   const asistidas = currentUser.clasesAsistidas || 0;
   document.getElementById('statMeses').textContent    = meses;
-  document.getElementById('statRacha').textContent    = asistidas;
+  document.getElementById('statRacha').textContent    = currentUser.racha || asistidas;
   document.getElementById('statAsistidas').textContent = asistidas;
 
   // Cargar feedback del profesor
