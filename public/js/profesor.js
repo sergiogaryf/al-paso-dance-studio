@@ -117,7 +117,7 @@ async function loadEvaluaciones() {
 }
 
 // ============================================
-// TAB: ALUMNOS — nombre, curso, clases
+// TAB: ALUMNOS — nombre, foto, cursos, clases
 // ============================================
 function renderAlumnosTab() {
   const container = document.getElementById('profAlumnosList');
@@ -127,31 +127,137 @@ function renderAlumnosTab() {
     return;
   }
 
-  // Ordenar por nombre
   const lista = [...profAlumnos].sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''));
 
   container.innerHTML = lista.map(a => {
-    const cursoPrincipal = getCursosAlumno(a)[0] || a.curso || '-';
+    const cursos      = a.cursosInscritos && a.cursosInscritos.length
+      ? a.cursosInscritos
+      : (a.curso ? a.curso.split(',').map(s => s.trim()).filter(Boolean) : []);
     const asistidas   = a.clasesAsistidas || 0;
     const contratadas = a.clasesContratadas || 0;
-    const pct = contratadas > 0 ? Math.round(asistidas / contratadas * 100) : 0;
+    const pct         = contratadas > 0 ? Math.round(asistidas / contratadas * 100) : 0;
+
+    const avatarHTML = a.fotoUrl
+      ? `<div class="avatar" style="flex-shrink:0;padding:0;overflow:hidden">
+           <img src="${esc(a.fotoUrl)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+         </div>`
+      : `<div class="avatar" style="flex-shrink:0">${getInitials(a.nombre)}</div>`;
+
+    const cursosHTML = cursos.length
+      ? cursos.map(c => `<span style="display:inline-block;font-size:0.62rem;padding:0.12rem 0.45rem;border-radius:8px;background:rgba(196,110,60,0.15);border:1px solid rgba(196,110,60,0.35);color:var(--naranja-claro);margin:0.15rem 0.15rem 0 0;white-space:nowrap">${esc(c)}</span>`).join('')
+      : `<span style="font-size:0.75rem;color:var(--blanco-suave)">Sin curso</span>`;
 
     return `
-    <div class="prof-alumno-card">
-      <div class="avatar" style="flex-shrink:0">${getInitials(a.nombre)}</div>
+    <div class="prof-alumno-card" style="cursor:pointer" onclick="abrirPerfilAlumno('${a.id}')">
+      ${avatarHTML}
       <div class="prof-alumno-info" style="flex:1;min-width:0">
         <div class="prof-alumno-nombre">${esc(a.nombre)}</div>
-        <div class="prof-alumno-sub">${esc(cursoPrincipal)}</div>
+        <div style="margin-top:0.3rem;line-height:1.6">${cursosHTML}</div>
       </div>
-      <div style="text-align:right;flex-shrink:0">
+      <div style="text-align:right;flex-shrink:0;margin-left:0.5rem">
         <div style="font-size:0.9rem;font-weight:700;color:var(--blanco);font-family:'Inter',sans-serif">${asistidas}<span style="color:var(--blanco-suave);font-weight:400">/${contratadas}</span></div>
         <div style="font-size:0.7rem;color:var(--blanco-suave)">clases</div>
-        <div style="margin-top:4px;height:3px;width:56px;background:rgba(255,255,255,0.08);border-radius:2px">
+        <div style="margin-top:4px;height:3px;width:48px;background:rgba(255,255,255,0.08);border-radius:2px">
           <div style="height:100%;width:${pct}%;background:var(--gradiente-brand-90);border-radius:2px"></div>
         </div>
       </div>
     </div>`;
   }).join('');
+}
+
+// ---- MODAL PERFIL ALUMNO ----
+function abrirPerfilAlumno(alumnoId) {
+  const a = profAlumnos.find(x => x.id === alumnoId);
+  if (!a) return;
+
+  const cursos      = a.cursosInscritos && a.cursosInscritos.length
+    ? a.cursosInscritos
+    : (a.curso ? a.curso.split(',').map(s => s.trim()).filter(Boolean) : []);
+  const asistidas   = a.clasesAsistidas || 0;
+  const contratadas = a.clasesContratadas || 0;
+  const pct         = contratadas > 0 ? Math.round(asistidas / contratadas * 100) : 0;
+  const racha       = a.racha || 0;
+
+  const avatarHTML = a.fotoUrl
+    ? `<div class="avatar avatar-xl" style="padding:0;overflow:hidden;margin:0 auto 0.8rem">
+         <img src="${esc(a.fotoUrl)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+       </div>`
+    : `<div class="avatar avatar-xl" style="margin:0 auto 0.8rem">${getInitials(a.nombre)}</div>`;
+
+  const overlay = document.createElement('div');
+  overlay.id = 'perfilAlumnoOverlay';
+  overlay.style.cssText = `
+    position:fixed;inset:0;z-index:200;
+    background:rgba(10,5,15,0.97);
+    overflow-y:auto;
+    padding:1.2rem 1rem 6rem;
+  `;
+
+  overlay.innerHTML = `
+    <div style="display:flex;justify-content:flex-end;margin-bottom:0.8rem">
+      <button onclick="cerrarPerfilAlumno()" style="
+        background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);
+        color:var(--blanco);width:36px;height:36px;border-radius:50%;
+        font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center">
+        &#x2715;
+      </button>
+    </div>
+
+    <div style="text-align:center;margin-bottom:1.4rem">
+      ${avatarHTML}
+      <h2 style="margin:0 0 0.4rem;font-size:1.25rem;font-family:'Inter',sans-serif;color:var(--blanco)">${esc(a.nombre)}</h2>
+      <span class="badge badge-gold">Alumno</span>
+    </div>
+
+    <div class="glass-card" style="padding:1rem;margin-bottom:0.8rem">
+      <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--blanco-suave);margin-bottom:0.6rem">Cursos</div>
+      <div style="line-height:1.8">
+        ${cursos.length
+          ? cursos.map(c => `<span class="badge badge-gold" style="display:inline-block;margin:0.15rem">${esc(c)}</span>`).join('')
+          : '<span class="text-muted" style="font-size:0.82rem">Sin cursos asignados</span>'}
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:0.8rem">
+      <div class="glass-card" style="padding:1rem;text-align:center">
+        <div style="font-size:1.5rem;font-weight:800;color:var(--blanco);font-family:'Inter',sans-serif">
+          ${asistidas}<span style="font-size:0.8rem;color:var(--blanco-suave);font-weight:400">/${contratadas}</span>
+        </div>
+        <div style="font-size:0.7rem;color:var(--blanco-suave);margin-top:0.2rem">Clases</div>
+        <div style="margin-top:0.5rem;height:4px;background:rgba(255,255,255,0.08);border-radius:2px">
+          <div style="height:100%;width:${pct}%;background:var(--gradiente-brand-90);border-radius:2px"></div>
+        </div>
+      </div>
+      <div class="glass-card" style="padding:1rem;text-align:center">
+        <div style="font-size:1.5rem;font-weight:800;color:var(--naranja-claro);font-family:'Inter',sans-serif">&#128293; ${racha}</div>
+        <div style="font-size:0.7rem;color:var(--blanco-suave);margin-top:0.2rem">Racha</div>
+      </div>
+    </div>
+
+    ${a.telefono || a.email ? `
+    <div class="glass-card" style="padding:1rem">
+      <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--blanco-suave);margin-bottom:0.6rem">Contacto</div>
+      ${a.telefono ? `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:0.45rem 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+        <span style="font-size:0.78rem;color:var(--blanco-suave)">Teléfono</span>
+        <span style="font-size:0.88rem;color:var(--blanco)">${esc(a.telefono)}</span>
+      </div>` : ''}
+      ${a.email ? `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:0.45rem 0">
+        <span style="font-size:0.78rem;color:var(--blanco-suave)">Email</span>
+        <span style="font-size:0.82rem;color:var(--blanco);word-break:break-all;text-align:right;max-width:65%">${esc(a.email)}</span>
+      </div>` : ''}
+    </div>` : ''}
+  `;
+
+  // Cerrar al tocar el fondo (fuera del contenido)
+  overlay.addEventListener('click', e => { if (e.target === overlay) cerrarPerfilAlumno(); });
+  document.body.appendChild(overlay);
+}
+
+function cerrarPerfilAlumno() {
+  const overlay = document.getElementById('perfilAlumnoOverlay');
+  if (overlay) overlay.remove();
 }
 
 // ============================================
