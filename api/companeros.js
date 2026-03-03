@@ -1,3 +1,7 @@
+/**
+ * GET /api/companeros?curso=XXX          → Compañeros inscritos en un curso
+ * GET /api/companeros?tipo=cumpleanos    → Cumpleaños de todos los alumnos activos
+ */
 const { tables, findAll } = require('./_lib/airtable');
 const { requireAuth } = require('./_lib/auth');
 
@@ -9,13 +13,41 @@ module.exports = async function handler(req, res) {
   const user = requireAuth(req, res);
   if (!user) return;
 
-  const { curso } = req.query;
+  const { tipo, curso } = req.query;
+
+  // ── CUMPLEAÑOS ────────────────────────────────────────────────────────
+  if (tipo === 'cumpleanos') {
+    try {
+      const alumnos = await findAll(
+        tables.alumnos,
+        `AND({Activo} = 1, {Role} = 'alumno', {FechaNacimiento} != '')`
+      );
+
+      const cumpleanos = alumnos
+        .filter(a => a.FechaNacimiento)
+        .map(a => {
+          const partes = String(a.FechaNacimiento).split('-');
+          return {
+            nombre: a.Nombre || '',
+            mes:    parseInt(partes[1], 10),
+            dia:    parseInt(partes[2], 10),
+          };
+        })
+        .filter(c => c.mes && c.dia);
+
+      return res.status(200).json(cumpleanos);
+    } catch (error) {
+      console.error('Error en /api/companeros?tipo=cumpleanos:', error);
+      return res.status(500).json({ error: 'Error al obtener cumpleanos' });
+    }
+  }
+
+  // ── COMPAÑEROS POR CURSO ──────────────────────────────────────────────
   if (!curso) {
     return res.status(400).json({ error: 'curso es requerido' });
   }
 
   try {
-    // Buscar alumnos activos inscritos en ese curso
     const cursoSafe = curso.replace(/'/g, "\\'");
     const alumnos = await findAll(
       tables.alumnos,
@@ -25,7 +57,6 @@ module.exports = async function handler(req, res) {
     const result = alumnos
       .filter(a => a.id !== user.id)
       .map(a => {
-        // Extraer solo dia y mes del cumpleaños (sin el año, por privacidad)
         let cumpleDia = null, cumpleMes = null;
         if (a.FechaNacimiento) {
           const partes = String(a.FechaNacimiento).split('-');
@@ -33,10 +64,10 @@ module.exports = async function handler(req, res) {
           cumpleMes = parseInt(partes[1], 10) || null;
         }
         return {
-          id:         a.id,
-          nombre:     a.Nombre   || '',
-          genero:     a.Genero   || '',
-          fotoUrl:    a.FotoUrl  || '',
+          id:        a.id,
+          nombre:    a.Nombre  || '',
+          genero:    a.Genero  || '',
+          fotoUrl:   a.FotoUrl || '',
           cumpleDia,
           cumpleMes,
         };

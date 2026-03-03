@@ -1,14 +1,36 @@
 /**
- * POST /api/login
- * Flujo 1 — PIN alumno:       { pin: "1234" }
- * Flujo 2 — PIN con colision: { pin: "1234", nombre: "Maria" }
- * Flujo 3 — Email+password:   { email, password }
+ * POST /api/login               → Email+password o PIN
+ * GET  /api/login?token=XXXX    → Acceso por link directo (absorbe acceso.js)
  */
 const bcrypt = require('bcryptjs');
 const { tables, findAll } = require('./_lib/airtable');
 const { signToken } = require('./_lib/auth');
 
 module.exports = async function handler(req, res) {
+
+  // ── GET: acceso por link token ─────────────────────────────────────────
+  if (req.method === 'GET') {
+    const { token } = req.query;
+    if (!token) return res.status(400).json({ error: 'Token requerido' });
+
+    try {
+      const alumnos = await findAll(tables.alumnos, `{LinkToken} = '${token}'`);
+      if (alumnos.length === 0) {
+        return res.status(401).json({ error: 'Link invalido o expirado' });
+      }
+      const alumno = alumnos[0];
+      if (!alumno.Activo) {
+        return res.status(403).json({ error: 'Cuenta deshabilitada. Contacta al instructor.' });
+      }
+      const jwt = signToken({ id: alumno.id, nombre: alumno.Nombre, role: alumno.Role || 'alumno' });
+      return res.status(200).json({ token: jwt, user: buildUser(alumno) });
+    } catch (error) {
+      console.error('Error en acceso por link:', error);
+      return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  }
+
+  // ── POST: login normal ─────────────────────────────────────────────────
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Metodo no permitido' });
   }
@@ -29,9 +51,7 @@ module.exports = async function handler(req, res) {
         return res.status(401).json({ error: 'PIN incorrecto. Son los ultimos 4 digitos de tu telefono.' });
       }
       if (alumnos.length > 1 && !nombre) {
-        return res.status(200).json({
-          opciones: alumnos.map(a => ({ id: a.id, nombre: a.Nombre }))
-        });
+        return res.status(200).json({ opciones: alumnos.map(a => ({ id: a.id, nombre: a.Nombre })) });
       }
       let alumno = alumnos[0];
       if (nombre && alumnos.length > 1) {
@@ -54,17 +74,14 @@ module.exports = async function handler(req, res) {
 
   try {
     const alumnos = await findAll(tables.alumnos, `{Email} = '${email.replace(/'/g, "\\'")}'`);
-    if (alumnos.length === 0) {
-      return res.status(401).json({ error: 'Credenciales incorrectas' });
-    }
+    if (alumnos.length === 0) return res.status(401).json({ error: 'Credenciales incorrectas' });
+
     const alumno = alumnos[0];
     if (!alumno.Password) {
       return res.status(401).json({ error: 'Cuenta sin contrasena. Contacta al administrador.' });
     }
     const valid = await bcrypt.compare(password, alumno.Password);
-    if (!valid) {
-      return res.status(401).json({ error: 'Credenciales incorrectas' });
-    }
+    if (!valid) return res.status(401).json({ error: 'Credenciales incorrectas' });
     if (alumno.Activo === false) {
       return res.status(403).json({ error: 'Tu cuenta esta deshabilitada. Contacta al administrador.' });
     }

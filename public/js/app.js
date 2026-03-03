@@ -342,7 +342,7 @@ async function loadCalendario() {
   // Buscar cumpleaños del mes actual
   var cumpleanerosMes = [];
   try {
-    var todos = await ApiService._fetch('/api/cumpleanos');
+    var todos = await ApiService._fetch('/api/companeros?tipo=cumpleanos');
     cumpleanerosMes = todos.filter(function(c) {
       return c.mes === (month + 1);
     });
@@ -638,7 +638,7 @@ async function loadVideos() {
   gridContainer.innerHTML = '<div class="empty-state"><div class="spinner" style="margin:1rem auto"></div></div>';
 
   try {
-    videosData = await ApiService._fetch('/api/videos');
+    videosData = await ApiService._fetch('/api/contenido?tipo=videos');
   } catch (e) {
     gridContainer.innerHTML = '<div class="empty-state"><p>Error al cargar videos</p></div>';
     return;
@@ -745,7 +745,7 @@ async function loadGaleria() {
   grid.innerHTML = '<div class="empty-state"><div class="spinner" style="margin:1rem auto"></div></div>';
 
   try {
-    galeriaData = await ApiService._fetch('/api/galeria');
+    galeriaData = await ApiService._fetch('/api/contenido?tipo=galeria');
   } catch (e) {
     grid.innerHTML = '<div class="empty-state"><p>Error al cargar galeria</p></div>';
     return;
@@ -775,7 +775,7 @@ function renderGaleriaGrid(tipo) {
 
   const items = tipo === 'todos'
     ? galeriaData
-    : galeriaData.filter(g => g.tipo === tipo);
+    : galeriaData.filter(g => g.tipo === tipo); // tipo aquí es filtro local (foto|video)
 
   if (items.length === 0) {
     grid.innerHTML = '<div class="empty-state"><p>Sin contenido disponible</p></div>';
