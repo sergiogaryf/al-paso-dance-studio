@@ -6,8 +6,12 @@
 const CLOUDINARY_CLOUD_NAME    = 'debpk4syz';
 const CLOUDINARY_UPLOAD_PRESET = 'al-paso-fotos'; // Crear en Cloudinary > Settings > Upload Presets (unsigned)
 
-// ── PLAYLIST URL ───────────────────────────────────────────────────────────
-const PLAYLIST_URL = ''; // Pegar aqui el link de YouTube Music cuando lo tengas
+// ── PLAYLISTS YouTube Music ────────────────────────────────────────────────
+const PLAYLISTS = [
+  { nombre: 'Bachata',  emoji: '🌹', url: 'https://music.youtube.com/playlist?list=PLe5MK44n1TB9CZfIr9bcA1WqZ0G6uS0QE&si=87GvcOYKs1TzwvWz' },
+  { nombre: 'Casino',   emoji: '🎰', url: 'https://music.youtube.com/playlist?list=PLe5MK44n1TB_8_b_mLdOI4PxrIkqqtZOo&si=0pfXxTawhupTJAAp' },
+  { nombre: 'Mambo',    emoji: '🎺', url: 'https://music.youtube.com/playlist?list=PLe5MK44n1TB9gMVTwUctrdCAwIfYQGra-&si=ber3iHdPFOAX54Om' },
+];
 
 // ── CURSOS DE LA ACADEMIA ──────────────────────────────────────────────────
 const CURSOS_ACADEMIA = [
@@ -125,15 +129,16 @@ function setupLogout() {
   });
 }
 
-// ── PLAYLIST ──────────────────────────────────────────────────────────────
+// ── PLAYLISTS ─────────────────────────────────────────────────────────────
 function setupPlaylist() {
   const card = document.getElementById('playlistCard');
-  const link = document.getElementById('playlistLink');
-  if (!card || !link) return;
-  if (PLAYLIST_URL) {
-    link.href = PLAYLIST_URL;
-    card.style.display = '';
-  }
+  if (!card) return;
+  card.style.display = '';
+  document.getElementById('playlistBtns').innerHTML = PLAYLISTS.map(p => `
+    <a href="${p.url}" target="_blank" rel="noopener" class="btn-playlist">
+      <span>${p.emoji}</span> ${p.nombre}
+    </a>
+  `).join('');
 }
 
 // ============================================
