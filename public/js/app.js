@@ -601,7 +601,7 @@ async function loadCompaneros() {
                   <div class="companero-item${esCumple ? ' companero-cumple' : ''}">
                     <div class="avatar" style="${comp.fotoUrl ? 'padding:0;overflow:hidden;' : ''}">
                       ${comp.fotoUrl
-                        ? `<img src="${comp.fotoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`
+                        ? `<img src="${avatarUrl(comp.fotoUrl, 80)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`
                         : getInitials(comp.nombre)}
                     </div>
                     <div class="companero-info">
@@ -839,7 +839,7 @@ function loadPerfil() {
 
   const avatarEl = document.getElementById('perfilAvatar');
   if (currentUser.fotoUrl) {
-    avatarEl.innerHTML = `<img src="${currentUser.fotoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
+    avatarEl.innerHTML = `<img src="${avatarUrl(currentUser.fotoUrl, 300)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
     avatarEl.style.padding  = '0';
     avatarEl.style.overflow = 'hidden';
   } else {
@@ -972,7 +972,7 @@ function setupFotoUpload() {
               currentUser.fotoUrl = url;
 
               const avatarEl = document.getElementById('perfilAvatar');
-              avatarEl.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
+              avatarEl.innerHTML = `<img src="${avatarUrl(url, 300)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
               avatarEl.style.padding  = '0';
               avatarEl.style.overflow = 'hidden';
 

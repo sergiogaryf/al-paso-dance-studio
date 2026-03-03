@@ -139,7 +139,7 @@ function renderAlumnosTab() {
 
     const avatarHTML = a.fotoUrl
       ? `<div class="avatar" style="flex-shrink:0;padding:0;overflow:hidden">
-           <img src="${esc(a.fotoUrl)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+           <img src="${avatarUrl(a.fotoUrl, 80)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
          </div>`
       : `<div class="avatar" style="flex-shrink:0">${getInitials(a.nombre)}</div>`;
 
@@ -180,7 +180,7 @@ function abrirPerfilAlumno(alumnoId) {
 
   const avatarHTML = a.fotoUrl
     ? `<div class="avatar avatar-xl" style="padding:0;overflow:hidden;margin:0 auto 0.8rem">
-         <img src="${esc(a.fotoUrl)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+         <img src="${avatarUrl(a.fotoUrl, 300)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
        </div>`
     : `<div class="avatar avatar-xl" style="margin:0 auto 0.8rem">${getInitials(a.nombre)}</div>`;
 
@@ -651,7 +651,7 @@ function renderPerfil() {
   if (!profUser) return;
   const avatarEl = document.getElementById('profAvatar');
   if (profUser.fotoUrl) {
-    avatarEl.innerHTML = `<img src="${profUser.fotoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    avatarEl.innerHTML = `<img src="${avatarUrl(profUser.fotoUrl, 300)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
     avatarEl.style.cssText += 'padding:0;overflow:hidden';
   } else {
     avatarEl.textContent = getInitials(profUser.nombre);
@@ -828,7 +828,7 @@ function setupFoto() {
               await ApiService.updateUser(profUser.id, { fotoUrl: url });
               profUser.fotoUrl = url;
               const av = document.getElementById('profAvatar');
-              av.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+              av.innerHTML = `<img src="${avatarUrl(url, 300)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
               av.style.cssText += 'padding:0;overflow:hidden';
               showToast('Foto actualizada');
               widget.close();

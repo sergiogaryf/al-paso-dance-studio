@@ -286,3 +286,21 @@ const ApiService = {
 
 // Alias para compatibilidad con codigo existente que usa FirestoreService
 const FirestoreService = ApiService;
+
+/**
+ * Transforma una URL de Cloudinary para servir un avatar cuadrado optimizado.
+ * Si la URL no es de Cloudinary (p.ej. base64 del fallback), la devuelve intacta.
+ *
+ * @param {string} url   - URL original de Cloudinary
+ * @param {number} size  - Lado del cuadrado en px (default 200)
+ */
+function avatarUrl(url, size) {
+  if (!url) return url;
+  size = size || 200;
+  if (!url.includes('res.cloudinary.com')) return url;
+  // Inserta la transformación justo después de /upload/
+  return url.replace(
+    '/upload/',
+    '/upload/c_fill,w_' + size + ',h_' + size + ',g_face,q_auto,f_auto/'
+  );
+}
