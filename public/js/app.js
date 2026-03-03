@@ -4,7 +4,7 @@
 
 // ── CLOUDINARY CONFIG ──────────────────────────────────────────────────────
 const CLOUDINARY_CLOUD_NAME    = 'debpk4syz';
-const CLOUDINARY_UPLOAD_PRESET = 'al-paso-fotos'; // Crear en Cloudinary > Settings > Upload Presets (unsigned)
+const CLOUDINARY_UPLOAD_PRESET = 'fotos al paso';
 
 // ── PLAYLISTS YouTube Music ────────────────────────────────────────────────
 const PLAYLISTS = [

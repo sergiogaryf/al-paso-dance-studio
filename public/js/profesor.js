@@ -780,7 +780,7 @@ async function renderCalendarioProfesor() {
 // ============================================
 // ── CLOUDINARY CONFIG (profesor) ──────────────────────────────────────────
 const PROF_CLOUDINARY_CLOUD_NAME    = 'debpk4syz';
-const PROF_CLOUDINARY_UPLOAD_PRESET = 'al-paso-fotos';
+const PROF_CLOUDINARY_UPLOAD_PRESET = 'fotos al paso';
 
 function setupFoto() {
   const btn = document.getElementById('profFotoBtn');
