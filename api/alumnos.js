@@ -33,6 +33,7 @@ function buildAlumno(a) {
     fotoUrl: a.FotoUrl || '',
     clasesContratadas: a.ClasesContratadas || 0,
     clasesAsistidas: a.ClasesAsistidas || 0,
+    racha: a.Racha || 0,
     activo: a.Activo !== false,
     cursosInscritos: parseCursos(a),
   };
