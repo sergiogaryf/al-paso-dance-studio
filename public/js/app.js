@@ -922,7 +922,7 @@ async function loadFeedback() {
 }
 
 // ============================================
-// FOTO PERFIL — Cloudinary Upload Widget
+// FOTO PERFIL — selector + compresión + subida directa
 // ============================================
 function setupFotoUpload() {
   const btn = document.getElementById('fotoUploadBtn');
@@ -930,87 +930,34 @@ function setupFotoUpload() {
 
   btn.addEventListener('click', (e) => {
     e.preventDefault();
-
-    // Verificar si Cloudinary está disponible
-    if (typeof cloudinary !== 'undefined') {
-      const widget = cloudinary.createUploadWidget(
-        {
-          cloudName:            CLOUDINARY_CLOUD_NAME,
-          uploadPreset:         CLOUDINARY_UPLOAD_PRESET,
-          sources:              ['local', 'camera'],
-          multiple:             false,
-          cropping:             true,
-          croppingAspectRatio:  1,
-          croppingShowDimensions: true,
-          maxFileSize:          5000000,
-          folder:               'al-paso-perfiles',
-          clientAllowedFormats: ['jpg', 'jpeg', 'png', 'webp'],
-          styles: {
-            palette: {
-              window:         '#140A18',
-              windowBorder:   '#430440',
-              tabIcon:        '#D4AF37',
-              menuIcons:      '#D4AF37',
-              textDark:       '#FFFFFF',
-              textLight:      '#FFFFFF',
-              link:           '#D4AF37',
-              action:         '#430440',
-              inactiveTabIcon:'#8A8A8A',
-              error:          '#FF4444',
-              inProgress:     '#430440',
-              complete:       '#33AB2E',
-              sourceBg:       '#1F1228',
-            },
-          },
-        },
-        async (error, result) => {
-          if (error) { console.error('Cloudinary error:', error); return; }
-          if (result.event === 'success') {
-            const url = result.info.secure_url;
-            try {
-              await ApiService.updateUser(currentUser.uid, { fotoUrl: url });
-              currentUser.fotoUrl = url;
-
-              const avatarEl = document.getElementById('perfilAvatar');
-              avatarEl.innerHTML = `<img src="${avatarUrl(url, 300)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
-              avatarEl.style.padding  = '0';
-              avatarEl.style.overflow = 'hidden';
-
-              widget.close();
-            } catch (err) {
-              console.error('Error guardando foto:', err);
-            }
-          }
-        }
-      );
-      widget.open();
-    } else {
-      // Fallback: file input si Cloudinary no carga
-      console.warn('Cloudinary no disponible, usando file input');
-      const input = document.createElement('input');
-      input.type   = 'file';
-      input.accept = 'image/*';
-      input.onchange = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const origContent = btn.textContent;
-        btn.textContent = '...';
-        try {
-          const base64 = await comprimirFoto(file);
-          await ApiService.updateUser(currentUser.uid, { fotoUrl: base64 });
-          currentUser.fotoUrl = base64;
-          const avatarEl = document.getElementById('perfilAvatar');
-          avatarEl.innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
-          avatarEl.style.padding  = '0';
-          avatarEl.style.overflow = 'hidden';
-        } catch (err) {
-          console.error('Error subiendo foto:', err);
-        } finally {
-          btn.textContent = origContent;
-        }
-      };
-      input.click();
-    }
+    const input = document.createElement('input');
+    input.type   = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (ev) => {
+      const file = ev.target.files[0];
+      if (!file) return;
+      const orig = btn.innerHTML;
+      btn.innerHTML = '⏳';
+      btn.disabled  = true;
+      try {
+        const url = await subirFotoCloudinary(
+          file, CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET, 'al-paso-perfiles'
+        );
+        await ApiService.updateUser(currentUser.uid, { fotoUrl: url });
+        currentUser.fotoUrl = url;
+        const avatarEl = document.getElementById('perfilAvatar');
+        avatarEl.innerHTML = `<img src="${avatarUrl(url, 300)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
+        avatarEl.style.padding  = '0';
+        avatarEl.style.overflow = 'hidden';
+      } catch (err) {
+        console.error('Error subiendo foto:', err);
+        alert('No se pudo subir la foto. Intenta de nuevo.');
+      } finally {
+        btn.innerHTML = orig;
+        btn.disabled  = false;
+      }
+    };
+    input.click();
   });
 }
 

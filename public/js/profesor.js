@@ -788,78 +788,34 @@ function setupFoto() {
 
   btn.addEventListener('click', (e) => {
     e.preventDefault();
-
-    if (typeof cloudinary !== 'undefined') {
-      const widget = cloudinary.createUploadWidget(
-        {
-          cloudName:             PROF_CLOUDINARY_CLOUD_NAME,
-          uploadPreset:          PROF_CLOUDINARY_UPLOAD_PRESET,
-          sources:               ['local', 'camera'],
-          multiple:              false,
-          cropping:              true,
-          croppingAspectRatio:   1,
-          croppingShowDimensions: true,
-          maxFileSize:           5000000,
-          folder:                'al-paso-perfiles',
-          clientAllowedFormats:  ['jpg', 'jpeg', 'png', 'webp'],
-          styles: {
-            palette: {
-              window:          '#140A18',
-              windowBorder:    '#430440',
-              tabIcon:         '#D4AF37',
-              menuIcons:       '#D4AF37',
-              textDark:        '#FFFFFF',
-              textLight:       '#FFFFFF',
-              link:            '#D4AF37',
-              action:          '#430440',
-              inactiveTabIcon: '#8A8A8A',
-              error:           '#FF4444',
-              inProgress:      '#430440',
-              complete:        '#33AB2E',
-              sourceBg:        '#1F1228',
-            },
-          },
-        },
-        async (error, result) => {
-          if (error) { console.error('Cloudinary error:', error); return; }
-          if (result.event === 'success') {
-            const url = result.info.secure_url;
-            try {
-              await ApiService.updateUser(profUser.id, { fotoUrl: url });
-              profUser.fotoUrl = url;
-              const av = document.getElementById('profAvatar');
-              av.innerHTML = `<img src="${avatarUrl(url, 300)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-              av.style.cssText += 'padding:0;overflow:hidden';
-              showToast('Foto actualizada');
-              widget.close();
-            } catch {
-              showToast('Error al guardar foto', true);
-            }
-          }
-        }
-      );
-      widget.open();
-    } else {
-      // Fallback file input
-      const input = document.createElement('input');
-      input.type = 'file'; input.accept = 'image/*';
-      input.onchange = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const orig = btn.textContent; btn.textContent = '...';
-        try {
-          const base64 = await comprimirFoto(file);
-          await ApiService.updateUser(profUser.id, { fotoUrl: base64 });
-          profUser.fotoUrl = base64;
-          const av = document.getElementById('profAvatar');
-          av.innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-          av.style.cssText += 'padding:0;overflow:hidden';
-          showToast('Foto actualizada');
-        } catch { showToast('Error al subir foto', true); }
-        finally { btn.textContent = orig; }
-      };
-      input.click();
-    }
+    const input = document.createElement('input');
+    input.type   = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (ev) => {
+      const file = ev.target.files[0];
+      if (!file) return;
+      const orig = btn.innerHTML;
+      btn.innerHTML = '⏳';
+      btn.disabled  = true;
+      try {
+        const url = await subirFotoCloudinary(
+          file, PROF_CLOUDINARY_CLOUD_NAME, PROF_CLOUDINARY_UPLOAD_PRESET, 'al-paso-perfiles'
+        );
+        await ApiService.updateUser(profUser.id, { fotoUrl: url });
+        profUser.fotoUrl = url;
+        const av = document.getElementById('profAvatar');
+        av.innerHTML = `<img src="${avatarUrl(url, 300)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+        av.style.cssText += 'padding:0;overflow:hidden';
+        showToast('Foto actualizada');
+      } catch (err) {
+        console.error('Error subiendo foto:', err);
+        showToast('Error al subir foto', true);
+      } finally {
+        btn.innerHTML = orig;
+        btn.disabled  = false;
+      }
+    };
+    input.click();
   });
 }
 
