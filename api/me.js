@@ -67,7 +67,6 @@ module.exports = async function handler(req, res) {
       const params = new URLSearchParams();
       params.append('file', imageData);
       params.append('upload_preset', 'al-paso-fotos');
-      params.append('folder', 'al-paso-perfiles');
 
       const response = await fetch(
         'https://api.cloudinary.com/v1_1/debpk4syz/image/upload',
