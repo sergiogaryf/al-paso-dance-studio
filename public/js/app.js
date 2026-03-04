@@ -918,7 +918,7 @@ async function loadFeedback() {
 }
 
 // ============================================
-// FOTO PERFIL — selector + compresión base64 → Airtable
+// FOTO PERFIL — recortador + subida via servidor
 // ============================================
 function setupFotoUpload() {
   const btn = document.getElementById('fotoUploadBtn');
@@ -932,20 +932,30 @@ function setupFotoUpload() {
     input.onchange = async (ev) => {
       const file = ev.target.files[0];
       if (!file) return;
+      let base64;
+      try {
+        base64 = await abrirRecortador(file);
+      } catch (err) {
+        if (err.message !== 'cancelado') console.error(err);
+        return;
+      }
       const orig = btn.innerHTML;
       btn.innerHTML = '⏳';
       btn.disabled  = true;
       try {
-        const base64 = await comprimirFoto(file);
-        await ApiService.updateUser(currentUser.uid, { fotoUrl: base64 });
-        currentUser.fotoUrl = base64;
+        const res = await ApiService._fetch('/api/upload-foto', {
+          method: 'POST',
+          body: JSON.stringify({ imageData: base64 }),
+        });
+        await ApiService.updateUser(currentUser.uid, { fotoUrl: res.url });
+        currentUser.fotoUrl = res.url;
         const avatarEl = document.getElementById('perfilAvatar');
-        avatarEl.innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
+        avatarEl.innerHTML = `<img src="${avatarUrl(res.url, 300)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
         avatarEl.style.padding  = '0';
         avatarEl.style.overflow = 'hidden';
       } catch (err) {
-        console.error('Error subiendo foto:', err);
-        alert('Error al subir foto: ' + (err.message || 'Intenta de nuevo.'));
+        console.error('Error guardando foto:', err);
+        alert('Error al guardar foto: ' + (err.message || 'Intenta de nuevo.'));
       } finally {
         btn.innerHTML = orig;
         btn.disabled  = false;

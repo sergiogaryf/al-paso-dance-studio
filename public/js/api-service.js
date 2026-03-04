@@ -298,10 +298,131 @@ function avatarUrl(url, size) {
   if (!url) return url;
   size = size || 200;
   if (!url.includes('res.cloudinary.com')) return url;
-  // Inserta la transformación justo después de /upload/
   return url.replace(
     '/upload/',
     '/upload/c_fill,w_' + size + ',h_' + size + ',g_face,q_auto,f_auto/'
   );
+}
+
+/**
+ * Abre un recortador táctil (Cropper.js) sobre la foto seleccionada.
+ * El usuario arrastra la imagen para encuadrar, luego confirma.
+ * Retorna una Promise<string> con la imagen recortada en base64 JPEG.
+ */
+function abrirRecortador(file) {
+  return new Promise(function(resolve, reject) {
+
+    // ── Cargar CSS de Cropper.js una sola vez ──────────────────────────────
+    if (!document.getElementById('_cropperCss')) {
+      var link = document.createElement('link');
+      link.id  = '_cropperCss';
+      link.rel = 'stylesheet';
+      link.href = 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css';
+      document.head.appendChild(link);
+    }
+
+    // ── Modal fullscreen ───────────────────────────────────────────────────
+    var overlay = document.createElement('div');
+    overlay.style.cssText = [
+      'position:fixed;inset:0;z-index:9999;background:#000;',
+      'display:flex;flex-direction:column;'
+    ].join('');
+
+    var hint = document.createElement('p');
+    hint.textContent = 'Arrastra para encuadrar · Pellizca para hacer zoom';
+    hint.style.cssText = [
+      'margin:0;padding:0.6rem 1rem;text-align:center;',
+      'font-size:0.78rem;color:#aaa;background:#0a0010;flex-shrink:0;'
+    ].join('');
+
+    var cropWrap = document.createElement('div');
+    cropWrap.style.cssText = 'flex:1;overflow:hidden;position:relative;';
+
+    var img = document.createElement('img');
+    img.style.cssText = 'display:block;max-width:100%;';
+    cropWrap.appendChild(img);
+
+    var actions = document.createElement('div');
+    actions.style.cssText = [
+      'display:flex;gap:0.8rem;padding:1rem 1rem calc(1rem + env(safe-area-inset-bottom));',
+      'background:#140A18;flex-shrink:0;'
+    ].join('');
+
+    var btnCancelar = document.createElement('button');
+    btnCancelar.textContent = 'Cancelar';
+    btnCancelar.style.cssText = [
+      'flex:1;padding:0.85rem;background:transparent;',
+      'border:1px solid #430440;color:#fff;border-radius:10px;font-size:1rem;'
+    ].join('');
+
+    var btnUsar = document.createElement('button');
+    btnUsar.textContent = 'Usar esta foto';
+    btnUsar.style.cssText = [
+      'flex:2;padding:0.85rem;background:#430440;border:none;',
+      'color:#D4AF37;border-radius:10px;font-size:1rem;font-weight:700;'
+    ].join('');
+
+    actions.appendChild(btnCancelar);
+    actions.appendChild(btnUsar);
+    overlay.appendChild(hint);
+    overlay.appendChild(cropWrap);
+    overlay.appendChild(actions);
+    document.body.appendChild(overlay);
+
+    // ── Leer archivo y arrancar Cropper ────────────────────────────────────
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      img.src = e.target.result;
+
+      function iniciarCropper() {
+        var cropper = new Cropper(img, {
+          aspectRatio:        1,
+          viewMode:           0,
+          dragMode:           'move',
+          autoCropArea:       0.85,
+          guides:             false,
+          center:             true,
+          highlight:          true,
+          cropBoxMovable:     false,
+          cropBoxResizable:   false,
+          toggleDragModeOnDblclick: false,
+        });
+
+        btnCancelar.addEventListener('click', function() {
+          cropper.destroy();
+          document.body.removeChild(overlay);
+          reject(new Error('cancelado'));
+        });
+
+        btnUsar.addEventListener('click', function() {
+          btnUsar.textContent = '⏳';
+          btnUsar.disabled = true;
+          var canvas = cropper.getCroppedCanvas({ width: 400, height: 400 });
+          var base64 = canvas.toDataURL('image/jpeg', 0.85);
+          cropper.destroy();
+          document.body.removeChild(overlay);
+          resolve(base64);
+        });
+      }
+
+      if (window.Cropper) {
+        iniciarCropper();
+      } else {
+        var script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js';
+        script.onload = iniciarCropper;
+        script.onerror = function() {
+          document.body.removeChild(overlay);
+          reject(new Error('No se pudo cargar el recortador'));
+        };
+        document.head.appendChild(script);
+      }
+    };
+    reader.onerror = function() {
+      document.body.removeChild(overlay);
+      reject(new Error('Error al leer la imagen'));
+    };
+    reader.readAsDataURL(file);
+  });
 }
 

@@ -790,20 +790,30 @@ function setupFoto() {
     input.onchange = async (ev) => {
       const file = ev.target.files[0];
       if (!file) return;
+      let base64;
+      try {
+        base64 = await abrirRecortador(file);
+      } catch (err) {
+        if (err.message !== 'cancelado') console.error(err);
+        return;
+      }
       const orig = btn.innerHTML;
       btn.innerHTML = '⏳';
       btn.disabled  = true;
       try {
-        const base64 = await comprimirFoto(file);
-        await ApiService.updateUser(profUser.id, { fotoUrl: base64 });
-        profUser.fotoUrl = base64;
+        const res = await ApiService._fetch('/api/upload-foto', {
+          method: 'POST',
+          body: JSON.stringify({ imageData: base64 }),
+        });
+        await ApiService.updateUser(profUser.id, { fotoUrl: res.url });
+        profUser.fotoUrl = res.url;
         const av = document.getElementById('profAvatar');
-        av.innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+        av.innerHTML = `<img src="${avatarUrl(res.url, 300)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
         av.style.cssText += 'padding:0;overflow:hidden';
         showToast('Foto actualizada');
       } catch (err) {
-        console.error('Error subiendo foto:', err);
-        showToast(err.message || 'Error al subir foto', true);
+        console.error('Error guardando foto:', err);
+        showToast(err.message || 'Error al guardar foto', true);
       } finally {
         btn.innerHTML = orig;
         btn.disabled  = false;
