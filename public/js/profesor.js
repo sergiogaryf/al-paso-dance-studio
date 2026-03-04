@@ -380,7 +380,11 @@ function renderAlumnosCurso() {
 
       return `
       <div class="prof-alumno-card" id="card-${a.id}">
-        <div class="avatar" style="flex-shrink:0">${getInitials(a.nombre)}</div>
+        <div class="avatar" style="flex-shrink:0;${a.fotoUrl ? 'padding:0;overflow:hidden' : ''}">
+          ${a.fotoUrl
+            ? `<img src="${avatarUrl(a.fotoUrl, 80)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
+            : getInitials(a.nombre)}
+        </div>
         <div class="prof-alumno-info" style="flex:1;min-width:0">
           <div class="prof-alumno-nombre">${esc(a.nombre)}</div>
           <div class="prof-alumno-sub" id="clases-${a.id}">${asistidas}/${contratadas} &middot; Clase #${proxClase}</div>
