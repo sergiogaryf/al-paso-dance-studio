@@ -20,7 +20,7 @@ module.exports = async function handler(req, res) {
   // ── VIDEOS DE CLASES ───────────────────────────────────────────────────
   if (tipo === 'videos') {
     try {
-      let filter = '{Activo} = 1';
+      let filter = '{Activo} = TRUE()';
       if (curso) {
         const cursoSafe = curso.replace(/'/g, "\\'");
         filter = `AND(${filter}, FIND('${cursoSafe}', {Curso}))`;
@@ -50,7 +50,7 @@ module.exports = async function handler(req, res) {
   // ── GALERIA DE FIESTAS ─────────────────────────────────────────────────
   if (tipo === 'galeria') {
     try {
-      let filter = '{Activo} = 1';
+      let filter = '{Activo} = TRUE()';
       if (subtipo) filter = `AND(${filter}, {Tipo} = '${subtipo}')`;
 
       const items = await findAll(tables.galeria, filter);
@@ -58,7 +58,7 @@ module.exports = async function handler(req, res) {
         items.map(g => ({
           id:           g.id,
           titulo:       g.Titulo       || '',
-          tipo:         g.Tipo         || 'foto',
+          tipo:         (g.Tipo        || 'foto').toLowerCase(),
           url:          g.Url          || '',
           thumbnailUrl: g.ThumbnailUrl || '',
           urlDescarga:  g.UrlDescarga  || g.Url || '',

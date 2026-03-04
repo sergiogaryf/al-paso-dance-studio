@@ -654,8 +654,13 @@ async function loadVideos() {
     ...CURSOS_ACADEMIA.filter(c => !cursosConVideos.includes(c) && !cursosAlumno.includes(c)),
   ].filter((c, i, arr) => arr.indexOf(c) === i); // unique
 
-  // Render pills de cursos
-  pillsContainer.innerHTML = CURSOS_ACADEMIA.map(curso => {
+  // Render pills: primero cursos con videos (aunque no estén en CURSOS_ACADEMIA), luego el resto
+  const cursosParaPills = [
+    ...cursosConVideos,
+    ...CURSOS_ACADEMIA.filter(c => !cursosConVideos.includes(c)),
+  ].filter((c, i, arr) => arr.indexOf(c) === i);
+
+  pillsContainer.innerHTML = cursosParaPills.map(curso => {
     const tieneVideos  = cursosConVideos.includes(curso);
     const esDelAlumno  = cursosAlumno.includes(curso);
     return `<button class="videos-pill${esDelAlumno ? ' mi-curso' : ''}" data-curso="${sanitize(curso)}"
@@ -666,7 +671,7 @@ async function loadVideos() {
 
   // Activar primer curso con videos (o el del alumno)
   const primerCurso = cursosAlumno.find(c => cursosConVideos.includes(c)) ||
-                      cursosConVideos[0] || CURSOS_ACADEMIA[0];
+                      cursosConVideos[0] || cursosParaPills[0];
 
   pillsContainer.querySelectorAll('.videos-pill').forEach(btn => {
     btn.addEventListener('click', () => {
