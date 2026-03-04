@@ -2,10 +2,6 @@
    AL PASO DANCE STUDIO - PWA Alumno JS
    ============================================ */
 
-// ── CLOUDINARY CONFIG ──────────────────────────────────────────────────────
-const CLOUDINARY_CLOUD_NAME    = 'debpk4syz';
-const CLOUDINARY_UPLOAD_PRESET = 'al-paso-fotos';
-
 // ── PLAYLISTS YouTube Music ────────────────────────────────────────────────
 const PLAYLISTS = [
   { nombre: 'Bachata',  emoji: '🌹', url: 'https://music.youtube.com/playlist?list=PLe5MK44n1TB9CZfIr9bcA1WqZ0G6uS0QE&si=87GvcOYKs1TzwvWz' },
@@ -922,7 +918,7 @@ async function loadFeedback() {
 }
 
 // ============================================
-// FOTO PERFIL — selector + compresión + subida directa
+// FOTO PERFIL — selector + compresión base64 → Airtable
 // ============================================
 function setupFotoUpload() {
   const btn = document.getElementById('fotoUploadBtn');
@@ -940,13 +936,11 @@ function setupFotoUpload() {
       btn.innerHTML = '⏳';
       btn.disabled  = true;
       try {
-        const url = await subirFotoCloudinary(
-          file, CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET, 'al-paso-perfiles'
-        );
-        await ApiService.updateUser(currentUser.uid, { fotoUrl: url });
-        currentUser.fotoUrl = url;
+        const base64 = await comprimirFoto(file);
+        await ApiService.updateUser(currentUser.uid, { fotoUrl: base64 });
+        currentUser.fotoUrl = base64;
         const avatarEl = document.getElementById('perfilAvatar');
-        avatarEl.innerHTML = `<img src="${avatarUrl(url, 300)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
+        avatarEl.innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="">`;
         avatarEl.style.padding  = '0';
         avatarEl.style.overflow = 'hidden';
       } catch (err) {
@@ -968,7 +962,7 @@ function comprimirFoto(file) {
       const img = new Image();
       img.onload = () => {
         const canvas  = document.createElement('canvas');
-        const size    = 200;
+        const size    = 300;
         canvas.width  = size;
         canvas.height = size;
         const ctx    = canvas.getContext('2d');
@@ -976,7 +970,7 @@ function comprimirFoto(file) {
         const sx     = (img.width - minDim) / 2;
         const sy     = (img.height - minDim) / 2;
         ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
-        resolve(canvas.toDataURL('image/jpeg', 0.7));
+        resolve(canvas.toDataURL('image/jpeg', 0.82));
       };
       img.onerror = reject;
       img.src = e.target.result;

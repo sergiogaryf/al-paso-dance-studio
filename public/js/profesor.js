@@ -778,10 +778,6 @@ async function renderCalendarioProfesor() {
 // ============================================
 // FOTO PERFIL
 // ============================================
-// ── CLOUDINARY CONFIG (profesor) ──────────────────────────────────────────
-const PROF_CLOUDINARY_CLOUD_NAME    = 'debpk4syz';
-const PROF_CLOUDINARY_UPLOAD_PRESET = 'al-paso-fotos';
-
 function setupFoto() {
   const btn = document.getElementById('profFotoBtn');
   if (!btn) return;
@@ -798,13 +794,11 @@ function setupFoto() {
       btn.innerHTML = '⏳';
       btn.disabled  = true;
       try {
-        const url = await subirFotoCloudinary(
-          file, PROF_CLOUDINARY_CLOUD_NAME, PROF_CLOUDINARY_UPLOAD_PRESET, 'al-paso-perfiles'
-        );
-        await ApiService.updateUser(profUser.id, { fotoUrl: url });
-        profUser.fotoUrl = url;
+        const base64 = await comprimirFoto(file);
+        await ApiService.updateUser(profUser.id, { fotoUrl: base64 });
+        profUser.fotoUrl = base64;
         const av = document.getElementById('profAvatar');
-        av.innerHTML = `<img src="${avatarUrl(url, 300)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+        av.innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
         av.style.cssText += 'padding:0;overflow:hidden';
         showToast('Foto actualizada');
       } catch (err) {
@@ -938,11 +932,11 @@ function comprimirFoto(file) {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        canvas.width = canvas.height = 200;
+        canvas.width = canvas.height = 300;
         const ctx = canvas.getContext('2d');
         const min = Math.min(img.width, img.height);
-        ctx.drawImage(img, (img.width-min)/2, (img.height-min)/2, min, min, 0, 0, 200, 200);
-        resolve(canvas.toDataURL('image/jpeg', 0.7));
+        ctx.drawImage(img, (img.width-min)/2, (img.height-min)/2, min, min, 0, 0, 300, 300);
+        resolve(canvas.toDataURL('image/jpeg', 0.82));
       };
       img.onerror = reject;
       img.src = e.target.result;
