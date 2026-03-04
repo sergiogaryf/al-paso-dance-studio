@@ -943,7 +943,7 @@ function setupFotoUpload() {
       btn.innerHTML = '⏳';
       btn.disabled  = true;
       try {
-        const res = await ApiService._fetch('/api/upload-foto', {
+        const res = await ApiService._fetch('/api/me', {
           method: 'POST',
           body: JSON.stringify({ imageData: base64 }),
         });

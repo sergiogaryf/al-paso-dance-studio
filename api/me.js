@@ -58,5 +58,34 @@ module.exports = async function handler(req, res) {
     }
   }
 
+  // ── POST: subir foto a Cloudinary y retornar URL ──────────────────────
+  if (req.method === 'POST') {
+    const { imageData } = req.body || {};
+    if (!imageData) return res.status(400).json({ error: 'imageData requerido' });
+
+    try {
+      const params = new URLSearchParams();
+      params.append('file', imageData);
+      params.append('upload_preset', 'al-paso-fotos');
+      params.append('folder', 'al-paso-perfiles');
+
+      const response = await fetch(
+        'https://api.cloudinary.com/v1_1/debpk4syz/image/upload',
+        { method: 'POST', body: params }
+      );
+
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error((err.error && err.error.message) || `Error Cloudinary ${response.status}`);
+      }
+
+      const data = await response.json();
+      return res.status(200).json({ url: data.secure_url });
+    } catch (error) {
+      console.error('Error en POST /api/me (upload foto):', error);
+      return res.status(500).json({ error: error.message || 'Error al subir foto' });
+    }
+  }
+
   return res.status(405).json({ error: 'Metodo no permitido' });
 };
