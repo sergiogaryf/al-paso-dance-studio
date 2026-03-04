@@ -64,13 +64,18 @@ module.exports = async function handler(req, res) {
     if (!imageData) return res.status(400).json({ error: 'imageData requerido' });
 
     try {
-      const params = new URLSearchParams();
-      params.append('file', imageData);
-      params.append('upload_preset', 'al-paso-fotos');
+      // Convertir base64 a buffer binario para evitar el error "slashes" de Cloudinary
+      const base64Data = imageData.replace(/^data:image\/\w+;base64,/, '');
+      const imageBuffer = Buffer.from(base64Data, 'base64');
+      const blob = new Blob([imageBuffer], { type: 'image/jpeg' });
+
+      const fd = new FormData();
+      fd.append('file', blob, 'photo.jpg');
+      fd.append('upload_preset', 'al-paso-fotos');
 
       const response = await fetch(
         'https://api.cloudinary.com/v1_1/debpk4syz/image/upload',
-        { method: 'POST', body: params }
+        { method: 'POST', body: fd }
       );
 
       if (!response.ok) {
