@@ -86,10 +86,8 @@ module.exports = async function handler(req, res) {
 
       for (const r of registros) await deleteRecord(tables.asistencias, r.id);
 
-      // Solo restar ClasesAsistidas si era un registro de asistencia (no falta)
-      const nuevasClases = eraAsistio
-        ? Math.max(0, (alumno.ClasesAsistidas || 0) - 1)
-        : (alumno.ClasesAsistidas || 0);
+      // Siempre restar ClasesAsistidas al desmarcar (falta y asistencia gastan token)
+      const nuevasClases = Math.max(0, (alumno.ClasesAsistidas || 0) - 1);
       const nuevaRacha = Math.max(0, (alumno.Racha || 0) - (eraAsistio ? 1 : 0));
 
       await updateRecord(tables.alumnos, alumnoId, {
@@ -139,7 +137,8 @@ module.exports = async function handler(req, res) {
     let nuevasClases = alumno.ClasesAsistidas || 0;
 
     if (esFalta) {
-      // Falta: reiniciar racha a 0, no tocar ClasesAsistidas
+      // Falta: gasta token igual que asistencia, pero reinicia racha
+      nuevasClases = nuevasClases + 1;
       nuevaRacha = 0;
     } else {
       // Asistencia: incrementar total de clases asistidas y calcular racha

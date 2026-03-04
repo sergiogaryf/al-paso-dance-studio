@@ -951,7 +951,7 @@ function setupFotoUpload() {
         avatarEl.style.overflow = 'hidden';
       } catch (err) {
         console.error('Error subiendo foto:', err);
-        alert('No se pudo subir la foto. Intenta de nuevo.');
+        alert('Error al subir foto: ' + (err.message || 'Intenta de nuevo.'));
       } finally {
         btn.innerHTML = orig;
         btn.disabled  = false;

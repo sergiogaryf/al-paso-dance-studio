@@ -809,7 +809,7 @@ function setupFoto() {
         showToast('Foto actualizada');
       } catch (err) {
         console.error('Error subiendo foto:', err);
-        showToast('Error al subir foto', true);
+        showToast(err.message || 'Error al subir foto', true);
       } finally {
         btn.innerHTML = orig;
         btn.disabled  = false;
