@@ -789,7 +789,7 @@ function renderGaleriaGrid(tipo) {
     let thumb = item.thumbnailUrl || '';
     if (!thumb && esFoto) {
       const driveId = getDriveFileId(item.url);
-      if (driveId) thumb = `https://drive.google.com/thumbnail?id=${driveId}&sz=w400`;
+      if (driveId) thumb = `https://lh3.googleusercontent.com/d/${driveId}=w400`;
     }
     if (!thumb && esVideo) {
       const ytId = getYoutubeId(item.url);
