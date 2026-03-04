@@ -20,13 +20,13 @@ module.exports = async function handler(req, res) {
   // ── VIDEOS DE CLASES ───────────────────────────────────────────────────
   if (tipo === 'videos') {
     try {
-      let filter = '{Activo} = TRUE()';
+      let filter = null;
       if (curso) {
         const cursoSafe = curso.replace(/'/g, "\\'");
-        filter = `AND(${filter}, FIND('${cursoSafe}', {Curso}))`;
+        filter = `FIND('${cursoSafe}', {Curso})`;
       }
-      if (mes)  filter = `AND(${filter}, {Mes} = '${mes}')`;
-      if (anio) filter = `AND(${filter}, {Anio} = '${anio}')`;
+      if (mes)  filter = filter ? `AND(${filter}, {Mes} = '${mes}')` : `{Mes} = '${mes}'`;
+      if (anio) filter = filter ? `AND(${filter}, {Anio} = '${anio}')` : `{Anio} = '${anio}'`;
 
       const videos = await findAll(tables.videos, filter);
       return res.status(200).json(

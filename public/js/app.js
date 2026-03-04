@@ -639,6 +639,7 @@ async function loadVideos() {
   try {
     videosData = await ApiService._fetch('/api/contenido?tipo=videos');
   } catch (e) {
+    videosLoaded = false;
     gridContainer.innerHTML = '<div class="empty-state"><p>Error al cargar videos</p></div>';
     return;
   }
