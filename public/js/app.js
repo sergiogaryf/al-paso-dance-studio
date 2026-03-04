@@ -936,7 +936,7 @@ function setupFotoUpload() {
       try {
         base64 = await abrirRecortador(file);
       } catch (err) {
-        if (err.message !== 'cancelado') console.error(err);
+        if (err.message !== 'cancelado') alert('Error al procesar imagen: ' + err.message);
         return;
       }
       const orig = btn.innerHTML;
@@ -955,7 +955,7 @@ function setupFotoUpload() {
         avatarEl.style.overflow = 'hidden';
       } catch (err) {
         console.error('Error guardando foto:', err);
-        alert('Error al guardar foto: ' + (err.message || 'Intenta de nuevo.'));
+        alert('Error: ' + (err.message || 'No se pudo guardar la foto.'));
       } finally {
         btn.innerHTML = orig;
         btn.disabled  = false;

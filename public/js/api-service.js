@@ -412,8 +412,19 @@ function abrirRecortador(file) {
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js';
         script.onload = iniciarCropper;
         script.onerror = function() {
+          // Fallback: si CDN falla, comprimir y usar sin recortar
           document.body.removeChild(overlay);
-          reject(new Error('No se pudo cargar el recortador'));
+          var canvas = document.createElement('canvas');
+          canvas.width = canvas.height = 400;
+          var ctx = canvas.getContext('2d');
+          var tmp = new Image();
+          tmp.onload = function() {
+            var min = Math.min(tmp.width, tmp.height);
+            ctx.drawImage(tmp, (tmp.width-min)/2, (tmp.height-min)/2, min, min, 0, 0, 400, 400);
+            resolve(canvas.toDataURL('image/jpeg', 0.85));
+          };
+          tmp.onerror = function() { reject(new Error('Error al procesar imagen')); };
+          tmp.src = img.src;
         };
         document.head.appendChild(script);
       }

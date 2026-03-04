@@ -794,7 +794,7 @@ function setupFoto() {
       try {
         base64 = await abrirRecortador(file);
       } catch (err) {
-        if (err.message !== 'cancelado') console.error(err);
+        if (err.message !== 'cancelado') showToast('Error al procesar imagen: ' + err.message, true);
         return;
       }
       const orig = btn.innerHTML;
