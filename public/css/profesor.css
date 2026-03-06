@@ -159,3 +159,21 @@
   border-color: #e74c3c;
 }
 
+/* ---- TAB BAR PROFESOR: 7 tabs distribuidos en todo el ancho ---- */
+#profTabBar {
+  justify-content: space-between;
+  overflow-x: hidden;
+}
+
+#profTabBar .tab-item {
+  flex: 1;
+  min-width: 0;
+  padding: 0.3rem 0.2rem;
+}
+
+#profTabBar .tab-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.46rem;
+}

@@ -33,6 +33,7 @@ let userClases  = [];
         const userData = await ApiService.loginConLink(linkToken);
         window.history.replaceState({}, document.title, window.location.pathname);
         if (userData.role === 'admin') { window.location.href = 'admin.html'; return; }
+        if (userData.role === 'profesor') { window.location.href = 'profesor.html'; return; }
         currentUser = { uid: userData.id, ...userData };
         document.getElementById('appLoading').style.display = 'none';
         document.getElementById('appContent').classList.remove('hidden');
@@ -58,6 +59,10 @@ let userClases  = [];
     }
     if (userData.role === 'admin') {
       window.location.href = 'admin.html';
+      return;
+    }
+    if (userData.role === 'profesor') {
+      window.location.href = 'profesor.html';
       return;
     }
     currentUser = { uid: userData.id, ...userData };
