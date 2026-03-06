@@ -165,60 +165,46 @@ ul { list-style: none; }
   50%      { transform: translateY(-11px); }
 }
 
-/* Ubicacion — primer elemento, parte alta */
-.hero-location {
-  font-family: 'Poppins', sans-serif;
-  font-size: clamp(0.55rem, 1vw, 0.7rem);
-  color: rgba(255,255,255,0.75);
-  text-transform: uppercase;
-  letter-spacing: 5px;
-  font-weight: 400;
-  margin-bottom: 1.4rem;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-  animation: softFromDepth 0.9s ease 0.1s both;
-}
-
 /* Logo — centrado, mediano */
 .hero-logo-icon {
-  width: clamp(65px, 9vw, 95px);
+  width: clamp(70px, 9vw, 100px);
   height: auto;
   margin-bottom: 0.5rem;
   filter: drop-shadow(0 4px 20px rgba(255,255,255,0.25));
-  animation: softFromDepth 0.9s ease 0.25s both;
+  animation: softFromDepth 0.9s ease 0.1s both;
 }
 
 /* Nombre del estudio — proporcional al logo, pequeño */
 .hero-studio-name {
   font-family: 'Poppins', sans-serif;
-  font-size: clamp(0.55rem, 1.1vw, 0.75rem);
-  color: rgba(255,255,255,0.7);
+  font-size: clamp(0.6rem, 1.2vw, 0.82rem);
+  color: rgba(255,255,255,0.8);
   text-transform: uppercase;
   letter-spacing: 5px;
   font-weight: 500;
-  margin-bottom: 1.6rem;
+  margin-bottom: 2rem;
   text-shadow: 0 2px 10px rgba(0,0,0,0.4);
-  animation: softFromDepth 0.9s ease 0.38s both;
+  animation: softFromDepth 0.9s ease 0.25s both;
 }
 
-/* Frase principal — grande, gradiente, flota */
+/* Frase principal — blanca, enorme, flota */
 .hero-tagline {
   font-family: 'Montserrat', sans-serif;
-  font-size: clamp(2.6rem, 7.5vw, 6rem);
+  font-size: clamp(3.2rem, 9vw, 7.5rem);
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  line-height: 1.0;
+  letter-spacing: -1px;
+  line-height: 0.95;
   text-align: center;
+  color: #fff;
   margin-bottom: 2.8rem;
-  background: linear-gradient(90deg, #c084fc 0%, #f97316 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 4px 35px rgba(192, 132, 252, 0.4));
+  text-shadow:
+    0 4px 40px rgba(0,0,0,0.4),
+    0 0 80px rgba(107,32,96,0.25);
   /* Entrada suave, luego flota de forma continua */
   animation:
-    softFromDepth 1s cubic-bezier(0.22, 1, 0.36, 1) 0.55s both,
-    heroFloat 4s ease-in-out 1.7s infinite;
+    softFromDepth 1s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both,
+    heroFloat 4s ease-in-out 1.5s infinite;
 }
 
 /* Contenedor botones lado a lado */
@@ -777,11 +763,11 @@ footer span { color: var(--blanco); }
   .nav-links.active { display: flex; }
   .menu-toggle { display: block; }
 
-  .hero { padding: 5rem 1.5rem 2rem; }
-  .hero-logo-icon { width: 70px; }
-  .hero-tagline { font-size: clamp(2.2rem, 11vw, 3.5rem); margin-bottom: 2rem; }
-  .hero-btns { flex-direction: column; gap: 0.75rem; width: 100%; max-width: 280px; }
-  .hero-cta, .hero-cta-secondary { width: 100%; text-align: center; }
+  .hero { padding: 5rem 1rem 2rem; }
+  .hero-logo-icon { width: 75px; }
+  .hero-tagline { font-size: clamp(2.8rem, 12vw, 4rem); letter-spacing: -1px; margin-bottom: 2rem; }
+  .hero-btns { gap: 0.75rem; width: 100%; max-width: 320px; }
+  .hero-cta { width: 100%; text-align: center; }
 
   .section { padding: 4rem 1.5rem; }
 }
