@@ -11,12 +11,22 @@ const PLAYLISTS = [
 
 // ── CURSOS DE LA ACADEMIA ──────────────────────────────────────────────────
 const CURSOS_ACADEMIA = [
-  'Casino Basico',
+  'Casino Básico',
   'Casino Intermedio',
   'Mambo Open',
-  'Bachata Basico',
+  'Bachata Básico',
   'Bachata Intermedio',
 ];
+
+// Normaliza nombre de curso para comparación sin importar acentos/mayúsculas
+function normCurso(s) {
+  return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
+// Dado un nombre de curso, devuelve la versión canónica de CURSOS_ACADEMIA (con acento) si existe
+function canonicalizarCurso(nombre) {
+  const norm = normCurso(nombre);
+  return CURSOS_ACADEMIA.find(c => normCurso(c) === norm) || nombre;
+}
 
 let currentUser = null;
 let userClases  = [];
@@ -649,26 +659,21 @@ async function loadVideos() {
     return;
   }
 
-  // Obtener cursos únicos con videos disponibles (+ cursos inscritos del alumno)
-  const cursosConVideos = [...new Set(videosData.map(v => v.curso))];
-  const cursosAlumno   = currentUser.cursosInscritos || [];
+  // Obtener cursos únicos con videos disponibles, canonicalizados (con acento)
+  const cursosConVideos = [...new Set(videosData.map(v => canonicalizarCurso(v.curso)))];
+  const cursosAlumno   = (currentUser.cursosInscritos || []).map(canonicalizarCurso);
 
-  // Mostrar primero los cursos del alumno, luego el resto
-  const cursosOrdenados = [
-    ...cursosAlumno.filter(c => cursosConVideos.includes(c)),
-    ...cursosConVideos.filter(c => !cursosAlumno.includes(c)),
-    ...CURSOS_ACADEMIA.filter(c => !cursosConVideos.includes(c) && !cursosAlumno.includes(c)),
-  ].filter((c, i, arr) => arr.indexOf(c) === i); // unique
-
-  // Render pills: primero cursos con videos (aunque no estén en CURSOS_ACADEMIA), luego el resto
+  // Render pills: primero cursos con videos, luego los de academia sin videos
+  // Deduplicación por nombre normalizado (sin importar acentos)
+  const seen = new Set();
   const cursosParaPills = [
     ...cursosConVideos,
-    ...CURSOS_ACADEMIA.filter(c => !cursosConVideos.includes(c)),
-  ].filter((c, i, arr) => arr.indexOf(c) === i);
+    ...CURSOS_ACADEMIA.filter(c => !cursosConVideos.some(v => normCurso(v) === normCurso(c))),
+  ].filter(c => { const k = normCurso(c); if (seen.has(k)) return false; seen.add(k); return true; });
 
   pillsContainer.innerHTML = cursosParaPills.map(curso => {
-    const tieneVideos  = cursosConVideos.includes(curso);
-    const esDelAlumno  = cursosAlumno.includes(curso);
+    const tieneVideos  = cursosConVideos.some(v => normCurso(v) === normCurso(curso));
+    const esDelAlumno  = cursosAlumno.some(a => normCurso(a) === normCurso(curso));
     return `<button class="videos-pill${esDelAlumno ? ' mi-curso' : ''}" data-curso="${sanitize(curso)}"
       ${!tieneVideos ? 'style="opacity:0.45"' : ''}>
       ${sanitize(curso)}${tieneVideos ? '' : ' <span style="font-size:0.7rem">(sin videos)</span>'}
@@ -676,7 +681,7 @@ async function loadVideos() {
   }).join('');
 
   // Activar primer curso con videos (o el del alumno)
-  const primerCurso = cursosAlumno.find(c => cursosConVideos.includes(c)) ||
+  const primerCurso = cursosAlumno.find(c => cursosConVideos.some(v => normCurso(v) === normCurso(c))) ||
                       cursosConVideos[0] || cursosParaPills[0];
 
   pillsContainer.querySelectorAll('.videos-pill').forEach(btn => {
