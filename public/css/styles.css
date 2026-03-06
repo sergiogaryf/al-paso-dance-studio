@@ -190,7 +190,7 @@ ul { list-style: none; }
 /* Frase principal — blanca, enorme, flota */
 .hero-tagline {
   font-family: 'Montserrat', sans-serif;
-  font-size: clamp(3.2rem, 9vw, 7.5rem);
+  font-size: clamp(2.6rem, 7.2vw, 6rem);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -1px;
@@ -765,7 +765,7 @@ footer span { color: var(--blanco); }
 
   .hero { padding: 5rem 1rem 2rem; }
   .hero-logo-icon { width: 75px; }
-  .hero-tagline { font-size: clamp(2.8rem, 12vw, 4rem); letter-spacing: -1px; margin-bottom: 2rem; }
+  .hero-tagline { font-size: clamp(2.2rem, 9.6vw, 3.2rem); letter-spacing: -1px; margin-bottom: 2rem; }
   .hero-btns { gap: 0.75rem; width: 100%; max-width: 320px; }
   .hero-cta { width: 100%; text-align: center; }
 
