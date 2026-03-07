@@ -246,7 +246,7 @@
 
   <script>
     // Intentar cargar token desde localStorage (sesión de admin activa)
-    const tokenGuardado = localStorage.getItem('token');
+    const tokenGuardado = localStorage.getItem('auth_token');
     if (tokenGuardado) {
       document.getElementById('input-token').value = tokenGuardado;
       document.getElementById('input-token').placeholder = 'Token cargado desde tu sesión';
