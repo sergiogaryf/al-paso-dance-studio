@@ -30,7 +30,7 @@ Devuelve solo el mensaje, sin comillas ni explicaciones.`;
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
-      model: 'claude-3-5-haiku-20241022',
+      model: 'claude-3-haiku-20240307',
       max_tokens: 350,
       messages: [{ role: 'user', content: prompt }],
     }),
