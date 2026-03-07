@@ -339,7 +339,7 @@
       try {
         document.getElementById('estado').textContent = 'Generando mensajes con IA... esto puede tomar unos segundos';
 
-        const resp = await fetch('/api/agent-cobros', {
+        const resp = await fetch('/api/alumnos?action=cobros', {
           headers: { Authorization: `Bearer ${token}` },
         });
 

@@ -1,6 +1,74 @@
 const { tables, findAll, findById, createRecord, updateRecord, deleteRecord } = require('./_lib/airtable');
 const { requireAuth, requireAdmin } = require('./_lib/auth');
 
+// ── Agente de Cobros ─────────────────────────────────────────────────────────
+const PRECIO_CURSOS = { 1: 30000, 2: 40000, 3: 50000 };
+
+function parseCursosCobros(record) {
+  const raw = record.Cursos || record.Curso || '';
+  return raw ? raw.split(',').map(s => s.trim()).filter(Boolean) : [];
+}
+
+async function generarMensajeWhatsApp({ nombre, cursos, monto, detalles }) {
+  const cursosTexto = cursos.length > 0 ? cursos.join(', ') : 'su curso';
+  const montoFormateado = '$' + Number(monto).toLocaleString('es-CL');
+  const prompt = `Eres el asistente de Al Paso Dance Studio, academia de baile en Concón, Chile. Su director es Sergio Gary.
+Genera un mensaje de WhatsApp corto y amigable para cobrar la mensualidad del mes.
+Datos del alumno:
+- Nombre: ${nombre}
+- Cursos inscritos: ${cursosTexto}
+- Monto a pagar: ${montoFormateado}
+${detalles ? `- Detalles: ${detalles}` : ''}
+Instrucciones: saluda por nombre, menciona los cursos, indica el monto, tono cercano y nunca presionante, máximo 3-4 oraciones, 1-2 emojis, termina invitando a escribir si tienen dudas.
+Devuelve solo el mensaje, sin comillas ni explicaciones.`;
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 350,
+      messages: [{ role: 'user', content: prompt }],
+    }),
+  });
+  if (!response.ok) throw new Error(`Claude API error ${response.status}`);
+  const data = await response.json();
+  return data.content?.[0]?.text?.trim() || '';
+}
+
+async function handleCobros(req, res) {
+  const user = requireAdmin(req, res);
+  if (!user) return;
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return res.status(500).json({ error: 'ANTHROPIC_API_KEY no configurada' });
+  }
+  const records = await findAll(tables.alumnos, "{Estado} = 'Pendiente'");
+  if (records.length === 0) return res.status(200).json([]);
+
+  const resultados = [];
+  const BATCH = 5;
+  for (let i = 0; i < records.length; i += BATCH) {
+    const lote = records.slice(i, i + BATCH);
+    const loteRes = await Promise.all(lote.map(async (r) => {
+      const cursos = parseCursosCobros(r);
+      const monto = r.Monto ? Number(r.Monto) : (PRECIO_CURSOS[Math.min(cursos.length, 3)] || 30000);
+      try {
+        const mensaje = await generarMensajeWhatsApp({ nombre: r.Nombre || 'Alumno', cursos, monto, detalles: r['Detalles de cursos'] || '' });
+        return { nombre: r.Nombre || '', telefono: r.Telefono || '', cursos, monto, mensaje, error: null };
+      } catch (err) {
+        return { nombre: r.Nombre || '', telefono: r.Telefono || '', cursos, monto, mensaje: '', error: err.message };
+      }
+    }));
+    resultados.push(...loteRes);
+  }
+  return res.status(200).json(resultados);
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 // Convierte el campo Curso (string) o CursosInscritos (JSON) en array de nombres
 function parseCursos(rec) {
   if (rec.Curso) {
@@ -41,6 +109,16 @@ function buildAlumno(a) {
 
 module.exports = async function handler(req, res) {
   if (req.method === 'GET') {
+    // Accion especial: agente de cobros
+    if (req.query.action === 'cobros') {
+      try {
+        return await handleCobros(req, res);
+      } catch (error) {
+        console.error('Error en cobros:', error);
+        return res.status(500).json({ error: 'Error al procesar cobros: ' + error.message });
+      }
+    }
+
     const user = requireAuth(req, res);
     if (!user) return;
 
