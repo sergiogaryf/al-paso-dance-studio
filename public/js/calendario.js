@@ -1,5 +1,5 @@
 /* ============================================
-   ESTACION SALSERA - Calendario JS
+   AL PASO DANCE STUDIO - Calendario JS
    Renderiza grid de Marzo 2026
    ============================================ */
 

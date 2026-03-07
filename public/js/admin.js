@@ -1,5 +1,5 @@
 /* ============================================
-   ESTACION SALSERA - Panel Admin JS
+   AL PASO DANCE STUDIO - Panel Admin JS
    ============================================ */
 
 let adminUser = null;

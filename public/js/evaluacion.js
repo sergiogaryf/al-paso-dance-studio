@@ -1,5 +1,5 @@
 /* ============================================
-   ESTACION SALSERA - Evaluacion JS
+   AL PASO DANCE STUDIO - Evaluacion JS
    Sistema de evaluacion de clases
    ============================================ */
 
