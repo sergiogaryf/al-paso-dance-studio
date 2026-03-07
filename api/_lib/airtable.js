@@ -14,7 +14,7 @@ const tables = {
   galeria: base('Galeria'),
   feedbackMensual: base('FeedbackMensual'),
   asistencias: base('Asistencias'),
-  pagos: base('Pagos'),
+  pagosMensuales: base('PagosMensuales'),
   historialMensual: base('HistorialMensual'),
 };
 

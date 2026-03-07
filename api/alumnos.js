@@ -122,7 +122,7 @@ async function handleCobros(req, res) {
     : `AND({Mes} = ${mesActual}, {Año} = ${año}, {EstadoPago} = 'Pendiente')`;
 
   try {
-    records = await findAll(tables.pagos, filtroEstado);
+    records = await findAll(tables.pagosMensuales, filtroEstado);
   } catch (_) {
     // Si tabla Pagos no existe aún, fallback a Alumnos
     records = await findAll(tables.alumnos, `{Activo} = 1`);
@@ -164,7 +164,7 @@ async function handlePagos(req, res) {
 
   // GET: listar pagos del mes
   if (req.method === 'GET') {
-    const registros = await findAll(tables.pagos, `AND({Mes} = ${mes}, {Año} = ${año})`);
+    const registros = await findAll(tables.pagosMensuales, `AND({Mes} = ${mes}, {Año} = ${año})`);
     return res.status(200).json(registros.map(r => ({
       id: r.id,
       alumnoId: r.AlumnoId || '',
@@ -188,7 +188,7 @@ async function handlePagos(req, res) {
     if (subaction === 'crear-mes') {
       const alumnos = await findAll(tables.alumnos, `{Activo} = 1`);
       // Verificar si ya existen registros para ese mes
-      const existing = await findAll(tables.pagos, `AND({Mes} = ${mes}, {Año} = ${año})`);
+      const existing = await findAll(tables.pagosMensuales, `AND({Mes} = ${mes}, {Año} = ${año})`);
       const existingIds = new Set(existing.map(r => r.AlumnoId));
 
       const creados = [];
@@ -196,7 +196,7 @@ async function handlePagos(req, res) {
         if (existingIds.has(a.id)) continue;
         const cursos = parseCursosCobros(a);
         const monto = PRECIO_CURSOS[Math.min(cursos.length, 3)] || 30000;
-        const rec = await createRecord(tables.pagos, {
+        const rec = await createRecord(tables.pagosMensuales, {
           AlumnoId: a.id,
           AlumnoNombre: a.Nombre || '',
           AlumnoTelefono: a.Telefono || '',
@@ -224,7 +224,7 @@ async function handlePagos(req, res) {
     if (data.fechaPago !== undefined) fields.FechaPago = data.fechaPago;
     if (data.nuevoCurso !== undefined) fields.NuevoCurso = data.nuevoCurso;
     if (data.cupoConfirmado !== undefined) fields.CupoConfirmado = data.cupoConfirmado;
-    await updateRecord(tables.pagos, id, fields);
+    await updateRecord(tables.pagosMensuales, id, fields);
     return res.status(200).json({ ok: true, id });
   }
 
@@ -239,7 +239,7 @@ async function handleMiPago(req, res) {
   const mes = ahora.getMonth() + 1;
   const año = ahora.getFullYear();
   try {
-    const registros = await findAll(tables.pagos, `AND({AlumnoId} = '${user.id}', {Mes} = ${mes}, {Año} = ${año})`);
+    const registros = await findAll(tables.pagosMensuales, `AND({AlumnoId} = '${user.id}', {Mes} = ${mes}, {Año} = ${año})`);
     if (registros.length === 0) return res.status(200).json({ estado: 'sin-registro' });
     const p = registros[0];
     return res.status(200).json({ estado: p.EstadoPago || 'Pendiente', mes, año, monto: p.Monto || 0 });
@@ -282,7 +282,7 @@ async function handleCron(req, res) {
     }
 
     // Activar alumnos que pagaron el mes actual
-    const pagados = await findAll(tables.pagos, `AND({Mes} = ${mes}, {Año} = ${año}, {EstadoPago} = 'Pagado')`);
+    const pagados = await findAll(tables.pagosMensuales, `AND({Mes} = ${mes}, {Año} = ${año}, {EstadoPago} = 'Pagado')`);
     for (const p of pagados) {
       if (!p.AlumnoId) continue;
       const cursosSig = p.CursosSolicitados || p.CursosActuales || '';
@@ -296,10 +296,10 @@ async function handleCron(req, res) {
 
   if (tipo === 'bloqueo') {
     // Día 5: bloquear definitivamente los que no pagaron
-    const pendientes = await findAll(tables.pagos, `AND({Mes} = ${mes}, {Año} = ${año}, {EstadoPago} = 'Pendiente')`);
+    const pendientes = await findAll(tables.pagosMensuales, `AND({Mes} = ${mes}, {Año} = ${año}, {EstadoPago} = 'Pendiente')`);
     let bloqueados = 0;
     for (const p of pendientes) {
-      await updateRecord(tables.pagos, p.id, { EstadoPago: 'Bloqueado' }).catch(() => {});
+      await updateRecord(tables.pagosMensuales, p.id, { EstadoPago: 'Bloqueado' }).catch(() => {});
       if (p.AlumnoId) {
         await updateRecord(tables.alumnos, p.AlumnoId, { Estado: 'Bloqueado' }).catch(() => {});
         bloqueados++;
