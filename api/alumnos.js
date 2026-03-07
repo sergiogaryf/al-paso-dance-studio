@@ -35,7 +35,10 @@ Devuelve solo el mensaje, sin comillas ni explicaciones.`;
       messages: [{ role: 'user', content: prompt }],
     }),
   });
-  if (!response.ok) throw new Error(`Claude API error ${response.status}`);
+  if (!response.ok) {
+    const errBody = await response.text();
+    throw new Error(`Claude API error ${response.status}: ${errBody}`);
+  }
   const data = await response.json();
   return data.content?.[0]?.text?.trim() || '';
 }
