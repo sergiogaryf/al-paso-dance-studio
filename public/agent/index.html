@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agente de Cobros — Al Paso Dance Studio</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0F0412;
+      color: #f0e6ff;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #d8b4fe;
+      letter-spacing: -0.5px;
+    }
+
+    header p {
+      color: #9c7db5;
+      margin-top: 0.4rem;
+      font-size: 0.95rem;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Token form */
+    #token-section {
+      background: #1F1228;
+      border: 1px solid #3d1043;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    #token-section label {
+      display: block;
+      font-size: 0.85rem;
+      color: #9c7db5;
+      margin-bottom: 0.5rem;
+    }
+
+    #token-section input {
+      width: 100%;
+      padding: 0.6rem 0.9rem;
+      background: #140A18;
+      border: 1px solid #3d1043;
+      border-radius: 8px;
+      color: #f0e6ff;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    #token-section input:focus {
+      outline: none;
+      border-color: #a855f7;
+    }
+
+    /* Botón principal */
+    .btn-generar {
+      display: block;
+      width: 100%;
+      padding: 0.9rem;
+      background: linear-gradient(135deg, #6B2060, #a855f7);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-generar:hover { opacity: 0.88; }
+    .btn-generar:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Estado / loading */
+    #estado {
+      text-align: center;
+      padding: 1rem;
+      color: #9c7db5;
+      font-size: 0.95rem;
+      min-height: 2rem;
+    }
+
+    /* Contador */
+    #contador {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #a855f7;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+
+    /* Cards de alumnos */
+    .alumno-card {
+      background: #1F1228;
+      border: 1px solid #3d1043;
+      border-radius: 12px;
+      padding: 1.4rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .alumno-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.8rem;
+      gap: 1rem;
+    }
+
+    .alumno-info h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #d8b4fe;
+    }
+
+    .alumno-info .telefono {
+      font-size: 0.85rem;
+      color: #9c7db5;
+      margin-top: 0.2rem;
+    }
+
+    .alumno-info .cursos {
+      font-size: 0.8rem;
+      color: #a855f7;
+      margin-top: 0.3rem;
+    }
+
+    .monto-badge {
+      background: #3d1043;
+      color: #d8b4fe;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .mensaje-box {
+      background: #140A18;
+      border: 1px solid #2d1535;
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #e9d5ff;
+      white-space: pre-wrap;
+      margin-bottom: 0.8rem;
+    }
+
+    .error-box {
+      background: #3b0a0a;
+      border: 1px solid #7f1d1d;
+      border-radius: 8px;
+      padding: 0.8rem;
+      font-size: 0.85rem;
+      color: #fca5a5;
+      margin-bottom: 0.8rem;
+    }
+
+    /* Botones de acción */
+    .card-actions {
+      display: flex;
+      gap: 0.6rem;
+    }
+
+    .btn-copy {
+      padding: 0.5rem 1rem;
+      background: #3d1043;
+      color: #d8b4fe;
+      border: 1px solid #6B2060;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-copy:hover { background: #6B2060; }
+
+    .btn-copy.copiado {
+      background: #14532d;
+      border-color: #16a34a;
+      color: #86efac;
+    }
+
+    .btn-whatsapp {
+      padding: 0.5rem 1rem;
+      background: #075e54;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-whatsapp:hover { background: #128c7e; }
+
+    /* Vacío */
+    #vacio {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #9c7db5;
+    }
+
+    #vacio .icon { font-size: 3rem; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Agente de Cobros</h1>
+      <p>Al Paso Dance Studio — mensajes WhatsApp personalizados con IA</p>
+    </header>
+
+    <div id="token-section">
+      <label for="input-token">Token de admin (se guarda automáticamente si estás logueado)</label>
+      <input type="password" id="input-token" placeholder="Pega tu token JWT aquí si no estás logueado...">
+      <button class="btn-generar" id="btn-generar" onclick="generar()">
+        Generar mensajes de cobro
+      </button>
+    </div>
+
+    <div id="estado"></div>
+    <div id="contador"></div>
+    <div id="resultados"></div>
+  </div>
+
+  <script>
+    // Intentar cargar token desde localStorage (sesión de admin activa)
+    const tokenGuardado = localStorage.getItem('token');
+    if (tokenGuardado) {
+      document.getElementById('input-token').value = tokenGuardado;
+      document.getElementById('input-token').placeholder = 'Token cargado desde tu sesión';
+    }
+
+    function formatMonto(n) {
+      return '$' + Number(n).toLocaleString('es-CL');
+    }
+
+    function limpiarTelefono(tel) {
+      return tel.replace(/\D/g, '');
+    }
+
+    async function copiarMensaje(btn, texto) {
+      try {
+        await navigator.clipboard.writeText(texto);
+        btn.textContent = '¡Copiado!';
+        btn.classList.add('copiado');
+        setTimeout(() => {
+          btn.textContent = 'Copiar mensaje';
+          btn.classList.remove('copiado');
+        }, 2000);
+      } catch {
+        btn.textContent = 'Error al copiar';
+      }
+    }
+
+    function renderResultados(data) {
+      const cont = document.getElementById('resultados');
+      const ctr = document.getElementById('contador');
+      cont.innerHTML = '';
+
+      if (data.length === 0) {
+        ctr.textContent = '';
+        cont.innerHTML = `
+          <div id="vacio">
+            <div class="icon">🎉</div>
+            <p>No hay alumnos con pago pendiente.</p>
+          </div>`;
+        return;
+      }
+
+      ctr.textContent = `${data.length} alumno${data.length !== 1 ? 's' : ''} con pago pendiente`;
+
+      data.forEach((alumno) => {
+        const tel = limpiarTelefono(alumno.telefono || '');
+        const waLink = tel
+          ? `https://wa.me/56${tel.replace(/^56/, '')}?text=${encodeURIComponent(alumno.mensaje)}`
+          : null;
+
+        const card = document.createElement('div');
+        card.className = 'alumno-card';
+        card.innerHTML = `
+          <div class="alumno-header">
+            <div class="alumno-info">
+              <h2>${alumno.nombre || 'Sin nombre'}</h2>
+              <div class="telefono">${alumno.telefono || 'Sin teléfono'}</div>
+              ${alumno.cursos?.length ? `<div class="cursos">${alumno.cursos.join(' · ')}</div>` : ''}
+            </div>
+            <div class="monto-badge">${formatMonto(alumno.monto)}</div>
+          </div>
+
+          ${alumno.error
+            ? `<div class="error-box">Error al generar mensaje: ${alumno.error}</div>`
+            : `<div class="mensaje-box" id="msg-${alumno.nombre.replace(/\s/g,'-')}">${alumno.mensaje}</div>`
+          }
+
+          <div class="card-actions">
+            ${!alumno.error ? `<button class="btn-copy" onclick="copiarMensaje(this, ${JSON.stringify(alumno.mensaje)})">Copiar mensaje</button>` : ''}
+            ${waLink ? `<a class="btn-whatsapp" href="${waLink}" target="_blank">Abrir WhatsApp</a>` : ''}
+          </div>
+        `;
+        cont.appendChild(card);
+      });
+    }
+
+    async function generar() {
+      const token = document.getElementById('input-token').value.trim();
+      if (!token) {
+        document.getElementById('estado').textContent = 'Ingresa tu token de admin primero.';
+        return;
+      }
+
+      const btn = document.getElementById('btn-generar');
+      btn.disabled = true;
+      document.getElementById('estado').textContent = 'Leyendo alumnos pendientes...';
+      document.getElementById('contador').textContent = '';
+      document.getElementById('resultados').innerHTML = '';
+
+      try {
+        document.getElementById('estado').textContent = 'Generando mensajes con IA... esto puede tomar unos segundos';
+
+        const resp = await fetch('/api/agent-cobros', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({ error: resp.statusText }));
+          throw new Error(err.error || `Error ${resp.status}`);
+        }
+
+        const data = await resp.json();
+        document.getElementById('estado').textContent = '';
+        renderResultados(data);
+      } catch (err) {
+        document.getElementById('estado').textContent = 'Error: ' + err.message;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
