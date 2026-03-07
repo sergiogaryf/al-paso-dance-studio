@@ -14,6 +14,8 @@ const tables = {
   galeria: base('Galeria'),
   feedbackMensual: base('FeedbackMensual'),
   asistencias: base('Asistencias'),
+  pagos: base('Pagos'),
+  historialMensual: base('HistorialMensual'),
 };
 
 function recordToObj(record) {

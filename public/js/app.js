@@ -76,6 +76,17 @@ let userClases  = [];
       return;
     }
     currentUser = { uid: userData.id, ...userData };
+
+    // Verificar estado de pago del mes actual
+    try {
+      const pagoResp = await ApiService.get('/api/alumnos?action=mi-pago');
+      if (pagoResp && pagoResp.estado === 'Bloqueado') {
+        document.getElementById('appLoading').style.display = 'none';
+        document.getElementById('appBlocked').classList.remove('hidden');
+        return;
+      }
+    } catch (_) {}
+
     document.getElementById('appLoading').style.display = 'none';
     document.getElementById('appContent').classList.remove('hidden');
     document.getElementById('tabBar').classList.remove('hidden');

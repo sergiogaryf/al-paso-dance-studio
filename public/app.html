@@ -25,6 +25,21 @@
 </head>
 <body class="app-page">
 
+  <!-- Pantalla de pago bloqueado -->
+  <div id="appBlocked" class="loading-overlay hidden" style="flex-direction:column;gap:1.5rem;padding:2rem;text-align:center;">
+    <img src="img/Logo.png" alt="Al Paso Dance Studio" style="width:100px;opacity:0.8;">
+    <h2 style="color:#d8b4fe;font-size:1.4rem;">Acceso bloqueado</h2>
+    <p style="color:#9c7db5;font-size:0.95rem;max-width:280px;margin:0 auto;">Tu mensualidad está pendiente de pago. Contáctanos para regularizar tu cupo.</p>
+    <a id="btnPagarWA" href="#" target="_blank"
+       style="background:linear-gradient(135deg,#6B2060,#a855f7);color:white;padding:0.9rem 2rem;border-radius:12px;text-decoration:none;font-weight:700;font-size:1rem;">
+      Pagar por WhatsApp
+    </a>
+    <button onclick="localStorage.clear();window.location.href='login.html'"
+       style="background:transparent;color:#9c7db5;border:none;font-size:0.85rem;cursor:pointer;text-decoration:underline;">
+      Cerrar sesión
+    </button>
+  </div>
+
   <!-- Loading Overlay -->
   <div id="appLoading" class="loading-overlay">
     <div class="spinner"></div>
