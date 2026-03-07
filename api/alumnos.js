@@ -41,8 +41,11 @@ Devuelve solo el mensaje, sin comillas ni explicaciones.`;
 }
 
 async function handleCobros(req, res) {
-  const user = requireAdmin(req, res);
+  const user = requireAuth(req, res);
   if (!user) return;
+  if (!['admin', 'profesor'].includes(user.role)) {
+    return res.status(403).json({ error: 'Acceso denegado' });
+  }
   if (!process.env.ANTHROPIC_API_KEY) {
     return res.status(500).json({ error: 'ANTHROPIC_API_KEY no configurada' });
   }
