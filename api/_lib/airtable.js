@@ -16,6 +16,7 @@ const tables = {
   asistencias: base('Asistencias'),
   pagosMensuales: base('PagosMensuales'),
   historialMensual: base('HistorialMensual'),
+  canciones: base('Canciones'),
 };
 
 function recordToObj(record) {

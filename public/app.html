@@ -6,170 +6,90 @@
   <title>Mi App - Al Paso Dance Studio</title>
   <meta name="description" content="Panel del alumno - Al Paso Dance Studio, Donde el ritmo comienza">
 
-  <!-- PWA Meta Tags -->
+  <!-- PWA -->
   <meta name="theme-color" content="#140A18">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Al Paso Dance Studio">
-
-  <!-- Manifest & Icons -->
+  <meta name="apple-mobile-web-app-title" content="Al Paso">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="img/icons/icon-192x192.png">
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
 
-  <!-- Styles -->
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+  <!-- Estilos -->
   <link rel="stylesheet" href="css/shared.css">
   <link rel="stylesheet" href="css/app.css">
-
-
 </head>
 <body class="app-page">
 
-  <!-- Pantalla de pago bloqueado -->
+  <!-- ===== BLOCKED ===== -->
   <div id="appBlocked" class="loading-overlay hidden" style="flex-direction:column;gap:1.5rem;padding:2rem;text-align:center;">
-    <img src="img/Logo.png" alt="Al Paso Dance Studio" style="width:100px;opacity:0.8;">
-    <h2 style="color:#d8b4fe;font-size:1.4rem;">Acceso bloqueado</h2>
-    <p style="color:#9c7db5;font-size:0.95rem;max-width:280px;margin:0 auto;">Tu mensualidad está pendiente de pago. Contáctanos para regularizar tu cupo.</p>
-    <a id="btnPagarWA" href="#" target="_blank"
-       style="background:linear-gradient(135deg,#6B2060,#a855f7);color:white;padding:0.9rem 2rem;border-radius:12px;text-decoration:none;font-weight:700;font-size:1rem;">
+    <img src="img/Logo.png" alt="Al Paso Dance Studio" style="width:90px;opacity:0.8;">
+    <h2 style="color:#d8b4fe;font-size:1.3rem;">Acceso bloqueado</h2>
+    <p style="color:#9c7db5;font-size:0.9rem;max-width:280px;margin:0 auto;">Tu mensualidad está pendiente. Contáctanos para regularizar tu cupo.</p>
+    <a id="btnPagarWA" href="#" target="_blank" style="background:linear-gradient(135deg,#6B2060,#a855f7);color:white;padding:0.9rem 2rem;border-radius:12px;text-decoration:none;font-weight:700;">
       Pagar por WhatsApp
     </a>
-    <button onclick="localStorage.clear();window.location.href='login.html'"
-       style="background:transparent;color:#9c7db5;border:none;font-size:0.85rem;cursor:pointer;text-decoration:underline;">
+    <button onclick="localStorage.clear();window.location.href='login.html'" style="background:transparent;color:#9c7db5;border:none;font-size:0.85rem;cursor:pointer;text-decoration:underline;">
       Cerrar sesión
     </button>
   </div>
 
-  <!-- Loading Overlay -->
+  <!-- ===== LOADING ===== -->
   <div id="appLoading" class="loading-overlay">
     <div class="spinner"></div>
-    <p class="text-muted" style="font-size: 0.85rem;">Cargando tu informacion...</p>
+    <p class="text-muted" style="font-size:0.85rem;">Cargando...</p>
   </div>
 
-  <!-- ============================================ -->
-  <!-- MAIN CONTENT -->
-  <!-- ============================================ -->
-  <main id="appContent" class="app-content hidden">
+  <!-- ===== MODAL VIDEO + CANCIONES ===== -->
+  <div id="videoModal" class="video-modal hidden">
+    <div class="video-modal-backdrop" id="videoModalBackdrop"></div>
+    <div class="video-modal-sheet">
+      <div class="video-modal-handle"></div>
+      <button class="video-modal-close" id="videoModalClose">&#10005;</button>
 
-    <!-- ====== TAB: INICIO ====== -->
-    <section id="tab-inicio" class="tab-section active">
-      <!-- Header -->
-      <div class="app-header">
-        <div class="app-header-brand">
-          <img src="img/Logo.png" alt="Al Paso Dance Studio" class="app-logo">
-          <span class="app-brand-text">Al Paso Dance Studio</span>
+      <!-- Player YouTube -->
+      <div class="video-modal-player">
+        <div id="ytPlayerContainer">
+          <div id="ytPlayer"></div>
         </div>
       </div>
 
-      <!-- Greeting -->
-      <h1 class="greeting">Hola, <span id="userName">...</span>!</h1>
+      <!-- Info del video -->
+      <div class="video-modal-info" id="videoModalInfo"></div>
 
-      <!-- Clases restantes -->
-      <div class="glass-card card-clases">
-        <div class="card-label">Te quedan</div>
-        <div class="card-big-number"><span id="clasesRestantes">0</span> clases</div>
-        <div class="progress-bar-track">
-          <div class="progress-bar-fill" id="clasesProgress" style="width: 0%"></div>
+      <!-- Canciones de esta clase -->
+      <div class="video-modal-canciones" id="videoModalCanciones">
+        <div class="canciones-header">
+          <span class="canciones-icon">&#127925;</span>
+          <span class="canciones-titulo">Canciones de esta clase</span>
         </div>
-        <div class="progress-bar-info">
-          <span id="clasesAsistidasInfo">0</span> asistidas de <span id="clasesContratadasInfo">0</span>
-        </div>
-      </div>
-
-      <!-- Mis clases -->
-      <div class="glass-card card-proxima">
-        <div class="card-label">Mis clases</div>
-        <div id="proximaClaseContent">
-          <p class="text-muted" style="font-size: 0.9rem;">Calculando...</p>
+        <div id="cancionesList" class="canciones-list">
+          <div class="spinner" style="margin:1rem auto;width:20px;height:20px;border-width:2px;"></div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- Tu sede -->
-      <div class="glass-card card-sede">
-        <div class="card-label">Tu sede</div>
-        <div class="card-sede-name" id="userSede">-</div>
+  <!-- ===== MODAL EVALUACIÓN ===== -->
+  <div id="evalModal" class="eval-modal hidden">
+    <div class="eval-modal-backdrop" id="evalModalBackdrop"></div>
+    <div class="eval-modal-sheet">
+      <div class="video-modal-handle"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;">
+        <h3 style="font-size:1rem;font-weight:700;">Evaluación del día</h3>
+        <button class="video-modal-close" id="evalModalClose">&#10005;</button>
       </div>
 
-      <!-- Plan activo + racha -->
-      <div class="inicio-plan-racha">
-        <div class="glass-card card-stat-mini">
-          <div class="card-stat-mini-icon">&#127891;</div>
-          <div class="card-stat-mini-val" id="inicioPlan">-</div>
-          <div class="card-stat-mini-label">Plan</div>
-        </div>
-        <div class="glass-card card-stat-mini">
-          <div class="card-stat-mini-icon">&#128197;</div>
-          <div class="card-stat-mini-val" id="inicioMeses">0</div>
-          <div class="card-stat-mini-label">Meses</div>
-        </div>
-        <div class="glass-card card-stat-mini card-stat-racha">
-          <div class="card-stat-mini-icon">&#128293;</div>
-          <div class="card-stat-mini-val" id="inicioRacha">0</div>
-          <div class="card-stat-mini-label">Racha</div>
-        </div>
-      </div>
-
-      <!-- Playlists de clase -->
-      <div class="glass-card card-playlist" id="playlistCard" style="display:none">
-        <div class="card-label">&#127925; Playlists de clase</div>
-        <div class="playlist-plataforma" style="font-size:0.72rem;color:var(--blanco-suave);margin-bottom:0.7rem">YouTube Music</div>
-        <div id="playlistBtns" class="playlist-btns"></div>
-      </div>
-
-      <!-- Eventos inline -->
-      <div id="eventosInicio" class="eventos-inicio"></div>
-    </section>
-
-    <!-- ====== TAB: HORARIO ====== -->
-    <section id="tab-horario" class="tab-section">
-      <h2 class="section-title">Mi Horario</h2>
-      <div id="horarioList" class="horario-list">
-        <div class="empty-state">
-          <span class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
-          <p>Cargando horario...</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ====== TAB: CALENDARIO ====== -->
-    <section id="tab-calendario" class="tab-section">
-      <h2 class="section-title" id="calTitulo">Calendario</h2>
-      <p class="cal-reminder-app">Recuerda llegar 10 minutos antes a clases.</p>
-      <div class="cal-app-wrapper glass-card">
-        <div class="cal-header-dias-app">
-          <span>Lun</span><span>Mar</span><span>Mie</span><span>Jue</span><span>Vie</span><span>Sab</span><span>Dom</span>
-        </div>
-        <div class="cal-grid-app" id="calGridApp"></div>
-      </div>
-      <div class="cal-legend-app">
-        <span class="cal-legend-item-app"><span class="cal-dot-app cal-dot-bachata-bas"></span> Bachata Bas</span>
-        <span class="cal-legend-item-app"><span class="cal-dot-app cal-dot-casino-bas"></span> Casino Bas</span>
-        <span class="cal-legend-item-app"><span class="cal-dot-app cal-dot-bachata-int"></span> Bachata Int</span>
-        <span class="cal-legend-item-app"><span class="cal-dot-app cal-dot-casino-int"></span> Casino Int</span>
-        <span class="cal-legend-item-app"><span class="cal-dot-app cal-dot-mambo"></span> Mambo</span>
-        <span class="cal-legend-item-app"><span class="cal-dot-app cal-dot-cumple"></span> Cumpleanos</span>
-      </div>
-      <!-- Lista de cumpleaños del mes -->
-      <div id="cumpleanerosMes" class="cumpleaneros-mes"></div>
-      <a href="marzo_clases_2026.ics" download class="btn-secondary btn-download-ics">Descargar calendario (.ics)</a>
-    </section>
-
-    <!-- ====== TAB: EVALUACION ====== -->
-    <section id="tab-evaluacion" class="tab-section">
-      <h2 class="section-title">Evaluacion del dia</h2>
-
-      <div class="glass-card eval-app-form">
-        <!-- Selector de curso -->
+      <div class="eval-app-form">
         <div class="form-group">
           <label class="eval-app-label">Tu curso</label>
-          <select id="evalAppCurso" class="form-input">
-            <option value="">Selecciona tu curso</option>
-          </select>
+          <select id="evalAppCurso" class="form-input"><option value="">Selecciona tu curso</option></select>
         </div>
-
-        <!-- Numero de clase -->
         <div class="form-group">
-          <label class="eval-app-label">Numero de clase</label>
+          <label class="eval-app-label">Número de clase</label>
           <div class="eval-app-clase-btns">
             <button type="button" class="eval-app-clase-btn" data-clase="1">1</button>
             <button type="button" class="eval-app-clase-btn" data-clase="2">2</button>
@@ -177,217 +97,351 @@
             <button type="button" class="eval-app-clase-btn" data-clase="4">4</button>
           </div>
         </div>
-
-        <!-- Sliders -->
         <div class="eval-app-slider-group">
-          <div class="eval-app-slider-label">
-            <span>Disfrute</span>
-            <span class="eval-app-slider-val" id="evalAppDisfruteVal">5</span>
-          </div>
+          <div class="eval-app-slider-label"><span>Disfrute</span><span class="eval-app-slider-val" id="evalAppDisfruteVal">5</span></div>
           <input type="range" id="evalAppDisfrute" min="1" max="10" value="5">
         </div>
-
         <div class="eval-app-slider-group">
-          <div class="eval-app-slider-label">
-            <span>Comprension</span>
-            <span class="eval-app-slider-val" id="evalAppComprensionVal">5</span>
-          </div>
+          <div class="eval-app-slider-label"><span>Comprensión</span><span class="eval-app-slider-val" id="evalAppComprensionVal">5</span></div>
           <input type="range" id="evalAppComprension" min="1" max="10" value="5">
         </div>
-
         <div class="eval-app-slider-group">
-          <div class="eval-app-slider-label">
-            <span>Comodidad en pareja</span>
-            <span class="eval-app-slider-val" id="evalAppComodidadVal">5</span>
-          </div>
+          <div class="eval-app-slider-label"><span>Comodidad en pareja</span><span class="eval-app-slider-val" id="evalAppComodidadVal">5</span></div>
           <input type="range" id="evalAppComodidad" min="1" max="10" value="5">
         </div>
-
         <div class="eval-app-slider-group">
-          <div class="eval-app-slider-label">
-            <span>Confianza</span>
-            <span class="eval-app-slider-val" id="evalAppConfianzaVal">5</span>
-          </div>
+          <div class="eval-app-slider-label"><span>Confianza</span><span class="eval-app-slider-val" id="evalAppConfianzaVal">5</span></div>
           <input type="range" id="evalAppConfianza" min="1" max="10" value="5">
         </div>
-
-        <!-- Binaria -->
         <div class="form-group">
-          <label class="eval-app-label">Bailaste con alguien nuevo?</label>
+          <label class="eval-app-label">¿Bailaste con alguien nuevo?</label>
           <div class="eval-app-binaria">
-            <button type="button" class="eval-app-binaria-btn" id="evalAppBaileSi">Si</button>
+            <button type="button" class="eval-app-binaria-btn" id="evalAppBaileSi">Sí</button>
             <button type="button" class="eval-app-binaria-btn" id="evalAppBaileNo">No</button>
           </div>
         </div>
-
-        <!-- Comentario -->
         <div class="form-group">
           <label class="eval-app-label">Comentario (opcional)</label>
-          <textarea id="evalAppComentario" class="form-input eval-app-textarea" placeholder="Como te sentiste hoy?" rows="3"></textarea>
+          <textarea id="evalAppComentario" class="form-input eval-app-textarea" placeholder="¿Cómo te sentiste hoy?" rows="3"></textarea>
         </div>
-
-        <!-- Mensajes -->
         <div id="evalAppError" class="eval-app-msg eval-app-msg-error hidden"></div>
         <div id="evalAppExito" class="eval-app-msg eval-app-msg-success hidden"></div>
-
-        <!-- Boton enviar -->
-        <button type="button" id="btnEnviarEvalApp" class="btn-primary eval-app-submit">Enviar mi evaluacion</button>
+        <button type="button" id="btnEnviarEvalApp" class="btn-primary eval-app-submit">Enviar evaluación</button>
       </div>
-    </section>
+    </div>
+  </div>
 
-    <!-- ====== TAB: COMPANEROS ====== -->
-    <section id="tab-companeros" class="tab-section">
-      <h2 class="section-title">Companeros</h2>
-      <div id="companerosList" class="companeros-list">
-        <div class="empty-state">
-          <span class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-          <p>Cargando companeros...</p>
+  <!-- ===== MAIN APP ===== -->
+  <main id="appContent" class="app-content hidden">
+
+    <!-- ══════════════════════════════════════
+         TAB 1: INICIO
+    ══════════════════════════════════════ -->
+    <section id="tab-inicio" class="tab-section active">
+
+      <!-- Header marca -->
+      <div class="app-header">
+        <img src="img/LOGOHERO.png" alt="Al Paso" class="app-logo-header">
+        <span class="app-brand-name">Al Paso Dance Studio</span>
+      </div>
+
+      <!-- Saludo + racha -->
+      <div class="inicio-hero">
+        <div class="inicio-greeting">
+          <span class="greeting-hola">Hola,</span>
+          <span class="greeting-nombre" id="userName">...</span>
+        </div>
+        <div class="racha-badge" id="rachaBadge">
+          <span class="racha-fuego">&#128293;</span>
+          <span class="racha-num" id="inicioRachaNum">0</span>
+          <span class="racha-label">racha</span>
         </div>
       </div>
+
+      <!-- Próxima clase -->
+      <div class="glass-card card-proxima-v2" id="cardProxima">
+        <div class="card-label">Tu próxima clase</div>
+        <div id="proximaClaseContent">
+          <p class="text-muted" style="font-size:0.85rem;">Calculando...</p>
+        </div>
+      </div>
+
+      <!-- Acceso rápido último video -->
+      <div class="glass-card card-ultimo-video hidden" id="cardUltimoVideo">
+        <div class="card-label">&#127909; Continúa donde quedaste</div>
+        <div class="ultimo-video-row" id="ultimoVideoRow"></div>
+      </div>
+
+      <!-- Próximo evento -->
+      <div id="cardEventoInicio" class="glass-card card-evento-inicio hidden">
+        <div class="card-label">&#128197; Próximo evento</div>
+        <div id="eventoInicioContent"></div>
+      </div>
+
+      <!-- Mini stats -->
+      <div class="inicio-stats">
+        <div class="glass-card stat-mini">
+          <div class="stat-mini-val" id="inicioPlan">-</div>
+          <div class="stat-mini-label">Plan</div>
+        </div>
+        <div class="glass-card stat-mini">
+          <div class="stat-mini-val" id="inicioClases">0</div>
+          <div class="stat-mini-label">Clases</div>
+        </div>
+        <div class="glass-card stat-mini">
+          <div class="stat-mini-val" id="inicioMeses">0</div>
+          <div class="stat-mini-label">Meses</div>
+        </div>
+      </div>
+
     </section>
 
-    <!-- ====== TAB: VIDEOS ====== -->
-    <section id="tab-videos" class="tab-section">
-      <h2 class="section-title">Videos de Clases</h2>
-      <p class="text-muted" style="font-size:0.82rem;margin-bottom:1rem">Repasa el contenido de cada clase</p>
+    <!-- ══════════════════════════════════════
+         TAB 2: CLASES
+    ══════════════════════════════════════ -->
+    <section id="tab-clases" class="tab-section">
 
-      <!-- Selector de curso -->
-      <div id="videosCursoPills" class="videos-curso-pills"></div>
+      <div class="tab-header">
+        <h2 class="tab-title">Mis Clases</h2>
+        <p class="tab-subtitle">Videos y canciones de cada clase</p>
+      </div>
+
+      <!-- Pills de curso -->
+      <div id="clasesCursoPills" class="curso-pills"></div>
+
+      <!-- Filtro por número de clase -->
+      <div id="clasesNumFiltro" class="clase-num-filtro hidden">
+        <button class="clase-num-btn active" data-num="todos">Todas</button>
+        <button class="clase-num-btn" data-num="1">Clase 1</button>
+        <button class="clase-num-btn" data-num="2">Clase 2</button>
+        <button class="clase-num-btn" data-num="3">Clase 3</button>
+        <button class="clase-num-btn" data-num="4">Clase 4</button>
+      </div>
 
       <!-- Grid de videos -->
-      <div id="videosGrid" class="videos-grid">
+      <div id="clasesVideosGrid" class="videos-grid-v2">
         <div class="empty-state">
-          <p>Selecciona un curso</p>
+          <p>Selecciona un curso para ver los videos</p>
         </div>
       </div>
+
     </section>
 
-    <!-- ====== TAB: GALERIA ====== -->
-    <section id="tab-galeria" class="tab-section">
-      <h2 class="section-title">Galeria de Fiestas</h2>
-      <p class="text-muted" style="font-size:0.82rem;margin-bottom:1rem">Videos y fotos de nuestras fiestas</p>
+    <!-- ══════════════════════════════════════
+         TAB 3: COMUNIDAD
+    ══════════════════════════════════════ -->
+    <section id="tab-comunidad" class="tab-section">
 
-      <!-- Filtro tipo -->
-      <div class="galeria-filtros">
-        <button class="galeria-filtro-btn active" data-tipo="todos">Todos</button>
-        <button class="galeria-filtro-btn" data-tipo="video">Videos</button>
-        <button class="galeria-filtro-btn" data-tipo="foto">Fotos</button>
+      <div class="tab-header">
+        <h2 class="tab-title">Comunidad</h2>
+        <p class="tab-subtitle">Tu gente, tus fiestas</p>
       </div>
 
-      <!-- Grid galeria -->
-      <div id="galeriaGrid" class="galeria-grid">
-        <div class="empty-state">
-          <div class="spinner" style="margin:1rem auto"></div>
+      <!-- Eventos recientes: Swiper -->
+      <div class="comunidad-block">
+        <div class="block-label">Últimas fiestas</div>
+        <div class="swiper swiper-eventos" id="swiperEventos">
+          <div class="swiper-wrapper" id="swiperEventosWrapper">
+            <div class="swiper-slide">
+              <div class="evento-slide-loading">
+                <div class="spinner" style="width:24px;height:24px;border-width:2px;margin:0 auto;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-pagination swiper-pagination-eventos"></div>
         </div>
       </div>
+
+      <!-- Mis compañeros -->
+      <div class="comunidad-block">
+        <div class="block-label">Mis compañeros</div>
+        <div id="companerosComunidad" class="companeros-grid">
+          <div class="spinner" style="width:20px;height:20px;border-width:2px;margin:1rem auto;"></div>
+        </div>
+      </div>
+
+      <!-- Galería de fiestas -->
+      <div class="comunidad-block">
+        <div class="block-label-row">
+          <span class="block-label" style="margin-bottom:0">Galería</span>
+          <div class="galeria-filtros-mini">
+            <button class="gfiltro-btn active" data-tipo="todos">Todo</button>
+            <button class="gfiltro-btn" data-tipo="video">Videos</button>
+            <button class="gfiltro-btn" data-tipo="foto">Fotos</button>
+          </div>
+        </div>
+        <div id="galeriaGridComunidad" class="galeria-grid-v2">
+          <div class="spinner" style="width:20px;height:20px;border-width:2px;margin:1.5rem auto;"></div>
+        </div>
+      </div>
+
     </section>
 
-    <!-- ====== TAB: PERFIL ====== -->
-    <section id="tab-perfil" class="tab-section">
-      <div class="perfil-header">
+    <!-- ══════════════════════════════════════
+         TAB 4: YO
+    ══════════════════════════════════════ -->
+    <section id="tab-yo" class="tab-section">
+
+      <!-- Perfil header -->
+      <div class="yo-header">
         <div class="perfil-avatar-wrapper">
           <div class="avatar avatar-xl" id="perfilAvatar">--</div>
           <button class="foto-upload-btn" id="fotoUploadBtn" title="Cambiar foto">&#9998;</button>
         </div>
-        <h2 class="perfil-name" id="perfilName">-</h2>
-        <span class="badge badge-gold" id="perfilRole">alumno</span>
-      </div>
-
-      <div class="perfil-info-grid">
-        <div class="glass-card perfil-info-card">
-          <div class="perfil-info-label">Plan</div>
-          <div class="perfil-info-value" id="perfilPlan">-</div>
-        </div>
-        <div class="glass-card perfil-info-card">
-          <div class="perfil-info-label">Telefono</div>
-          <div class="perfil-info-value" id="perfilTelefono">-</div>
-        </div>
-        <div class="glass-card perfil-info-card">
-          <div class="perfil-info-label">Sede</div>
-          <div class="perfil-info-value" id="perfilSede">-</div>
-        </div>
-        <div class="glass-card perfil-info-card">
-          <div class="perfil-info-label">Desde</div>
-          <div class="perfil-info-value" id="perfilDesde">-</div>
+        <div class="yo-info">
+          <h2 class="yo-nombre" id="perfilName">-</h2>
+          <span class="badge badge-gold" id="perfilRole">alumno</span>
+          <div class="yo-curso" id="perfilCursoLabel">-</div>
         </div>
       </div>
 
-      <!-- Mis cursos -->
-      <div class="glass-card perfil-cursos-card">
-        <div class="perfil-info-label" style="margin-bottom:0.6rem">Mis cursos</div>
-        <div id="perfilCursos" class="perfil-cursos-lista">-</div>
-      </div>
-
-      <!-- Stats racha -->
-      <div class="perfil-stats">
-        <div class="glass-card stat-card">
-          <div class="stat-number" id="statMeses">0</div>
-          <div class="stat-label">Meses</div>
+      <!-- Stats -->
+      <div class="yo-stats">
+        <div class="glass-card yo-stat">
+          <div class="yo-stat-num" id="statRacha">0</div>
+          <div class="yo-stat-label">&#128293; Racha</div>
         </div>
-        <div class="glass-card stat-card stat-card-racha">
-          <div class="stat-number" id="statRacha">0</div>
-          <div class="stat-label">Racha</div>
+        <div class="glass-card yo-stat">
+          <div class="yo-stat-num" id="statAsistidas">0</div>
+          <div class="yo-stat-label">Clases</div>
         </div>
-        <div class="glass-card stat-card">
-          <div class="stat-number" id="statAsistidas">0</div>
-          <div class="stat-label">Clases</div>
+        <div class="glass-card yo-stat">
+          <div class="yo-stat-num" id="statMeses">0</div>
+          <div class="yo-stat-label">Meses</div>
         </div>
       </div>
 
-      <!-- Feedback del Profesor -->
-      <div class="glass-card perfil-feedback-card">
-        <div class="perfil-info-label" style="margin-bottom:0.8rem">&#128203; Feedback del Profesor</div>
+      <!-- Clases restantes -->
+      <div class="glass-card yo-clases-card">
+        <div class="yo-clases-row">
+          <span class="card-label" style="margin:0">Clases restantes</span>
+          <span class="yo-clases-num"><span id="perfilClasesRestantes">0</span> de <span id="perfilClasesTotal">0</span></span>
+        </div>
+        <div class="progress-bar-track" style="margin-top:0.7rem">
+          <div class="progress-bar-fill" id="perfilProgress" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Feedback del profesor -->
+      <div class="glass-card yo-feedback-card">
+        <div class="yo-section-label">&#128203; Feedback del Profesor</div>
         <div id="feedbackLista" class="feedback-lista">
-          <p class="text-muted" style="font-size:0.85rem">Cargando feedback...</p>
+          <p class="text-muted" style="font-size:0.85rem;">Cargando...</p>
         </div>
       </div>
 
-      <button id="logoutBtn" class="btn-secondary logout-btn">Cerrar Sesion</button>
+      <!-- Accesos secundarios -->
+      <div class="yo-accesos">
+        <button class="yo-acceso-btn" id="btnAbrirCalendario">
+          <span class="yo-acceso-icon">&#128197;</span>
+          <span>Calendario</span>
+        </button>
+        <button class="yo-acceso-btn" id="btnAbrirHorario">
+          <span class="yo-acceso-icon">&#128336;</span>
+          <span>Horario</span>
+        </button>
+        <button class="yo-acceso-btn" id="btnAbrirEval">
+          <span class="yo-acceso-icon">&#9998;</span>
+          <span>Evaluar clase</span>
+        </button>
+        <button class="yo-acceso-btn" id="btnAbrirPlaylist">
+          <span class="yo-acceso-icon">&#127925;</span>
+          <span>Playlist</span>
+        </button>
+      </div>
+
+      <!-- Mini calendario (colapsable) -->
+      <div id="yoCalendarioWrap" class="glass-card yo-collapse-wrap hidden">
+        <h3 class="section-title" id="calTitulo" style="font-size:0.95rem;margin-bottom:0.8rem;">Calendario</h3>
+        <p style="font-size:0.75rem;color:var(--blanco-suave);margin-bottom:0.8rem;">Recuerda llegar 10 min antes.</p>
+        <div class="cal-app-wrapper" style="padding:0.8rem;">
+          <div class="cal-header-dias-app">
+            <span>Lun</span><span>Mar</span><span>Mie</span><span>Jue</span><span>Vie</span><span>Sab</span><span>Dom</span>
+          </div>
+          <div class="cal-grid-app" id="calGridApp"></div>
+        </div>
+        <div class="cal-legend-app">
+          <span class="cal-legend-item-app"><span class="cal-dot-app cal-dot-bachata-bas"></span> Bachata Bas</span>
+          <span class="cal-legend-item-app"><span class="cal-dot-app cal-dot-casino-bas"></span> Casino Bas</span>
+          <span class="cal-legend-item-app"><span class="cal-dot-app cal-dot-bachata-int"></span> Bachata Int</span>
+          <span class="cal-legend-item-app"><span class="cal-dot-app cal-dot-casino-int"></span> Casino Int</span>
+          <span class="cal-legend-item-app"><span class="cal-dot-app cal-dot-mambo"></span> Mambo</span>
+        </div>
+        <div id="cumpleanerosMes" class="cumpleaneros-mes"></div>
+        <a href="marzo_clases_2026.ics" download class="btn-secondary btn-download-ics" style="font-size:0.8rem;padding:0.6rem 1rem;margin-top:0.5rem;">Descargar .ics</a>
+      </div>
+
+      <!-- Mini horario (colapsable) -->
+      <div id="yoHorarioWrap" class="glass-card yo-collapse-wrap hidden">
+        <h3 class="section-title" style="font-size:0.95rem;margin-bottom:0.8rem;">Mi Horario</h3>
+        <div id="horarioList" class="horario-list"></div>
+      </div>
+
+      <!-- Playlist (colapsable) -->
+      <div id="yoPlaylistWrap" class="glass-card yo-collapse-wrap hidden">
+        <div class="card-label" style="margin-bottom:0.5rem;">&#127925; Playlists de clase</div>
+        <div class="playlist-plataforma" style="font-size:0.72rem;color:var(--blanco-suave);margin-bottom:0.7rem;">YouTube Music</div>
+        <div id="playlistBtns" class="playlist-btns"></div>
+      </div>
+
+      <button id="logoutBtn" class="btn-secondary logout-btn">Cerrar sesión</button>
+
     </section>
 
   </main>
 
-  <!-- ============================================ -->
-  <!-- BOTTOM TAB BAR (scrollable, 8 tabs) -->
-  <!-- ============================================ -->
+  <!-- ══════════════════════════════════════
+       BOTTOM TAB BAR — 4 tabs
+  ══════════════════════════════════════ -->
   <nav id="tabBar" class="tab-bar hidden">
     <button class="tab-item active" data-tab="tab-inicio">
-      <span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+      <span class="tab-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </span>
       <span class="tab-label">Inicio</span>
     </button>
-    <button class="tab-item" data-tab="tab-calendario">
-      <span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
-      <span class="tab-label">Calendario</span>
+    <button class="tab-item" data-tab="tab-clases">
+      <span class="tab-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>
+        </svg>
+      </span>
+      <span class="tab-label">Clases</span>
     </button>
-    <button class="tab-item" data-tab="tab-videos">
-      <span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></span>
-      <span class="tab-label">Videos</span>
+    <button class="tab-item" data-tab="tab-comunidad">
+      <span class="tab-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </span>
+      <span class="tab-label">Comunidad</span>
     </button>
-    <button class="tab-item" data-tab="tab-galeria">
-      <span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span>
-      <span class="tab-label">Galeria</span>
-    </button>
-    <button class="tab-item" data-tab="tab-evaluacion">
-      <span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></span>
-      <span class="tab-label">Evaluacion</span>
-    </button>
-    <button class="tab-item" data-tab="tab-companeros">
-      <span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-      <span class="tab-label">Companeros</span>
-    </button>
-    <button class="tab-item" data-tab="tab-horario">
-      <span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
-      <span class="tab-label">Horario</span>
-    </button>
-    <button class="tab-item" data-tab="tab-perfil">
-      <span class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-      <span class="tab-label">Perfil</span>
+    <button class="tab-item" data-tab="tab-yo">
+      <span class="tab-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+      </span>
+      <span class="tab-label">Yo</span>
     </button>
   </nav>
 
-  <!-- Scripts -->
+  <!-- YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <!-- App scripts -->
   <script src="js/api-service.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/app.js"></script>
+
 </body>
 </html>

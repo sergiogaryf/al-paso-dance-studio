@@ -15,7 +15,7 @@ module.exports = async function handler(req, res) {
         descripcion: r.Descripcion,
         fecha: r.Fecha,
         lugar: r.Lugar,
-        imagenURL: r.ImagenURL,
+        imagenURL: r.CoverUrl || r.ImagenURL || '',
         activo: r.Activo !== false,
       }));
       if (!req.query.all) {
@@ -39,7 +39,7 @@ module.exports = async function handler(req, res) {
         Descripcion: d.descripcion,
         Fecha: d.fecha,
         Lugar: d.lugar,
-        ImagenURL: d.imagenURL,
+        CoverUrl: d.imagenURL,
         Activo: d.activo !== false,
       });
       return res.status(201).json({ id: record.id, ...d });
@@ -62,7 +62,7 @@ module.exports = async function handler(req, res) {
       if (data.descripcion !== undefined) fields.Descripcion = data.descripcion;
       if (data.fecha !== undefined) fields.Fecha = data.fecha;
       if (data.lugar !== undefined) fields.Lugar = data.lugar;
-      if (data.imagenURL !== undefined) fields.ImagenURL = data.imagenURL;
+      if (data.imagenURL !== undefined) fields.CoverUrl = data.imagenURL;
       if (data.activo !== undefined) fields.Activo = data.activo;
 
       await updateRecord(tables.eventos, id, fields);
